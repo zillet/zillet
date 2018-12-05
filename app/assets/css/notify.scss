@@ -1,0 +1,121 @@
+.list-move {
+    transition: transform 0.3s, opacity 0.4s;
+  }
+  .list-item {
+    display: inline-block;
+    margin-right: 10px;
+  
+  }
+  .list-enter-active, .list-leave-active {
+    transition: opacity 0.4s;
+  }
+  .list-enter, .list-leave-to  /* .list-leave-active for <2.1.8 */ {
+    opacity: 0;
+  }
+  $border-radius-base: 4px !default;
+  .vue-notifyjs {
+    button.close {
+      -webkit-appearance: none;
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+    }
+  
+    .close {
+      float: right;
+      font-size: 21px;
+      font-weight: bold;
+      line-height: 1;
+      color: #000;
+      text-shadow: 0 1px 0 #fff;
+      filter: alpha(opacity=20);
+      opacity: .2;
+    }
+  
+    .alert {
+      box-shadow: rgba(0, 0, 0, 0.06) 0px 3px 6px 0px, rgba(50, 50, 93, 0.02) 0px 0px 1px 0px, rgba(59, 59, 92, 0.08) 0px 5px 10px 0px;
+      margin: 10px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      background: rgb(255, 255, 255);
+      font-size: 14px;
+      z-index: 100;
+      display: inline-block;
+      position: fixed !important;
+      transition: all 0.5s ease-in-out;
+      cursor: pointer;
+      text-align: center;
+      color: rgb(12, 12, 13);
+      font-weight: 600;
+      &.center {
+        left: 0px;
+        right: 0px;
+        margin: 0 auto;
+      }
+      &.left {
+        left: 20px;
+      }
+      &.right {
+        right: 20px;
+      }
+      &[data-notify="container"] {
+        width: 300px;
+        padding: 10px 10px 10px 20px;
+        border-radius: $border-radius-base;
+      }
+    }
+  
+    .alert.alert-success {
+      color:rgb(0, 153, 77);
+    }
+    .alert.alert-danger {
+      color: rgb(214, 75, 71);
+    }
+    .alert.alert-warning {
+      color: #ffbc50;
+    }
+    .alert.alert-primary {
+      color:#4dc0b5;
+    }
+  
+    .alert i.fa, .alert i.now-ui-icons {
+      font-size: 20px;
+    }
+  
+    .alert .close {
+      color: #FFFFFF;
+      opacity: .9;
+      text-shadow: none;
+      line-height: 0;
+      outline: 0;
+    }
+  
+    .alert span[data-notify="icon"] {
+      font-size: 22px;
+      display: block;
+      left: 19px;
+      position: absolute;
+      top: 50%;
+      margin-top: -11px;
+    }
+  
+    .alert button.close {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      margin-top: -13px;
+      width: 25px;
+      height: 25px;
+      padding: 3px;
+    }
+  
+    .alert .close ~ span {
+      display: block;
+      max-width: 89%;
+    }
+  
+    .alert.alert-with-icon {
+      padding-left: 65px;
+    }
+  }

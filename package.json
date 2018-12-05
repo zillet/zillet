@@ -1,0 +1,37 @@
+{
+  "name": "zil-wallet",
+  "version": "0.0.1",
+  "description": "Zilliqa wallet powered by Nuxt",
+  "author": "man15h",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.0.0",
+    "@xkeshi/vue-qrcode": "^1.0.0",
+    "@zilliqa-js/zilliqa": "^0.2.7",
+    "cross-env": "^5.2.0",
+    "ethereum-blockies": "^0.1.1",
+    "nuxt": "^2.3.0",
+    "vue-notifyjs": "^0.4.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.6.4",
+    "babel-eslint": "^8.2.1",
+    "eslint": "^5.0.1",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-prettier": "2.6.2",
+    "eslint-plugin-vue": "^4.0.0",
+    "node-sass": "^4.10.0",
+    "prettier": "1.14.3",
+    "sass-loader": "^7.1.0",
+    "tailwindcss": "~0.6.6"
+  }
+}
