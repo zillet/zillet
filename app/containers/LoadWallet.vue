@@ -83,7 +83,7 @@
           Load wallet
         </z-button>
       </div>
-      <!-- <div class="footer">
+      <div class="footer">
         <nuxt-link 
           :to="{name: 'index'}" 
           class="text-teal text-sm">
@@ -102,7 +102,7 @@
         <a 
           class="text-teal" 
           href="/access-wallet"/>
-      </div>     -->
+      </div>    
     </div>
   </div>
 </template>
@@ -203,15 +203,6 @@ export default {
 };
 </script>
 <style scoped>
-.header {
-  @apply text-grey-darkest text-xl align-middle mb-12;
-}
-.card {
-  @apply rounded overflow-hidden shadow py-12 px-4 w-full bg-white;
-}
-.footer {
-  @apply flex flex-row justify-center mt-6;
-}
 .radio-btn-wrapper {
   @apply flex flex-wrap mb-1 justify-center;
 }

@@ -38,9 +38,7 @@
         </span>
       </p>
     </div>
-
   </div>
-
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
@@ -54,20 +52,8 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .header {
-  @apply text-grey-darkest text-xl align-middle mb-6;
-}
-.card {
-  @apply rounded overflow-hidden shadow p-8 w-full bg-white;
-}
-.qr-code-btn {
-  height: 20px;
-  width: 20px;
-}
-.qr-code {
-  width: 200px;
-  margin: auto;
+  @apply mb-6;
 }
 </style>

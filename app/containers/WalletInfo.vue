@@ -131,12 +131,6 @@ export default {
 };
 </script>
 <style scoped>
-.header {
-  @apply text-grey-darker text-xl align-middle mb-12;
-}
-.card {
-  @apply rounded overflow-hidden shadow py-12 px-4 w-full bg-white;
-}
 .qr-code-btn {
   height: 20px;
   width: 20px;

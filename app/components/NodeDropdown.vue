@@ -16,7 +16,7 @@
     <transition name="slide-fade">
       <div 
         v-if="showDropDown" 
-        class="absolute rounded max-w-sm overflow-hidden shadow-lg bg-white pin-t mt-8 pin-r w-48">
+        class="absolute rounded max-w-sm overflow-hidden shadow-lg bg-white pin-t mt-8 pin-r w-64">
         <div 
           v-for="node in nodes" 
           :key="node.name"
@@ -28,7 +28,7 @@
               src="https://pbs.twimg.com/profile_images/885868801232961537/b1F6H4KC_400x400.jpg" 
               alt="Avatar of Jonathan Reinink"> -->
           <div class="text-sm">
-            <p class="text-grey-darkest leading-none font-semibold"> {{ node.name }}</p>
+            <p class="text-grey-darkest leading-none font-semibold mb-1"> {{ node.name }}</p>
             <p class="text-grey-darker text-xs"> {{ node.url }}</p>
           </div>
         </div>

@@ -14,8 +14,3 @@ export default {
   }
 };
 </script>
-<style>
-.container {
-  @apply min-h-screen justify-start items-center text-center mx-auto flex flex-col px-4;
-}
-</style>
