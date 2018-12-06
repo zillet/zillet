@@ -27,7 +27,7 @@
           <b>You will need this password + your private key to unlock your wallet.</b>
         </span>
         <br >
-        <!-- <div class="footer">
+        <div class="footer">
           <nuxt-link 
             :to="{name: 'index'}" 
             class="text-teal text-sm">
@@ -43,7 +43,7 @@
             class="text-teal text-sm">
             Already have wallet
           </nuxt-link>
-        </div> -->
+        </div>
       </div>
     </div>   
   </div>
@@ -103,13 +103,4 @@ export default {
 };
 </script>
 <style>
-.header {
-  @apply text-grey-darkest text-xl align-middle mb-12;
-}
-.card {
-  @apply rounded overflow-hidden shadow py-12 px-4 w-full bg-white;
-}
-.footer {
-  @apply flex flex-row justify-center mt-6;
-}
 </style>

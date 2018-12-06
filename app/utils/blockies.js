@@ -1,6 +1,5 @@
 // https://github.com/alexvandesande/blockies/blob/master/blockies.js
-// updated tayvano 3.9.16
-// updated manish
+// updated manish v0.0.1
 
 // The random number is a js implementation of the Xorshift PRNG
 var randseed = new Array(4); // Xorshift: [x, y, z, w] 32 bit values

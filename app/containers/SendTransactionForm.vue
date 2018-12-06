@@ -14,7 +14,7 @@
     <z-input
       v-model="transaction.amount"
       :hide="false"
-      :valid="transaction.amount < getAccount.balance"
+      :valid="validateAmount"
       class="mb-4"
       label="Amount to Send"
       placeholder="Enter amount here"/>
@@ -23,6 +23,7 @@
         <z-input
           v-model="transaction.gasLimit"
           :hide="false"
+          :valid="$validation.isNumber(transaction.gasLimit)"
           class="mb-4"
           label="Gas Limit"
           placeholder="10"/>
@@ -30,6 +31,7 @@
       <div class="w-1/2 px-2">
         <z-input
           v-model="transaction.gasPrice"
+          :valid="$validation.isNumber(transaction.gasPrice)"
           :hide="false"
           class="mb-4"
           label="Gas Price"
@@ -97,6 +99,13 @@ export default {
     ...mapGetters(['getAccount']),
     stringifySignedTx() {
       return JSON.stringify(this.signedTx);
+    },
+    validateAmount() {
+      return (
+        this.$validation.isNumber(this.transaction.amount) &&
+        parseFloat(this.transaction.amount) <
+          parseFloat(this.getAccount.balance)
+      );
     }
   },
   watch: {
@@ -124,8 +133,7 @@ export default {
         if (
           lookupMap.has(key) &&
           (this.transaction[key] == '' ||
-            typeof Number(this.transaction[key]) != 'number' ||
-            isNaN(Number(this.transaction[key])))
+            this.$validation.isNumber(this.transaction[key]))
         ) {
           return this.$notify({
             message: lookupMap.get(key),
@@ -208,17 +216,6 @@ export default {
 </script>
 <style scoped>
 .header {
-  @apply text-grey-darkest text-xl align-middle mb-6;
-}
-.card {
-  @apply rounded overflow-hidden shadow p-8 w-full bg-white;
-}
-.qr-code-btn {
-  height: 20px;
-  width: 20px;
-}
-.qr-code {
-  width: 200px;
-  margin: auto;
+  @apply mb-6;
 }
 </style>

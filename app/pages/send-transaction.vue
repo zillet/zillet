@@ -8,7 +8,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import AddressDetails from '@/containers/AddressDetails';
 import SendTransactionForm from '@/containers/SendTransactionForm';

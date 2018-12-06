@@ -1,7 +1,6 @@
 <template>
   <wallet-info />
 </template>
-
 <script>
 import WalletInfo from '@/containers/WalletInfo';
 export default {
@@ -12,6 +11,3 @@ export default {
   }
 };
 </script>
-
-<style>
-</style>
