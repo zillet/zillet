@@ -1,6 +1,7 @@
 <template>
   <div class="max-w-xl w-full">
     <div 
+      id="walert" 
       class="card">
       <!-- <h3 class="header"> 
         Wallet Information
@@ -92,11 +93,9 @@
         </div>
         <div class="lg:w-1/4 xl:w-1/4 sm:w-full flex flex-col">
           <div class="qr-code">
-            <qrcode
-              id="qr-code"
-              :value="getAccount[showQr]"
-              :options="{ size: 200, foreground: '#303133'}"
-            />
+            <z-qrcode 
+              :value="`0x${getAccount[showQr]}`" 
+              :options="{ width: 200, color:{ dark: '#303133'}}"/>
           </div>
           <label
             class="block uppercase tracking-wide text-grey-darkest text-sm font-bold mb-2" 

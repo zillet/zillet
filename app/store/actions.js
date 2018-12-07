@@ -73,8 +73,13 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
       })
       .catch(err => {
         commit('ERROR');
-        console.log(err);
         reject(err);
       });
+  });
+}
+export function clearWallet({ commit }) {
+  return new Promise(resolve => {
+    commit('EMPTY_WALLET');
+    resolve();
   });
 }

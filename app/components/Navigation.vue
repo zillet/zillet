@@ -23,7 +23,7 @@
         <nuxt-link 
           :to="{name: 'index'}"
           :class="{'text-teal':$route.name==='index'}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-6 ">
+          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-6">
           New Wallet
         </nuxt-link>
         <nuxt-link 
@@ -35,25 +35,30 @@
         <nuxt-link 
           :to="{name: 'wallet-info'}" 
           :class="{'text-teal':$route.name==='wallet-info'}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light ">
+          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-2">
           Wallet Info
         </nuxt-link>
-        <!-- <nuxt-link 
-          :to="{name: 'help'}" 
-          :class="{'text-teal':$route.name==='help'}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light">
-          Help
-        </nuxt-link> -->
+        <a 
+          v-if="getAccount.privateKey" 
+          href="#"
+          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light border-l pl-4 border-grey-darker"
+          @click="logout">
+          Logout
+        </a>
       </div>
     </div>
   </nav>
 </template>
 <script>
 import NodeDropdown from '@/components/NodeDropdown';
+import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'Navigation',
   components: {
     'node-dropdown': NodeDropdown
+  },
+  computed: {
+    ...mapGetters(['getAccount'])
   },
   watch: {
     '$route.path': {
@@ -61,6 +66,13 @@ export default {
         // console.log(this.$route.name);
       },
       immediate: true
+    }
+  },
+  methods: {
+    ...mapActions(['clearWallet']),
+    async logout() {
+      await this.clearWallet();
+      this.$router.push({ name: 'index' });
     }
   }
 };

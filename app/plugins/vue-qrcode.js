@@ -1,4 +1,5 @@
 import Vue from 'vue';
-import VueQrcode from '@xkeshi/vue-qrcode';
-
-Vue.component(VueQrcode.name, VueQrcode);
+import QRCode from 'qrcode';
+export default ({}, inject) => {
+  inject('qr', QRCode);
+};

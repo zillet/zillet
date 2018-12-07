@@ -18,24 +18,26 @@
       class="mb-4"
       label="Amount to Send"
       placeholder="Enter amount here"/>
-    <div class="flex -mx-2">
-      <div class="w-1/2 px-2">
-        <z-input
-          v-model="transaction.gasLimit"
-          :hide="false"
-          :valid="$validation.isNumber(transaction.gasLimit)"
-          class="mb-4"
-          label="Gas Limit"
-          placeholder="10"/>
-      </div>
-      <div class="w-1/2 px-2">
-        <z-input
-          v-model="transaction.gasPrice"
-          :valid="$validation.isNumber(transaction.gasPrice)"
-          :hide="false"
-          class="mb-4"
-          label="Gas Price"
-          placeholder="1"/>
+    <div v-if="!isAdvance">
+      <div class="flex -mx-2">
+        <div class="w-1/2 px-2">
+          <z-input
+            v-model="transaction.gasLimit"
+            :hide="false"
+            :valid="$validation.isNumber(transaction.gasLimit)"
+            class="mb-4"
+            label="Gas Limit"
+            placeholder="10"/>
+        </div>
+        <div class="w-1/2 px-2">
+          <z-input
+            v-model="transaction.gasPrice"
+            :valid="$validation.isNumber(transaction.gasPrice)"
+            :hide="false"
+            class="mb-4"
+            label="Gas Price"
+            placeholder="1"/>
+        </div>
       </div>
     </div>
     <z-button 
@@ -89,6 +91,7 @@ export default {
         gasLimit: 10,
         gasPrice: 1
       },
+      isAdvance: false,
       signedTx: {},
       isSigned: false,
       isBroadcast: false,
@@ -133,7 +136,7 @@ export default {
         if (
           lookupMap.has(key) &&
           (this.transaction[key] == '' ||
-            this.$validation.isNumber(this.transaction[key]))
+            !this.$validation.isNumber(this.transaction[key]))
         ) {
           return this.$notify({
             message: lookupMap.get(key),

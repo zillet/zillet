@@ -15,3 +15,12 @@ export const IMPORT_ACCOUNT = (state, result) => {
 export const BALANCE = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
 };
+export const EMPTY_WALLET = (state, result) => {
+  state.wallet = {
+    address: '',
+    privateKey: '',
+    publicKey: '',
+    balance: '',
+    nonce: ''
+  };
+};
