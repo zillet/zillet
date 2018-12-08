@@ -1,7 +1,7 @@
 <template>
   <button
     :class="{
-      'cursor-not-allowed opacity-75': loading,
+      'cursor-not-allowed opacity-75': loading || $attrs.disabled,
       'hover:shadow-md': !loading ,
       'bg-teal text-white hover:bg-teal-dark': type==='primary',
       'bg-red text-white hover:bg-red-dark': type==='danger',

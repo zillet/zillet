@@ -23,3 +23,14 @@ a{
 .footer {
   @apply flex flex-row justify-center mt-6;
 }
+.example-print {
+  display: none !important;
+}
+@media print {
+  .example-screen {
+    display: none !important;
+  }
+  .example-print {
+    display: block !important;
+  }
+}
