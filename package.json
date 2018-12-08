@@ -13,7 +13,6 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.0.0",
     "@zilliqa-js/zilliqa": "^0.2.7",
     "cross-env": "^5.2.0",
     "ethereum-blockies": "^0.1.1",

@@ -66,8 +66,18 @@
       <span class="text-base text-grey-darkest">
         {{ `0x${tranxId}` }}
       </span>
+      <a 
+        :href="`https://explorer.zilliqa.com/transactions/${tranxId}`" 
+        target="_blank">
+        <z-button 
+          class="mt-8">
+        
+          Check on Explorer
+        </z-button>
+      </a>
       <z-button 
         class="mt-8"
+        type="default"
         @click="isBroadcast=false;">
         Okay, Got it.
       </z-button>

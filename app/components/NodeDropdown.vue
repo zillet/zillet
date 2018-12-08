@@ -6,7 +6,6 @@
       class="nav-link lg:inline-block lg:mt-0 hover:text-teal 
       block mt-4  text-xs text-grey uppercase tracking-wide font-semibold"
       @click.prevent="showDropDown=!showDropDown">
-
       <div 
         :class="`bg-grey h-2 w-2 mr-2 rounded-full inline-block align-middle ${connectionStatusClass}`"/>
       {{ selected.name }} 
@@ -77,11 +76,6 @@ export default {
   beforeMount() {
     try {
       const node = JSON.parse(localStorage.getItem('_selected_node'));
-      console.log(
-        !this.nodes.find(item => {
-          return item.url === node.url;
-        })
-      );
       if (
         !this.nodes.find(item => {
           return item.url === node.url;

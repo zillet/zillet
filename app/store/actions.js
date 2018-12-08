@@ -10,8 +10,10 @@ function setData(method, params) {
 export function checkNetworkStatus({}, url) {
   return new Promise((resolve, reject) => {
     let data = JSON.stringify(setData('GetNetworkId', ['']));
-    this.$axios
-      .$post(url, data)
+    this.$fetch(url, {
+      method: 'POST',
+      body: data
+    })
       .then(res => {
         resolve(res);
       })
@@ -47,8 +49,10 @@ export function getBalance({ commit }, address) {
   return new Promise((resolve, reject) => {
     commit('LOADING');
     let data = JSON.stringify(setData('GetBalance', [address]));
-    this.$axios
-      .$post('', data)
+    this.$fetch('', {
+      method: 'POST',
+      body: data
+    })
       .then(res => {
         commit('BALANCE', res.result);
         commit('SUCCESS');
@@ -64,8 +68,10 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
   return new Promise((resolve, reject) => {
     commit('LOADING');
     let data = JSON.stringify(setData('CreateTransaction', [tx]));
-    this.$axios
-      .$post('', data)
+    this.$fetch('', {
+      method: 'POST',
+      body: data
+    })
       .then(res => {
         commit('SUCCESS');
         dispatch('getBalance', state.wallet.address);

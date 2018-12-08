@@ -21,7 +21,14 @@ export default {
       }
     ]
   },
-
+  env: {
+    node: {
+      name: 'Zilliqa V3',
+      url: process.env.API_BASE_URL
+        ? process.env.API_BASE_URL
+        : 'http://localhost:4200/'
+    }
+  },
   /*
   ** Customize the progress-bar color
   */
@@ -44,28 +51,10 @@ export default {
   plugins: [
     '@/plugins/vue-qrcode',
     '@/plugins/vue-zilliqa',
-    '@/plugins/axios',
     '@/plugins/vue-notify',
+    '@/plugins/fetch',
     { src: '@/plugins/zilliqa', ssr: false }
   ],
-
-  /*
-  ** Nuxt.js modules
-  */
-  modules: [
-    // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios'
-  ],
-  /*
-  ** Axios module configuration
-  */
-  axios: {
-    baseURL: process.env.API_BASE_URL
-      ? process.env.API_BASE_URL
-      : 'http://localhost:4200/'
-    // See https://github.com/nuxt-community/axios-module#options
-  },
-
   /*
   ** Build configuration
   */
