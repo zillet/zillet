@@ -15,7 +15,7 @@ export const IMPORT_ACCOUNT = (state, result) => {
 export const BALANCE = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
 };
-export const EMPTY_WALLET = (state, result) => {
+export const EMPTY_WALLET = state => {
   state.wallet = {
     address: '',
     privateKey: '',
@@ -23,4 +23,8 @@ export const EMPTY_WALLET = (state, result) => {
     balance: '',
     nonce: ''
   };
+};
+
+export const FETCHED_PRICE = (state, prices) => {
+  state.prices = prices;
 };

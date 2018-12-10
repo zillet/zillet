@@ -15,7 +15,8 @@ const createStore = () =>
         balance: '',
         nonce: ''
       },
-      errorMsg: ''
+      errorMsg: '',
+      prices: {}
     },
     actions,
     mutations,

@@ -37,6 +37,19 @@
           Refresh
         </span>
       </p>
+      <label
+        class="block tracking-wide text-grey-darker text-sm mb-4" >
+        Equivalent Balance
+      </label>
+      <div class="flex flex-wrap -mx-2">
+        <div 
+          v-for="(price, symbol) in getPrices" 
+          :key="symbol" 
+          class="w-1/2 px-2 text-grey-darkest mb-4">
+          <span class="tracking-wide text-sm">{{ symbol }}:</span> 
+          <span class="font-semibold">{{ equivalentBal(symbol, price) }} </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -45,10 +58,18 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'AddressDetails',
   computed: {
-    ...mapGetters(['getAccount'])
+    ...mapGetters(['getAccount', 'getPrices'])
   },
   methods: {
-    ...mapActions(['getBalance'])
+    ...mapActions(['getBalance']),
+    equivalentBal(symbol, price) {
+      const bal = price * this.getAccount.balance;
+      if (symbol === 'ETH' || symbol === 'BTC') {
+        return bal && bal.toFixed(3);
+      } else {
+        return bal && bal.toFixed(2);
+      }
+    }
   }
 };
 </script>

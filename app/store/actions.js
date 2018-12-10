@@ -6,14 +6,35 @@ function setData(method, params) {
     params: params
   };
 }
-
+export async function nuxtClientInit({ dispatch }, app) {
+  await dispatch('getPrice', app.env.price);
+}
+export function getPrice({ commit }, { url, token }) {
+  return new Promise((resolve, reject) => {
+    this.$axios
+      .$get(url, {
+        params: {
+          fsym: 'ZIL',
+          tsyms: 'BTC,ETH,USD,EUR,INR,',
+          api_key: token
+        }
+      })
+      .then(resData => {
+        commit('FETCHED_PRICE', resData);
+        resolve(resData);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+}
 export function checkNetworkStatus({}, url) {
   return new Promise((resolve, reject) => {
     let data = JSON.stringify(setData('GetNetworkId', ['']));
     this.$axios
       .$post(url, data)
-      .then(res => {
-        resolve(res);
+      .then(resData => {
+        resolve(resData);
       })
       .catch(err => {
         reject(err);
@@ -49,10 +70,10 @@ export function getBalance({ commit }, address) {
     let data = JSON.stringify(setData('GetBalance', [address]));
     this.$axios
       .$post('', data)
-      .then(res => {
-        commit('BALANCE', res.result);
+      .then(resData => {
+        commit('BALANCE', resData.result);
         commit('SUCCESS');
-        resolve(res);
+        resolve(resData);
       })
       .catch(err => {
         commit('ERROR');
@@ -66,10 +87,10 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
     let data = JSON.stringify(setData('CreateTransaction', [tx]));
     this.$axios
       .$post('', data)
-      .then(res => {
+      .then(resData => {
         commit('SUCCESS');
         dispatch('getBalance', state.wallet.address);
-        resolve(res);
+        resolve(resData);
       })
       .catch(err => {
         commit('ERROR');

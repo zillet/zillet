@@ -21,7 +21,12 @@ export default {
       }
     ]
   },
-
+  env: {
+    price: {
+      url: 'https://min-api.cryptocompare.com/data/price',
+      token: '4ea3a76a9d52024ae367e5765e9c1932cb2fea1cc1b09cb98f3222edcaa53462'
+    }
+  },
   /*
   ** Customize the progress-bar color
   */
@@ -46,6 +51,7 @@ export default {
     '@/plugins/vue-zilliqa',
     '@/plugins/axios',
     '@/plugins/vue-notify',
+    { src: '~/plugins/nuxt-client-init.js', ssr: false },
     { src: '@/plugins/zilliqa', ssr: false }
   ],
 
