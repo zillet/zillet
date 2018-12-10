@@ -5,9 +5,9 @@
   "author": "man15h",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=8181 nuxt",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=80 nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint"
