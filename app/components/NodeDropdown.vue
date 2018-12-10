@@ -77,11 +77,6 @@ export default {
   beforeMount() {
     try {
       const node = JSON.parse(localStorage.getItem('_selected_node'));
-      console.log(
-        !this.nodes.find(item => {
-          return item.url === node.url;
-        })
-      );
       if (
         !this.nodes.find(item => {
           return item.url === node.url;

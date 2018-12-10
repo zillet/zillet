@@ -17,7 +17,20 @@
       :valid="validateAmount"
       class="mb-4"
       label="Amount to Send"
-      placeholder="Enter amount here"/>
+      placeholder="Enter amount here">
+      <div 
+        v-if="isOnline" 
+        class="flex -mr-px">
+        <button 
+          class="flex items-center leading-normal 
+                bg-white rounded rounded-l-none h-12 px-3
+                font-semibold
+                border border-grey-lighter text-grey-darker text-sm"
+          @click="transaction.amount=getAccount.balance">
+          <p>Entire Amount</p>
+        </button>
+      </div>
+    </z-input>
     <div v-if="!isAdvance">
       <div class="flex -mx-2">
         <div class="w-1/2 px-2">
@@ -39,6 +52,15 @@
             placeholder="1"/>
         </div>
       </div>
+    </div>
+    <div v-if="!isOnline">
+      <z-input
+        v-model="transaction.nonce"
+        :hide="false"
+        :valid="$validation.isNumber(transaction.nonce)"
+        class="mb-4"
+        label="Nonce"
+        placeholder="Enter nonce here"/>
     </div>
     <z-button 
       v-show="!isSigned" 
@@ -66,6 +88,14 @@
       <span class="text-base text-grey-darkest">
         {{ `0x${tranxId}` }}
       </span>
+      <a 
+        :href="`https://explorer.zilliqa.com/transactions/${tranxId}`" 
+        target="_blank">
+        <z-button 
+          class="mt-8">
+          Check on Explorer
+        </z-button>
+      </a>
       <z-button 
         class="mt-8"
         @click="isBroadcast=false;">
@@ -89,7 +119,8 @@ export default {
         address: '',
         amount: '',
         gasLimit: 10,
-        gasPrice: 1
+        gasPrice: 1,
+        nonce: ''
       },
       isAdvance: false,
       signedTx: {},
@@ -99,7 +130,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getAccount']),
+    ...mapGetters(['getAccount', 'isOnline']),
     stringifySignedTx() {
       return JSON.stringify(this.signedTx);
     },
@@ -144,11 +175,18 @@ export default {
           });
         }
       }
-      await this.getBalance(this.getAccount.address);
-      if (this.transaction.amount > this.getAccount.balance) {
-        return this.$notify({
-          message: `Amount can not be greater than your balance`,
-          type: 'danger'
+      if (this.isOnline) {
+        await this.getBalance(this.getAccount.address);
+        if (this.transaction.amount > this.getAccount.balance) {
+          return this.$notify({
+            message: `Amount can not be greater than your balance`,
+            type: 'danger'
+          });
+        }
+      } else {
+        this.$notify({
+          message: `You are offline, Manual enter nonce else connect to network`,
+          type: 'warning'
         });
       }
       let address;
@@ -159,7 +197,9 @@ export default {
       }
       const tx = {
         version: 0,
-        nonce: this.getAccount.nonce + 1,
+        nonce: this.transaction.nonce
+          ? this.transaction.nonce
+          : this.getAccount.nonce + 1,
         pubKey: this.getAccount.publicKey,
         toAddr: address,
         amount: new BN(this.transaction.amount),

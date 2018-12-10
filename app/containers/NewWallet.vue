@@ -65,7 +65,6 @@
         :disabled="loading"
         class="w-64"
         @click="print">
-       
         <p>Print Wallet</p>
       </z-button>
       <p class="text-sm text-grey-darker mb-4">
