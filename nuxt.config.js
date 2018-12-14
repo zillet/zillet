@@ -1,10 +1,6 @@
 export default {
   mode: 'spa',
   srcDir: 'app/',
-
-  /*
-  ** Headers of the page
-  */
   head: {
     title: 'Zilliqa Wallet',
     meta: [
@@ -27,14 +23,7 @@ export default {
       token: '4ea3a76a9d52024ae367e5765e9c1932cb2fea1cc1b09cb98f3222edcaa53462'
     }
   },
-  /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#fff' },
-
-  /*
-  ** Global CSS
-  */
+  loading: { color: '#4dc0b5' },
   css: [
     '~/assets/css/tailwind.css',
     {
@@ -42,10 +31,6 @@ export default {
       lang: 'scss'
     }
   ],
-
-  /*
-  ** Plugins to load before mounting the App
-  */
   plugins: [
     '@/plugins/vue-qrcode',
     '@/plugins/vue-zilliqa',
@@ -55,16 +40,7 @@ export default {
     { src: '@/plugins/zilliqa', ssr: false }
   ],
 
-  /*
-  ** Nuxt.js modules
-  */
-  modules: [
-    // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios'
-  ],
-  /*
-  ** Axios module configuration
-  */
+  modules: ['@nuxtjs/axios'],
   axios: {
     baseURL: process.env.API_BASE_URL
       ? process.env.API_BASE_URL
@@ -72,15 +48,8 @@ export default {
     // See https://github.com/nuxt-community/axios-module#options
   },
 
-  /*
-  ** Build configuration
-  */
   build: {
-    /*
-    ** You can extend webpack config here
-    */
     extend(config, ctx) {
-      // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',

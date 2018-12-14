@@ -28,7 +28,7 @@
         </span>
         <br >
         <div class="footer">
-          <nuxt-link 
+          <!-- <nuxt-link 
             :to="{name: 'index'}" 
             class="text-teal text-sm">
             How to create a wallet
@@ -37,7 +37,7 @@
           &nbsp;
           ·  
           &nbsp;
-          &nbsp;
+          &nbsp; -->
           <nuxt-link 
             :to="{name: 'access-wallet'}" 
             class="text-teal text-sm">
@@ -112,7 +112,7 @@ export default {
         });
       } else {
         this.loading = true;
-        this.privateKey = this.$zil.crypto.generatePrivateKey();
+        this.privateKey = this.$zil.crypto.schnorr.generatePrivateKey();
         this.address = this.$zil.crypto.getAddressFromPrivateKey(
           this.privateKey
         );
