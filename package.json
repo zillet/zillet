@@ -1,6 +1,6 @@
 {
   "name": "zil-wallet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Zilliqa wallet powered by Nuxt",
   "author": "man15h",
   "private": true,
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.0.0",
-    "@zilliqa-js/zilliqa": "^0.2.7",
+    "@zilliqa-js/zilliqa": "^0.2.10",
     "cross-env": "^5.2.0",
     "ethereum-blockies": "^0.1.1",
     "nuxt": "^2.3.0",
