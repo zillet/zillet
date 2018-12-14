@@ -49,7 +49,7 @@
         </p>
         <span class="text-sm text-grey-darkest">
           If you must, please  <u>double-check the URL & SSL cert</u>. 
-          It should say <code>https://wallet.zilliqa.com</code> in your URL bar.
+          For additional security, <b>turn off your internet connection</b> prior to accessing/ creating a wallet.
         </span>
       </div>
       <div 
@@ -84,7 +84,7 @@
         </z-button>
       </div>
       <div class="footer">
-        <nuxt-link 
+        <!-- <nuxt-link 
           :to="{name: 'index'}" 
           class="text-teal text-sm">
           Getting Started
@@ -93,7 +93,7 @@
         &nbsp;
         ·  
         &nbsp;
-        &nbsp;
+        &nbsp; -->
         <nuxt-link 
           :to="{name: 'index'}" 
           class="text-teal text-sm">
