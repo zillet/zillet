@@ -6,7 +6,11 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'UI/UX Focused light Zilliqa Wallet'
+      }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -33,7 +37,6 @@ export default {
     '@/plugins/vue-notify',
     { src: '@/plugins/zilliqa', ssr: false }
   ],
-
   modules: ['@nuxtjs/axios'],
   axios: {
     baseURL: process.env.API_BASE_URL
@@ -41,7 +44,6 @@ export default {
       : 'http://localhost:4200/'
     // See https://github.com/nuxt-community/axios-module#options
   },
-
   build: {
     extend(config, ctx) {
       if (ctx.isDev && ctx.isClient) {
@@ -52,9 +54,6 @@ export default {
           exclude: /(node_modules)/
         });
       }
-      config.node = {
-        fs: 'empty'
-      };
     }
   }
 };

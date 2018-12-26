@@ -125,10 +125,10 @@ export default {
           // await this.downloadWalletJson(address, result);
           this.loading = false;
           this.downloadModal = true;
-          this.passphrase = false;
+          this.passphrase = '';
         } catch (error) {
           this.loading = false;
-          this.passphrase = false;
+          this.passphrase = '';
         }
       }
     },

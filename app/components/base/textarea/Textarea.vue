@@ -29,7 +29,7 @@
 </template>
 <script>
 export default {
-  name: 'ZTextArea',
+  name: 'ZTextarea',
   props: {
     label: {
       type: String,

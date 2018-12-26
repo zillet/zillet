@@ -65,7 +65,7 @@ export default {
       nodes: [
         {
           name: 'Zilliqa V3',
-          url: 'https://testnetv3a-api.aws.zilliqa.com/'
+          url: ' https://api.zilliqa.com'
         },
         {
           name: 'Zilliqa',
