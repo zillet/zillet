@@ -50,7 +50,7 @@
       <h3 class="header modal"> 
         Save Your Private Key
       </h3>
-      <z-text-area 
+      <z-textarea 
         :value="privateKey" 
         readonly/>
       <z-button 

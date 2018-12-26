@@ -69,7 +69,7 @@
       Generate Transaction
     </z-button>
     <div v-show="isSigned">
-      <z-text-area
+      <z-textarea
         v-show="isSigned"
         :value="stringifySignedTx"
         readonly

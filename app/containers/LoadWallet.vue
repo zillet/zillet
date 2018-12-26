@@ -55,7 +55,7 @@
       <div 
         v-if="walletType==='json'" 
         class="max-w-md mx-auto">
-        <z-input-button
+        <z-upload
           :name="fileName"
           @change="fileChanges"/>
         <div 
