@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  name: 'ZInputButton',
+  name: 'ZUpload',
   props: {
     name: {
       type: String,

@@ -1,0 +1,4 @@
+/app/assets/**
+/app/static/**
+test.js
+!.eslintrc.js
