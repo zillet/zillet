@@ -1,4 +1,4 @@
-# zil-wallet
+# Zilliqa Wallet
 
 > Zilliqa wallet powered by Nuxt
 
@@ -16,11 +16,12 @@ $ npm run dev #  yarn run dev
 $ npm run build # yarn run build
 $ npm start # yarn start
 ```
+
 ## Docker
 
 ```
-$ docker build -t "zil-wallet" .  # build docker image
-$ docker run --name zil-wallet  -d -p 80:80  zil-wallet # run docker image at port 3000
+$ docker build -t "zilliqa-wallet" .  # build docker image
+$ docker run --name zilliqa-wallet  -d -p 80:80  zilliqa-wallet # run docker image at port 80
 ```
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).

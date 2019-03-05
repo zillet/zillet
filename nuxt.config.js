@@ -9,7 +9,7 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'UI/UX Focused light Zilliqa Wallet'
+        content: 'Lightweight UX focused Zilliqa wallet'
       }
     ],
     link: [
@@ -21,28 +21,53 @@ export default {
       }
     ]
   },
-
+  workbox: {
+    runtimeCaching: [
+      {
+        urlPattern: 'https://fonts.googleapis.com/.*',
+        handler: 'cacheFirst',
+        method: 'GET',
+        strategyOptions: { cacheableResponse: { statuses: [0, 200] } }
+      },
+      {
+        urlPattern: 'https://fonts.gstatic.com/.*',
+        handler: 'cacheFirst',
+        method: 'GET',
+        strategyOptions: { cacheableResponse: { statuses: [0, 200] } }
+      }
+    ]
+  },
+  manifest: {
+    name: 'Send And Recieve Zilliqa',
+    short_name: 'Zilliqa Wallet',
+    lang: 'en',
+    description: 'Lightweight UX focused Zilliqa wallet',
+    theme_color: '#00c2b6',
+    background_color: '#2a2f39',
+    scope: '/',
+    start_url: '/',
+    display: 'standalone'
+  },
   loading: { color: '#fff' },
   css: [
-    '~/assets/css/tailwind.css',
     {
       src: '~/assets/css/main.scss',
       lang: 'scss'
     }
   ],
   plugins: [
-    '@/plugins/vue-qrcode',
-    '@/plugins/vue-zilliqa',
+    '@/plugins/qrcode',
+    '@/plugins/zilliqaComponenets',
     '@/plugins/axios',
-    '@/plugins/vue-notify',
-    { src: '@/plugins/zilliqa', ssr: false }
+    '@/plugins/notify',
+    '@/plugins/zilliqa',
+    '@/plugins/nuxtClientInit'
   ],
-  modules: ['@nuxtjs/axios'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa'],
   axios: {
     baseURL: process.env.API_BASE_URL
       ? process.env.API_BASE_URL
       : 'http://localhost:4200/'
-    // See https://github.com/nuxt-community/axios-module#options
   },
   build: {
     extend(config, ctx) {

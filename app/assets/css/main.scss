@@ -1,16 +1,8 @@
-@import 'notify.scss';
-
-body, html, *{
-  font-family: 'Source Sans Pro', sans-serif;
-  outline: none;
-}
-body{
-  background: #2c2f38;
-}
-a{
-  text-decoration: unset;
-}
-
+@import 'tailwind';
+@import './helpers/variables';
+@import './base/resets';
+@import './components/button';
+@import './components/notification';
 .container{
   @apply justify-start items-center text-center mx-auto flex flex-col px-4;
 }

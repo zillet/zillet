@@ -9,7 +9,7 @@
 
       <div 
         :class="`bg-grey h-2 w-2 mr-2 rounded-full inline-block align-middle ${connectionStatusClass}`"/>
-      {{ selected.name }} 
+      {{ selectedNode.name }} 
       <i class="caret inline-block align-middle ml-2"/>
     </a>
     <!-- TODO add transition -->
@@ -20,7 +20,7 @@
         <div 
           v-for="node in nodes" 
           :key="node.name"
-          :class="{'bg-grey-lighter':selected.name === node.name}"
+          :class="{'bg-grey-lighter':selectedNode.name === node.name}"
           class="flex items-start text-left px-4 py-2 cursor-pointer hover:bg-grey-lightest"
           @click="changeNode(node)">
           <!-- <img 
@@ -49,8 +49,9 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import AddCustomNode from '@/components/AddCustomNode';
+import config from '@/config';
 export default {
   name: 'ZDropdown',
   components: {
@@ -59,47 +60,28 @@ export default {
   data() {
     return {
       showDropDown: false,
-      selected: {},
       connectionStatusClass: '',
-      isNewNode: false,
-      nodes: [
-        {
-          name: 'Zilliqa V3',
-          url: ' https://api.zilliqa.com'
-        },
-        {
-          name: 'Zilliqa',
-          url: 'https://api-scilla.zilliqa.com/'
-        }
-      ]
+      isNewNode: false
     };
   },
+  computed: {
+    ...mapState({
+      selectedNode: state => state.selectedNode,
+      nodes: state => state.nodes
+    })
+  },
   beforeMount() {
-    try {
-      const node = JSON.parse(localStorage.getItem('_selected_node'));
-      if (
-        !this.nodes.find(item => {
-          return item.url === node.url;
-        })
-      ) {
-        this.nodes.push(node);
-      }
-      if (node && node.name) this.selected = node;
-      else this.selected = this.nodes[0];
-    } catch (error) {
-      this.selected = this.nodes[0];
-    }
-    this.changeNode(this.selected);
+    this.changeNode(this.selectedNode);
   },
   methods: {
-    ...mapActions(['checkNetworkStatus']),
+    ...mapActions(['checkNetworkStatus', 'selectNode']),
     async changeNode(node) {
-      this.selected = node;
       this.connectionStatusClass = 'bg-yellow-dark';
       this.showDropDown = false;
       if (await this.checkConnection(node.url)) {
         await localStorage.setItem('_selected_node', JSON.stringify(node));
         this.isNewNode = false;
+        this.selectNode(node);
       }
     },
     async checkConnection(url) {

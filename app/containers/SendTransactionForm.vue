@@ -15,8 +15,7 @@
       v-model="transaction.amount"
       :hide="false"
       :valid="validateAmount"
-      class="mb-4"
-      label="Amount to Send"
+      label="Amount to Send (ZILs)"
       placeholder="Enter amount here">
       <div 
         v-if="isOnline" 
@@ -26,12 +25,37 @@
                 bg-white rounded rounded-l-none h-12 px-3
                 font-semibold
                 border border-grey-lighter text-grey-darker text-sm"
-          @click="transaction.amount=getAccount.balance">
+          @click="fullAmount">
           <p>Entire Amount</p>
         </button>
       </div>
     </z-input>
-    <div v-if="!isAdvance">
+    <div class="flex items-center justify-between">
+      <div class="mb-4" >
+        <div
+          class="text-sm text-left inline-block
+          align-middle text-grey-darker font-normal 
+          cursor-pointer hover:text-teal">
+          Fee: 
+          <span class="text-md font-semibold">
+            {{ transactionFee }}
+          </span> 
+          ZIL
+        </div>
+      </div>
+      <div 
+        class="mb-4" 
+        @click="isAdvance=!isAdvance">
+        <span
+          class="text-sm italic text-left inline-block 
+        align-middle text-grey-darker font-normal 
+        cursor-pointer hover:text-teal"
+          @click="getBalance(getAccount.address)">
+          {{ isAdvance ? '-': '+' }} Advance
+        </span>
+      </div>
+    </div>
+    <div v-if="isAdvance">
       <div class="flex -mx-2">
         <div class="w-1/2 px-2">
           <z-input
@@ -89,7 +113,7 @@
         {{ `0x${tranxId}` }}
       </span>
       <a 
-        :href="`https://explorer.zilliqa.com/transactions/${tranxId}`" 
+        :href="`${selectedNode.explorer}/transactions/${tranxId}`" 
         target="_blank">
         <z-button 
           class="mt-8">
@@ -105,7 +129,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
   ['gasLimit', 'Gas Limit should be a number'],
@@ -118,8 +142,8 @@ export default {
       transaction: {
         address: '',
         amount: '',
-        gasLimit: 10,
-        gasPrice: 1,
+        gasLimit: 1,
+        gasPrice: 100,
         nonce: ''
       },
       isAdvance: false,
@@ -131,6 +155,10 @@ export default {
   },
   computed: {
     ...mapGetters(['getAccount', 'isOnline']),
+    ...mapState({
+      gasPrice: state => state.minimumGasPrice,
+      selectedNode: state => state.selectedNode
+    }),
     stringifySignedTx() {
       return JSON.stringify(this.signedTx);
     },
@@ -140,6 +168,13 @@ export default {
         parseFloat(this.transaction.amount) <
           parseFloat(this.getAccount.balance)
       );
+    },
+    transactionFee() {
+      return +(
+        this.transaction.gasLimit *
+        this.transaction.gasPrice *
+        Math.pow(10, -12)
+      ).toFixed(12);
     }
   },
   watch: {
@@ -151,12 +186,19 @@ export default {
         }
       },
       deep: true
+    },
+    gasPrice: {
+      handler(value) {
+        this.transaction.gasPrice = value;
+      },
+      immediate: true
     }
   },
   methods: {
     ...mapActions(['getBalance', 'sendTransaction']),
     async sign() {
-      const { BN, Long, validation } = this.$zil.util;
+      const { BN, Long, validation, units } = this.$zil.util;
+      const amount = this.transaction.amount * Math.pow(10, 12);
       if (!validation.isAddress(this.transaction.address)) {
         return this.$notify({
           message: `Reciever's address is invalid`,
@@ -177,9 +219,12 @@ export default {
       }
       if (this.isOnline) {
         await this.getBalance(this.getAccount.address);
-        if (this.transaction.amount > this.getAccount.balance) {
+        if (
+          Number(amount) + Number(this.transactionFee) >
+          Number(this.getAccount.balance)
+        ) {
           return this.$notify({
-            message: `Amount can not be greater than your balance`,
+            message: `Amount+Fee can not be greater than your balance`,
             type: 'danger'
           });
         }
@@ -189,20 +234,16 @@ export default {
           type: 'warning'
         });
       }
-      let address;
-      if (this.transaction.address && this.transaction.address.length === 42) {
-        address = this.transaction.address.substring(2);
-      } else {
-        address = this.transaction.address;
-      }
       const tx = {
-        version: 0,
+        version: 21823489,
         nonce: this.transaction.nonce
           ? this.transaction.nonce
           : this.getAccount.nonce + 1,
         pubKey: this.getAccount.publicKey,
-        toAddr: address,
-        amount: new BN(this.transaction.amount),
+        toAddr: this.$zil.crypto
+          .toChecksumAddress(this.getAccount.address)
+          .slice(2),
+        amount: new BN(amount),
         gasPrice: new BN(this.transaction.gasPrice),
         gasLimit: Long.fromNumber(this.transaction.gasLimit)
       };
@@ -227,10 +268,12 @@ export default {
       try {
         const { result } = await this.sendTransaction(this.signedTx);
         this.transaction = {
-          address: '',
-          amount: '',
-          gasLimit: 10,
-          gasPrice: 1
+          ...this.transaction,
+          ...{
+            address: '',
+            amount: '',
+            nonce: ''
+          }
         };
         if ('Error' in result) {
           return this.$notify({
@@ -253,6 +296,13 @@ export default {
           type: 'danger'
         });
       }
+    },
+    fullAmount() {
+      const { units } = this.$zil.util;
+      this.transaction.amount = units.toQa(
+        String(this.getAccount.balance),
+        units.Units.Zil
+      );
     }
   }
 };

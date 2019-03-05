@@ -15,6 +15,12 @@ export const IMPORT_ACCOUNT = (state, result) => {
 export const BALANCE = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
 };
+export const SELECT_NODE = (state, node) => {
+  state.selectedNode = { ...state.selectedNode, ...node };
+};
+export const MIN_GAS_PRICE = (state, price) => {
+  state.minimumGasPrice = price;
+};
 export const EMPTY_WALLET = (state, result) => {
   state.wallet = {
     address: '',

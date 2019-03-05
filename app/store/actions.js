@@ -7,6 +7,20 @@ function setData(method, params) {
   };
 }
 
+export function nuxtClientInit({ commit, dispatch }) {
+  dispatch('getMinimumGasPrice');
+  try {
+    const node = JSON.parse(localStorage.getItem('_selected_node'));
+    if (node) {
+      commit('SELECT_NODE', node);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+export function selectNode({ commit }, node) {
+  commit('SELECT_NODE', node);
+}
 export function checkNetworkStatus({}, url) {
   return new Promise((resolve, reject) => {
     let data = JSON.stringify(setData('GetNetworkId', ['']));
@@ -50,7 +64,8 @@ export function getBalance({ commit }, address) {
     this.$axios
       .$post('', data)
       .then(res => {
-        commit('BALANCE', res.result);
+        const balance = res.result > 0 ? res.result : 0;
+        commit('BALANCE', balance);
         commit('SUCCESS');
         resolve(res);
       })
@@ -73,6 +88,21 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
       })
       .catch(err => {
         commit('ERROR');
+        reject(err);
+      });
+  });
+}
+export function getMinimumGasPrice({ commit }) {
+  return new Promise((resolve, reject) => {
+    commit('LOADING');
+    const data = JSON.stringify(setData('GetMinimumGasPrice', ['']));
+    this.$axios
+      .$post('', data)
+      .then(res => {
+        commit('MIN_GAS_PRICE', res.result);
+        resolve(res);
+      })
+      .catch(err => {
         reject(err);
       });
   });

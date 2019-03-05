@@ -1,5 +1,7 @@
 FROM node:8-slim
 
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+
 RUN set -ex \
 	&& mkdir -p /data/app \
 	&& apt-get update \
@@ -7,7 +9,7 @@ RUN set -ex \
 
 ADD app /data/app
 
-COPY package.json nuxt.config.js postcss.config.js tailwind.js /data/
+COPY package.json yarn.lock nuxt.config.js postcss.config.js tailwind.js /data/
 
 WORKDIR /data
 

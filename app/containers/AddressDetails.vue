@@ -29,7 +29,7 @@
       <p
         class="leading-normal font-bold text-xl
         text-grey-darkest mb-4 break-words">
-        {{ getAccount.balance }} ZIL
+        {{ getAccount.balance/Math.pow(10, multiplier) }} ZIL
         <span
           class="text-xs italic text-left inline-block
           align-middle text-grey-darker font-normal underline cursor-pointer hover:text-teal"
@@ -42,8 +42,15 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import config from '@/config';
+
 export default {
   name: 'AddressDetails',
+  data() {
+    return {
+      multiplier: config.MULTIPLIER
+    };
+  },
   computed: {
     ...mapGetters(['getAccount'])
   },
