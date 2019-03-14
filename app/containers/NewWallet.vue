@@ -59,6 +59,10 @@
       <p class="text-sm text-grey-darker mb-4">
         <b>Make a backup!</b> Secure it like the millions of dollars it may one day be worth.
       </p>
+      <z-alert type="danger">
+        This is Zilliqa wallet. Do not send any 
+        ERC-20 ZIL tokens to this wallet.
+      </z-alert>
       <z-button 
         :disabled="!isKeyDownloaded"
         class="w-full"

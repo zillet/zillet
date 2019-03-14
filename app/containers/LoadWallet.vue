@@ -66,6 +66,10 @@
             placeholder="Type your password"
             label="Your wallet is encrypted. Good! Please enter the password."
           />
+          <z-alert type="danger">
+            This is Zilliqa wallet. Do not send any 
+            ERC-20 ZIL tokens to this wallet.
+          </z-alert>
           <z-button @click="unlock()">
             Unlock wallet
           </z-button>
@@ -79,6 +83,10 @@
           placeholder="Enter your private key here"
           label="Private Key"
         />
+        <z-alert type="warning">
+          This is Zilliqa wallet. Do not send any 
+          ERC-20 ZIL tokens to this wallet.
+        </z-alert>
         <z-button @click="validateKey()">
           Load wallet
         </z-button>
@@ -96,7 +104,6 @@
 <script>
 import { mapActions } from 'vuex';
 import Footer from '@/components/Footer';
-
 export default {
   name: 'LoadWallet',
   components: {

@@ -26,8 +26,10 @@
     "@zilliqa-js/zilliqa": "^0.5.2",
     "cross-env": "^5.2.0",
     "ethereum-blockies": "^0.1.1",
+    "eva-icons": "^1.1.1",
     "nuxt": "^2.4.5",
     "qrcode": "^1.3.2",
+    "vue-clipboard2": "^0.3.0",
     "vue-notifyjs": "^0.4.3"
   },
   "devDependencies": {

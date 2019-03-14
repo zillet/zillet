@@ -11,6 +11,11 @@
       class="mb-4"
       label="To address"
       placeholder="Enter address here"/>
+    <!-- <z-alert 
+      type="danger" 
+      class="mb-6">
+      Do not send funds to ERC-20 ZIL address.
+    </z-alert> -->
     <z-input
       v-model="transaction.amount"
       :hide="false"
@@ -35,9 +40,9 @@
         <div
           class="text-sm text-left inline-block
           align-middle text-grey-darker font-normal 
-          cursor-pointer hover:text-teal">
+          cursor-pointer hover:text-teal font-semibold">
           Fee: 
-          <span class="text-md font-semibold">
+          <span class="text-md font-bold">
             {{ transactionFee }}
           </span> 
           ZIL
@@ -49,7 +54,7 @@
         <span
           class="text-sm italic text-left inline-block 
         align-middle text-grey-darker font-normal 
-        cursor-pointer hover:text-teal"
+        cursor-pointer hover:text-teal font-semibold"
           @click="getBalance(getAccount.address)">
           {{ isAdvance ? '-': '+' }} Advance
         </span>

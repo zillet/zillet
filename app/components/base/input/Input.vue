@@ -29,16 +29,9 @@
             bg-white rounded rounded-l-none h-12 px-3
             border border-grey-lighter text-grey-dark text-sm"
             @click="isVisible=!isVisible">
-            <img
-              v-if="!isVisible"
-              src="@/assets/icons/visible.svg"
-              height="24"
-              width="24" >
-            <img
-              v-else
-              src="@/assets/icons/invisible.svg"
-              height="24"
-              width="24" >
+            <i 
+              :class="isVisible ? 'eva-eye-off-outline' : 'eva-eye-outline'" 
+              class="eva"/>
           </button>
         </div>
         <slot/>
@@ -83,3 +76,9 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+i.eva {
+  font-size: 1.6rem;
+  @apply text-grey-darkest;
+}
+</style>

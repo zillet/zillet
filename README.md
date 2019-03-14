@@ -1,6 +1,6 @@
 # Zilliqa Wallet
 
-A UI/UX focused minimal wallet. It is work in progress.
+UI/UX focused minimal wallet. It is work in progress.
 
 ## Build Setup
 
@@ -18,14 +18,17 @@ $ npm start # yarn start
 
 ## Docker
 
-``` bash
+```
 $ docker build -t "zilliqa-wallet" .  # build docker image
 $ docker run --name zilliqa-wallet  -d -p 80:80  zilliqa-wallet # run docker image at port 80
 ```
 
 ### Todo
-
 [x] Simple user flow
-[x] Offline support
+[x] Offline signing
 [ ] Contract interaction
+[ ] Transaction history
 [ ] Multiple account management
+
+## License
+[MIT](LICENSE) license.
