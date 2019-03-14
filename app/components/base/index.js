@@ -1,4 +1,4 @@
-import Alert from './Alert';
+import Alert from './alert';
 import Blockies from './blockies';
 import Button from './button';
 import Icon from './icon';
