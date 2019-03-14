@@ -249,7 +249,7 @@ export default {
           : this.getAccount.nonce + 1,
         pubKey: this.getAccount.publicKey,
         toAddr: this.$zil.crypto
-          .toChecksumAddress(this.getAccount.address)
+          .toChecksumAddress(this.transaction.address)
           .slice(2),
         amount: new BN(amount),
         gasPrice: new BN(this.transaction.gasPrice),
