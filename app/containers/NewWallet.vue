@@ -2,7 +2,7 @@
   <div class="max-w-xl w-full">
     <div 
       class="card">
-      <h3 class="header"> 
+      <h3 class="header mb-8"> 
         Generate your own Zilliqa wallet instantly!
       </h3>
       <z-input
@@ -11,7 +11,7 @@
         class="w-full mx-auto max-w-md"
         label="Enter a password"
         placeholder="Do not forget this password"/>
-      <p class="text-grey-darker max-w-md mx-auto -mt-2 mb-4 text-xs italic text-left">
+      <p class="text-grey-darker max-w-md mx-auto -mt-2 mb-4 text-xs italic text-left font-semibold">
         Password should be atleast 8 chracter long
       </p>
       <z-button 
@@ -27,29 +27,12 @@
           <b>You will need this password + your private key to unlock your wallet.</b>
         </span>
         <br >
-        <div class="footer">
-          <!-- <nuxt-link 
-            :to="{name: 'index'}" 
-            class="text-teal text-sm">
-            How to create a wallet
-          </nuxt-link>
-          &nbsp;
-          &nbsp;
-          ·  
-          &nbsp;
-          &nbsp; -->
-          <nuxt-link 
-            :to="{name: 'access-wallet'}" 
-            class="text-teal text-sm">
-            Already have wallet
-          </nuxt-link>
-        </div>
+        <Footer />
       </div>
     </div>
-    <z-modal v-if="downloadModal">   
-      <h3 class="header modal"> 
-        Save Your Private Key
-      </h3>
+    <z-modal 
+      v-if="downloadModal" 
+      title=" Save Your Private Key">   
       <z-textarea 
         :value="privateKey" 
         readonly/>
@@ -88,9 +71,13 @@
 </template>
 <script>
 import { printWallet } from '@/utils/printWallet';
+import Footer from '@/components/Footer';
 
 export default {
   name: 'NewWallet',
+  components: {
+    Footer
+  },
   data() {
     return {
       passphrase: '',

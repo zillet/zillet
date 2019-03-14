@@ -2,10 +2,10 @@
   <div class="max-w-xl w-full">
     <div 
       class="card">
-      <h3 class="header"> 
+      <h3 class="header mb-8"> 
         How would you like to access your wallet?
       </h3>
-      <div class="radio-btn-wrapper">
+      <div class="radio-btn-wrapper ">
         <div 
           aria-flowto="aria5" 
           class="flex flex-row px-4" >
@@ -83,33 +83,25 @@
           Load wallet
         </z-button>
       </div>
-      <div class="footer">
-        <!-- <nuxt-link 
-          :to="{name: 'index'}" 
-          class="text-teal text-sm">
-          Getting Started
-        </nuxt-link>
-        &nbsp;
-        &nbsp;
-        ·  
-        &nbsp;
-        &nbsp; -->
+      <Footer>
         <nuxt-link 
           :to="{name: 'index'}" 
-          class="text-teal text-sm">
-          Do not have an wallet ?
+          class="text-teal text-sm font-semibold">
+          Create New wallet
         </nuxt-link>
-        <a 
-          class="text-teal" 
-          href="/access-wallet"/>
-      </div>    
+      </Footer>
     </div>
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex';
+import Footer from '@/components/Footer';
+
 export default {
   name: 'LoadWallet',
+  components: {
+    Footer
+  },
   data() {
     return {
       isFile: false,
@@ -204,7 +196,7 @@ export default {
 </script>
 <style scoped>
 .radio-btn-wrapper {
-  @apply flex flex-wrap mb-1 justify-center;
+  @apply flex flex-wrap mb-1 justify-center font-semibold;
 }
 .subheading {
   @apply text-grey-darkest mb-8 text-2xl;

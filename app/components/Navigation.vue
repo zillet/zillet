@@ -19,7 +19,7 @@
       <div class="text-sm lg:flex-grow nav-tl-wrapper">
         <node-dropdown/>
       </div>
-      <div class="text-sm lg:flex-grow nav-bl-wrapper">
+      <div class="text-sm lg:flex-grow nav-bl-wrapper font-semibold">
         <nuxt-link 
           :to="{name: 'index'}"
           :class="{'text-teal':$route.name==='index'}" 

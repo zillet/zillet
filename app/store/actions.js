@@ -64,8 +64,8 @@ export function getBalance({ commit }, address) {
     this.$axios
       .$post('', data)
       .then(res => {
-        const balance = res.result > 0 ? res.result : 0;
-        commit('BALANCE', balance);
+        const result = res.result ? res.result : { balance: 0, nonce: 0 };
+        commit('BALANCE', result);
         commit('SUCCESS');
         resolve(res);
       })

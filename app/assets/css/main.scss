@@ -1,28 +1,7 @@
 @import 'tailwind';
-@import './helpers/variables';
-@import './base/resets';
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'layout';
 @import './components/button';
 @import './components/notification';
-.container{
-  @apply justify-start items-center text-center mx-auto flex flex-col px-4;
-}
-.header{
-  @apply text-grey-darkest text-xl align-middle mb-12;
-}
-.card{
-  @apply rounded overflow-hidden shadow p-8 w-full bg-white;
-}
-.footer {
-  @apply flex flex-row justify-center mt-6;
-}
-.example-print {
-  display: none !important;
-}
-@media print {
-  .example-screen {
-    display: none !important;
-  }
-  .example-print {
-    display: block !important;
-  }
-}

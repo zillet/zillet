@@ -15,7 +15,7 @@
           :class="{'rounded-r-none': hide, 'focus:border-red': !valid, 'focus:border-green': valid && value}"
           class="appearance-none flex-shrink flex-grow flex-auto
             leading-normal w-px flex-1 h-12
-            relative bg-grey-lighter
+            relative bg-grey-lighter font-semibold
             text-grey-darkest border border-grey-lighter
             rounded py-3 px-4 mb-3 leading-tight
             focus:outline-none focus:bg-white focus:border-grey"
