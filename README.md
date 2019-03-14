@@ -24,11 +24,13 @@ $ docker run --name zilliqa-wallet  -d -p 80:80  zilliqa-wallet # run docker ima
 ```
 
 ### Todo
-[x] Simple user flow
-[x] Offline signing
-[ ] Contract interaction
-[ ] Transaction history
-[ ] Multiple account management
+
+- [x] Simple user flow
+- [x] Offline signing
+- [ ] Contract interaction
+- [ ] Transaction history
+- [ ] Multiple account management
+
 
 ## License
 [MIT](LICENSE) license.
