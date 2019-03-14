@@ -1,3 +1,4 @@
+import Alert from './Alert';
 import Blockies from './blockies';
 import Button from './button';
 import Icon from './icon';
@@ -9,6 +10,7 @@ import Textarea from './textarea';
 import Upload from './upload';
 
 export {
+  Alert,
   Blockies,
   Button,
   Icon,

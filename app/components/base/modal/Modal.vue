@@ -11,7 +11,7 @@
           <div class="modal--header">
             <h3 
               v-if="title && !$slots.header" 
-              class="header modal mb-4 tracking-wide"> {{ title }}</h3>
+              class="header modal mb-4 "> {{ title }}</h3>
             <slot 
               v-else 
               name="header"/>
@@ -60,6 +60,9 @@ export default {
   }
   &--header {
     @apply px-10 pt-8 pb-4;
+    h3 {
+      letter-spacing: 0.02rem;
+    }
   }
   &--content {
     @apply px-10 pb-8 pt-4;

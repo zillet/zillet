@@ -6,7 +6,7 @@
     </h3>
     <div class="text-left">
       <label
-        class="block tracking-wide text-grey-darker text-sm mb-2" >
+        class="block tracking-wide text-grey-darker text-sm mb-2 font-semibold" >
         Account Address
       </label>
       <div class="break-words flex align-center">
@@ -23,7 +23,7 @@
     </div>
     <div class="text-left">
       <label
-        class="block tracking-wide text-grey-darker text-sm mb-2" >
+        class="block tracking-wide text-grey-darker text-sm mb-2 font-semibold" >
         Account Balance
       </label>
       <p
@@ -32,7 +32,8 @@
         {{ getAccount.balance/Math.pow(10, multiplier) }} ZIL
         <span
           class="text-xs italic text-left inline-block
-          align-middle text-grey-darker font-normal underline cursor-pointer hover:text-teal"
+          font-semibold align-middle text-grey-darker font-normal 
+          underline cursor-pointer hover:text-teal"
           @click="getBalance(getAccount.address)">
           Refresh
         </span>

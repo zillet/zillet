@@ -43,35 +43,12 @@
           unexpected happening that causes your tokens or funds to be lost. 
           Please do not use the software for more than what you are willing 
           to lose, and please be careful. By using the software, you agree
-          that each of XXX_COMPANY and Zilliqa Research Pte Ltd. assume no 
-          responsibility or liability for any error, omission, delay, 
+          that each of developer of this software and Zilliqa Research Pte Ltd. 
+          assume no responsibility or liability for any error, omission, delay, 
           damages, costs, loss or expense (together “Losses”) incurred 
           by you from the use of the software. You acknowledge that you
           may suffer a Loss from the use of the software and that the use 
           of the software is at your own risk.
-        </p>
-        <p>
-          <strong>MIT License</strong>
-          <br >
-          Copyright (c) YEAR XXX_COMPANY
-          Permission is hereby granted, free of charge, to any person 
-          obtaining a copy of this software and associated documentation 
-          files (the "Software"), to deal in the Software without
-          restriction, including without limitation the rights to use, 
-          copy, modify, merge, publish, distribute, sublicense, and/or 
-          sell copies of the Software, and to permit persons to whom the 
-          Software is furnished to do so, subject to the following 
-          conditions:
-          The above copyright notice and this permission notice shall be
-          included in all copies or substantial portions of the Software.
-          THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-          EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-          OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-          NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
-          HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-          WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-          FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
-          OTHER DEALINGS IN THE SOFTWARE.
         </p>
       </div>
       <template v-slot:footer>
@@ -104,14 +81,22 @@ export default {
       hasConsent: false
     };
   },
+  watch: {
+    hasConsent: {
+      handler(value) {
+        localStorage.setItem('_user_consent', value);
+      }
+    }
+  },
   beforeMount() {
     this.showDisclaimer =
       localStorage.getItem('_user_consent') == 'true' ? false : true;
+    this.hasConsent =
+      localStorage.getItem('_user_consent') == 'true' ? true : false;
   },
   methods: {
     saveConsent() {
       if (this.hasConsent) {
-        localStorage.setItem('_user_consent', true);
         this.showDisclaimer = false;
       } else {
         return this.$notify({

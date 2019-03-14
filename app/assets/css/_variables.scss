@@ -17,13 +17,14 @@ $secondaryColor: #5b5b5b !default;
 $background: #2c2f38;
 // Break points
 $xs-break:400px;
-$sm-break:768px;
-$md-break:992px;
-$lg-break:1200px;
-$xl-break:1392px;
+$sm-break:576px;
+$md-break:768px;
+$lg-break:992px;
+$xl-break:1200px;
+$xll-break:1392px;
 // Colors
-$primary: rgb(52, 92, 213) !default;
-$success: #73b15f !default;
+$primary: #4dc0b5 !default;
+$success: #38c172 !default;
 $warning: #e6a23c !default;
 $danger:#d82b5d !default;
 $info: #909399 !default;

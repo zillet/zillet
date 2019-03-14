@@ -53,7 +53,8 @@ export default {
     {
       src: '~/assets/css/main.scss',
       lang: 'scss'
-    }
+    },
+    'eva-icons/style/eva-icons.css'
   ],
   plugins: [
     '@/plugins/qrcode',
@@ -61,7 +62,8 @@ export default {
     '@/plugins/axios',
     '@/plugins/notify',
     '@/plugins/zilliqa',
-    '@/plugins/nuxtClientInit'
+    '@/plugins/nuxtClientInit',
+    '@/plugins/clipboard'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa'],
   axios: {
