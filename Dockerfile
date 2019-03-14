@@ -13,9 +13,8 @@ COPY package.json yarn.lock nuxt.config.js postcss.config.js tailwind.js /data/
 
 WORKDIR /data
 
-RUN npm cache clean --force \
-    && npm install \
-	&& npm run build \
+RUN yarn install \
+	&& yarn build \
 	&& apt-get purge -y git python make g++ \
 	&& apt-get autoremove -y \
 	&& apt-get clean \
@@ -24,4 +23,4 @@ RUN npm cache clean --force \
 ENV HOST 0.0.0.0
 EXPOSE 80
 
-CMD ["npm","run","start"]
+CMD ["yarn","start"]

@@ -1,0 +1,23 @@
+.container{
+    @apply justify-start items-center text-center mx-auto flex flex-col px-4;
+}
+.header{
+    @apply text-grey-darkest text-xl align-middle;
+}
+.card{
+    @apply rounded overflow-hidden shadow p-8 w-full bg-white;
+}
+.footer {
+    @apply flex flex-row justify-center mt-6;
+}
+.example-print {
+    display: none !important;
+}
+@media print {
+    .example-screen {
+        display: none !important;
+    }
+    .example-print {
+        display: block !important;
+    }
+}

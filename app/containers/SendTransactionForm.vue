@@ -15,7 +15,7 @@
       v-model="transaction.amount"
       :hide="false"
       :valid="validateAmount"
-      label="Amount to Send (ZILs)"
+      label="Amount to Send (ZIL)"
       placeholder="Enter amount here">
       <div 
         v-if="isOnline" 
@@ -72,7 +72,7 @@
             :valid="$validation.isNumber(transaction.gasPrice)"
             :hide="false"
             class="mb-4"
-            label="Gas Price"
+            label="Gas Price (QA)"
             placeholder="1"/>
         </div>
       </div>
@@ -107,7 +107,8 @@
       </z-button>
     </div>
     <z-modal 
-      v-if="isBroadcast" >
+      v-if="isBroadcast" 
+      title="Transaction Sent">
       <z-icon type="success" />
       <span class="text-base text-grey-darkest">
         {{ `0x${tranxId}` }}
@@ -130,6 +131,7 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
+import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
   ['gasLimit', 'Gas Limit should be a number'],
@@ -146,6 +148,7 @@ export default {
         gasPrice: 100,
         nonce: ''
       },
+      multiplier: config.MULTIPLIER,
       isAdvance: false,
       signedTx: {},
       isSigned: false,
@@ -198,7 +201,7 @@ export default {
     ...mapActions(['getBalance', 'sendTransaction']),
     async sign() {
       const { BN, Long, validation, units } = this.$zil.util;
-      const amount = this.transaction.amount * Math.pow(10, 12);
+      const amount = this.transaction.amount * Math.pow(10, this.multiplier);
       if (!validation.isAddress(this.transaction.address)) {
         return this.$notify({
           message: `Reciever's address is invalid`,
@@ -299,10 +302,8 @@ export default {
     },
     fullAmount() {
       const { units } = this.$zil.util;
-      this.transaction.amount = units.toQa(
-        String(this.getAccount.balance),
-        units.Units.Zil
-      );
+      this.transaction.amount =
+        this.getAccount.balance * Math.pow(10, -this.multiplier);
     }
   }
 };

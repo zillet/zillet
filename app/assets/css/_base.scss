@@ -2,6 +2,7 @@
 body{
     font-family: 'Source Sans Pro', sans-serif;
     background: $background;
+    -webkit-font-smoothing: antialiased;
 }
 * {
 	outline: none !important;

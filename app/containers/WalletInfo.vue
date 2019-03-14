@@ -89,7 +89,7 @@
               </button>
             </div>
           </z-input>
-          <p class="text-grey-darker text-sm italic">Save your private key somewhere safe. else your funds will be lost forever</p>
+          <p class="text-grey-darker text-sm italic font-semibold">Save your private key somewhere safe. else your funds will be lost forever</p>
         </div>
         <div class="lg:w-1/4 xl:w-1/4 sm:w-full flex flex-col">
           <div class="qr-code">
@@ -102,7 +102,7 @@
             for="qr-code">
             {{ key }}
           </label>
-          <p class="text-grey-darker text-xs italic">Scan QR code to import {{ key }}</p>
+          <p class="text-grey-darker text-xs italic font-semibold">Scan QR code to import {{ key }}</p>
         </div>
       </div>
     </div>

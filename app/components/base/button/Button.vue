@@ -8,10 +8,11 @@
       'bg-green text-white hover:bg-green-dark': type==='success',
       'bg-yellow text-white hover:bg-yellow-dark': type==='warning',
       'bg-white text-grey-darkest border hover:shadow-none': type==='default',
+      'font-bold px-8 my-4': size==='default',
+      'px-4 my-0': size==='small',
     }"
     v-bind="$attrs"
     type="button"
-    class="font-bold px-8 my-4"
     v-on="$listeners">
     <!-- <div
       v-if="loading"
@@ -51,7 +52,9 @@
       </svg>
     </div> -->
     <div
-      class="my-3">
+      :class="{
+        'my-2 text-sm font-semibold': size==='small', 
+        'my-3': size==='default'}" >
       <slot />
     </div>
   </button>
@@ -67,6 +70,10 @@ export default {
     type: {
       type: String,
       default: 'primary'
+    },
+    size: {
+      type: String,
+      default: 'default'
     }
   }
 };

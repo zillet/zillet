@@ -38,8 +38,8 @@ export default {
     ]
   },
   manifest: {
-    name: 'Send And Recieve Zilliqa',
-    short_name: 'Zilliqa Wallet',
+    name: 'Zilliqa Wallet',
+    short_name: 'Zilliqa',
     lang: 'en',
     description: 'Lightweight UX focused Zilliqa wallet',
     theme_color: '#00c2b6',
