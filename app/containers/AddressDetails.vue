@@ -10,9 +10,9 @@
         Account Address
       </label>
       <div class="break-words flex align-center">
-        <z-blockies 
-          :seed="getAccount.address" 
-          class="w-10 h-10 rounded-full mr-4 my-2"/>
+        <jazzicon 
+          :diameter="40" 
+          :address="getAccount.address" />
         <p
           style="width:calc(100% - 2.5rem)"
           class="leading-normal font-bold
@@ -44,7 +44,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import config from '@/config';
-
 export default {
   name: 'AddressDetails',
   data() {

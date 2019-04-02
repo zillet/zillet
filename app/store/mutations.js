@@ -30,3 +30,16 @@ export const EMPTY_WALLET = (state, result) => {
     nonce: ''
   };
 };
+export const LOAD_ENCRYPTED_WALLETS = (state, jsonData) => {
+  state.encryptedWallets = jsonData;
+};
+export const SAVE_ENCRYPTED_WALLET = (state, wallet) => {
+  const found = state.encryptedWallets.some(
+    el => el.keystore.address === wallet.keystore.address
+  );
+  if (!found) state.encryptedWallets.push(wallet);
+  localStorage.setItem(
+    '_encrypted_wallets',
+    JSON.stringify(state.encryptedWallets)
+  );
+};

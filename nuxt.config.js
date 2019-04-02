@@ -63,7 +63,8 @@ export default {
     '@/plugins/notify',
     '@/plugins/zilliqa',
     '@/plugins/nuxtClientInit',
-    '@/plugins/clipboard'
+    '@/plugins/clipboard',
+    '@/plugins/jazzicon'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa'],
   axios: {

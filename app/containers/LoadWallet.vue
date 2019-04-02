@@ -70,7 +70,16 @@
             This is Zilliqa wallet. Do not send any 
             ERC-20 ZIL tokens to this wallet.
           </z-alert>
-          <z-button @click="unlock()">
+          <div 
+            class="cursor-pointer mb-4 mt-6 flex items-center text-sm text-grey-darkest" 
+            @click="canSave=!canSave">
+            <input 
+              :checked="canSave" 
+              type="checkbox"> &nbsp; &nbsp;Remember my wallet details, Locally in this browser.
+          </div>
+          <z-button 
+            class="w-full" 
+            @click="unlock()">
             Unlock wallet
           </z-button>
         </div>
@@ -117,11 +126,12 @@ export default {
       passphrase: '',
       fileName: '',
       privateKey: '',
-      encryptedWallet: ''
+      encryptedWallet: '',
+      canSave: false
     };
   },
   methods: {
-    ...mapActions(['importAccount']),
+    ...mapActions(['importAccount', 'saveEncryptedWallet']),
     checkEncryptedWallet(file) {
       // todo - add more checks
       if (file == null) return false;
@@ -137,8 +147,8 @@ export default {
     },
     fileChanges(e) {
       let file = e.target.files[0];
-      this.fileName = file.name;
       try {
+        this.fileName = file.name;
         let reader = new FileReader();
         reader.onload = event => {
           this.encryptedWallet = event.target['result'];
@@ -178,6 +188,9 @@ export default {
           this.passphrase,
           keystore
         );
+        if (this.canSave) {
+          this.saveEncryptedWallet(keystore);
+        }
         this.importKey(pk);
       } catch (error) {
         return this.$notify({
