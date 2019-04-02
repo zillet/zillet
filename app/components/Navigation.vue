@@ -22,24 +22,33 @@
       <div class="text-sm lg:flex-grow nav-bl-wrapper font-semibold">
         <nuxt-link 
           :to="{name: 'index'}"
-          :class="{'text-teal':$route.name==='index'}" 
+          :class="{'text-teal':$route.name==='index', 'mr-4': !getAccount.address}" 
           class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-6">
           New Wallet
         </nuxt-link>
         <nuxt-link 
+          v-if="!getAccount.address"
+          :to="{name: 'access-wallet'}" 
+          :class="{'text-teal':$route.name==='access-wallet'}" 
+          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light border-l pl-6 border-grey-darker">
+          Access wallet
+        </nuxt-link>
+        <nuxt-link 
+          v-if="getAccount.address" 
           :to="{name: 'send-transaction'}" 
           :class="{'text-teal':$route.name==='send-transaction'}" 
           class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-6 ">
           Send Zilliqa
         </nuxt-link>
         <nuxt-link 
+          v-if="getAccount.address" 
           :to="{name: 'wallet-info'}" 
           :class="{'text-teal':$route.name==='wallet-info'}" 
           class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-2">
           Wallet Info
         </nuxt-link>
         <a 
-          v-if="getAccount.privateKey" 
+          v-if="getAccount.address" 
           href="#"
           class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light border-l pl-4 border-grey-darker"
           @click="logout">

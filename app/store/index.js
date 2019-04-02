@@ -11,6 +11,7 @@ const createStore = () =>
       nodes: config.NODES,
       selectedNode: config.NODES[0],
       minimumGasPrice: config.MINIMUM_GAS_PRICE,
+      selectedAccount: 'Account 1',
       wallet: {
         address: '',
         privateKey: '',
@@ -18,7 +19,8 @@ const createStore = () =>
         balance: '',
         nonce: ''
       },
-      errorMsg: ''
+      errorMsg: '',
+      encryptedWallets: []
     },
     actions,
     mutations,

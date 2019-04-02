@@ -1,5 +1,6 @@
 export default function({ store, redirect, route }) {
-  if (!store.getters.getAccount.privateKey) {
+  const { length } = store.state.encryptedWallets;
+  if (!store.getters.getAccount.privateKey && !length) {
     return redirect(`/access-wallet?redirect=${route.name}`);
   }
 }

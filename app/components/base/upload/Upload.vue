@@ -1,8 +1,12 @@
 <template>
   <div class="overflow-hidden relative w-full mb-6">
     <button 
-      class="bg-teal hover:bg-teal-dark w-full hover:shadow-md 
-            text-white font-bold py-3 px-8">
+      :class="{
+        'bg-teal hover:bg-teal-dark text-white ': !name, 
+        'border-grey-dark text-grey-darkest border': name
+      }"
+      class="w-full hover:shadow-md 
+            font-bold py-3 px-8">
       <span class="ml-2">{{ name ? name : 'Select wallet file' }}</span>
     </button>
     <input 
