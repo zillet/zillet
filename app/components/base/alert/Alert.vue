@@ -1,11 +1,6 @@
 <template>
   <div 
-    :class="{
-      'center': center,
-      'danger': type==='danger',
-      'success': type==='success',
-      'warning': type==='warning',
-    }" 
+    :class="[{'alert--center': center,},`alert--${type}`]" 
     class="alert">
     <i 
       :class="{
@@ -55,10 +50,10 @@ i.eva {
   @apply py-2 px-8  border border-grey-light bg-grey-lighter rounded;
   @apply text-sm font-semibold leading-normal;
   @apply flex items-center justify-start;
-  &.center {
+  &--center {
     @apply justify-center;
   }
-  &.danger {
+  &--danger {
     background: rgba($color: $danger, $alpha: 0.05);
     border: 1px solid rgba($color: $danger, $alpha: 0.3);
     color: rgba($color: $danger, $alpha: 1);
@@ -66,7 +61,7 @@ i.eva {
       color: rgba($color: $danger, $alpha: 1);
     }
   }
-  &.success {
+  &--success {
     background: rgba($color: $success, $alpha: 0.05);
     border: 1px solid rgba($color: $success, $alpha: 0.3);
     color: rgba($color: $success, $alpha: 1);
@@ -74,7 +69,7 @@ i.eva {
       color: rgba($color: $success, $alpha: 1);
     }
   }
-  &.warning {
+  &--warning {
     background: rgba($color: $warning, $alpha: 0.05);
     border: 1px solid rgba($color: $warning, $alpha: 0.3);
     color: rgba($color: $warning, $alpha: 1);

@@ -1,7 +1,7 @@
 {
-  "name": "zil-wallet",
+  "name": "zillet",
   "version": "0.1.0",
-  "description": "Zilliqa wallet powered by Nuxt",
+  "description": "Lightweigh UI/UX focused Zilliqa wallet",
   "author": "man15h",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
     "now-build": "nuxt build --spa",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest",
-    "test-watch": "npm run test -- --watch",
+    "test-watch": "npm run test --watch",
     "snapshot": "jest --updateSnapshot"
   },
   "keywords": [
