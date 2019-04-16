@@ -243,7 +243,7 @@ export default {
         });
       }
       const tx = {
-        version: 21823489,
+        version: this.selectedNode.version,
         nonce: this.transaction.nonce
           ? this.transaction.nonce
           : this.getAccount.nonce + 1,
