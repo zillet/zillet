@@ -1,41 +1,32 @@
 <template>
-  <div class="flex flex-wrap mb-1 justify-center">
-    <div class="w-full my-auto text-left">
-      <label
-        v-if="label"
-        class="block uppercase tracking-wide text-grey-darker text-sm font-bold mb-4"
-        for="address">
-        {{ label }}
-      </label>
-      <div class="flex flex-wrap items-stretch w-full relative">
-        <input
-          :value="value"
-          :type="`${isVisible || !hide ? 'text': 'password'}`"
-          v-bind="$attrs"
-          :class="{'rounded-r-none': hide, 'focus:border-red': !valid, 'focus:border-green': valid && value}"
-          class="appearance-none flex-shrink flex-grow flex-auto
-            leading-normal w-px flex-1 h-12
-            relative bg-grey-lighter font-semibold
-            text-grey-darkest border border-grey-lighter
-            rounded py-3 px-4 mb-3 leading-tight
-            focus:outline-none focus:bg-white focus:border-grey"
-          @input="$emit('input', $event.target.value)"
-        >
-        <div
-          v-if="hide"
-          class="flex -mr-px">
-          <button
-            class="flex items-center leading-normal
-            bg-white rounded rounded-l-none h-12 px-3
-            border border-grey-lighter text-grey-dark text-sm"
-            @click="isVisible=!isVisible">
-            <i 
-              :class="isVisible ? 'eva-eye-off-outline' : 'eva-eye-outline'" 
-              class="eva"/>
-          </button>
-        </div>
-        <slot/>
+  <div class="input">
+    <label
+      v-if="label"
+      class="input__label"
+      for="address">
+      {{ label }}
+    </label>
+    <div class="input__wrapper">
+      <input
+        :value="value"
+        :type="`${isVisible || !hide ? 'text': 'password'}`"
+        v-bind="$attrs"
+        :class="{'rounded-r-none': hide, 'focus:border-red': !valid, 'focus:border-green': valid && value}"
+        class="input__field"
+        @input="$emit('input', $event.target.value)"
+      >
+      <div
+        v-if="hide"
+        class="flex -mr-px">
+        <button
+          class="input__side-btn"
+          @click="isVisible=!isVisible">
+          <i 
+            :class="isVisible ? 'eva-eye-off-outline' : 'eva-eye-outline'" 
+            class="eva"/>
+        </button>
       </div>
+      <slot/>
     </div>
   </div>
 </template>

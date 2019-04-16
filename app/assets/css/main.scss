@@ -1,7 +1,6 @@
-@import 'tailwind'; //tailwind
+@import './tailwind.css'; //tailwind
 @import 'variables';
 @import 'mixins';
 @import 'base';
 @import 'layout';
-@import './components/button';
-@import './components/notification';
+@import 'components';

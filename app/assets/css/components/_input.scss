@@ -1,0 +1,29 @@
+.input {
+
+    @apply w-full my-auto text-left;
+
+    &__label {
+        @apply block mb-4;
+        @apply uppercase tracking-wide text-grey-darker text-sm font-bold;
+    }
+
+    &__wrapper {
+        @apply flex flex-wrap items-stretch w-full relative;
+    }
+
+    &__field {
+        @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-grey-lighter;
+        @apply border border-grey-lighter rounded;
+        @apply appearance-none leading-normal font-semibold text-grey-darkest;
+
+        &:focus {
+            @apply outline-none bg-white border-grey;
+        }
+    }
+
+    &__side-btn {
+        @apply flex items-center bg-white h-12 px-3;
+        @apply border border-grey-lighter rounded rounded-l-none;
+        @apply leading-normal text-grey-dark text-sm;
+    }
+}
