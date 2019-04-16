@@ -66,7 +66,7 @@ export default {
     '@/plugins/clipboard',
     '@/plugins/jazzicon'
   ],
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/tailwindcss'],
   axios: {
     baseURL: process.env.API_BASE_URL
       ? process.env.API_BASE_URL

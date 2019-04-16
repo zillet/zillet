@@ -1,9 +1,64 @@
-.btn {
-    @apply font-bold py-2 px-4 rounded;
-}
-.btn-teal {
-    @apply bg-teal text-white;
-}
-.btn-teal:hover {
-    @apply bg-teal-dark;
+.button {
+    @apply font-bold text-white;
+
+    &:hover {
+        @apply shadow-md;
+    }
+
+    &--small {
+        @apply px-8 py-2 my-0;
+        @apply text-sm font-semibold;
+    }
+
+    &--medium {
+        @apply px-12 py-3 my-4;
+    }
+
+    &--large {
+        @apply px-20 py-6 my-4;
+    }
+
+    &--default {
+        @apply border text-grey-darkest;
+    }
+
+    &--rounded {
+        @apply rounded;
+    }
+
+    &--loading {
+        @apply cursor-not-allowed opacity-75;
+    }
+
+    &--primary {
+        @apply bg-teal;
+
+        &:hover {
+            @apply bg-teal-dark;
+        }
+    }
+
+    &--danger {
+        @apply bg-red text-white;
+
+        &:hover {
+            @apply bg-red-dark;
+        }
+    }
+
+    &--danger {
+        @apply bg-green text-white;
+
+        &:hover {
+            @apply bg-green-dark;
+        }
+    }
+
+    &--warning {
+        @apply bg-yellow text-white;
+
+        &:hover {
+            @apply bg-yellow-dark;
+        }
+    }
 }
