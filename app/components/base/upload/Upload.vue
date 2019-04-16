@@ -15,9 +15,6 @@
       type="file" 
       name="jsonImportFile" 
       v-on="$listeners">
-    <p 
-      v-if="notification.error" 
-      class="text-red text-sm italic mt-4">{{ notification.text }}</p>
   </div>
 </template>
 <script>
@@ -27,15 +24,6 @@ export default {
     name: {
       type: String,
       default: ''
-    },
-    notification: {
-      type: Object,
-      default() {
-        return {
-          error: false,
-          text: ''
-        };
-      }
     }
   }
 };

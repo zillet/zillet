@@ -13,8 +13,7 @@
         v-bind="$attrs"
         :class="{'rounded-r-none': hide, 'focus:border-red': !valid, 'focus:border-green': valid && value}"
         class="input__field"
-        @input="$emit('input', $event.target.value)"
-      >
+        @input="$emit('input', $event.target.value)">
       <div
         v-if="hide"
         class="flex -mr-px">
@@ -49,15 +48,6 @@ export default {
     hide: {
       type: Boolean,
       default: true
-    },
-    notification: {
-      type: Object,
-      default() {
-        return {
-          error: false,
-          text: ''
-        };
-      }
     }
   },
   data() {
@@ -71,5 +61,33 @@ export default {
 i.eva {
   font-size: 1.6rem;
   @apply text-grey-darkest;
+}
+.input {
+  @apply w-full my-auto text-left;
+
+  &__label {
+    @apply block mb-4;
+    @apply uppercase tracking-wide text-grey-darker text-sm font-bold;
+  }
+
+  &__wrapper {
+    @apply flex flex-wrap items-stretch w-full relative;
+  }
+
+  &__field {
+    @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-grey-lighter;
+    @apply border border-grey-lighter rounded;
+    @apply appearance-none leading-normal font-semibold text-grey-darkest;
+
+    &:focus {
+      @apply outline-none bg-white border-grey;
+    }
+  }
+
+  &__side-btn {
+    @apply flex items-center bg-white h-12 px-3;
+    @apply border border-grey-lighter rounded rounded-l-none;
+    @apply leading-normal text-grey-dark text-sm;
+  }
 }
 </style>

@@ -54,6 +54,7 @@ export default {
       src: '~/assets/css/main.scss',
       lang: 'scss'
     },
+    'balloon-css/balloon.min.css',
     'eva-icons/style/eva-icons.css'
   ],
   plugins: [
@@ -64,7 +65,8 @@ export default {
     '@/plugins/zilliqa',
     '@/plugins/nuxtClientInit',
     '@/plugins/clipboard',
-    '@/plugins/jazzicon'
+    '@/plugins/jazzicon',
+    '@/plugins/portal'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/tailwindcss'],
   axios: {

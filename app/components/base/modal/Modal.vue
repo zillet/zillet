@@ -1,85 +1,107 @@
 <template>
-  <transition name="modal">
+  <portal to="modals">
     <div 
-      class="modal--mask z-50 fixed pin-t pin-r 
-        w-full h-full bg-modal table">
-      <div class="table-cell align-middle">
-        <div 
-          class="modal--container w-full 
-            min-w-msm max-w-md mx-auto my-0 
-            bg-white rounded shadow-md">
-          <div class="modal--header">
-            <h3 
-              v-if="title && !$slots.header" 
-              class="header modal mb-4 "> {{ title }}</h3>
-            <slot 
-              v-else 
-              name="header"/>
-          </div>
-          <div 
-            :class="{'full': !$slots.footer }" 
-            class="modal--content">
-            <slot />
-          </div>
-          <div 
-            v-if="$slots.footer" 
-            class="modal--footer border-t border-grey-light">
-            <slot name="footer"/>
-          </div>
+      v-if="showModal" 
+      class="fixed inset-0 flex items-center justify-center" 
+      @click="close">
+      <transition
+        enter-active-class="transition-all transition-fast ease-out-quad"
+        leave-active-class="transition-all transition-medium ease-in-quad"
+        enter-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-class="opacity-100"
+        leave-to-class="opacity-0"
+        appear
+        @before-leave="backdropLeaving = true"
+        @after-leave="backdropLeaving = false">
+        <div v-if="showBackdrop">
+          <div class="absolute inset-0 bg-black opacity-25"/>
         </div>
-      </div>
+      </transition>
+      <transition
+        enter-active-class="transition-all transition-fast ease-out-quad"
+        leave-active-class="transition-all transition-medium ease-in-quad"
+        enter-class="opacity-0 scale-70"
+        enter-to-class="opacity-100 scale-100"
+        leave-class="opacity-100 scale-100"
+        leave-to-class="opacity-0 scale-70"
+        appear
+        @before-leave="cardLeaving = true"
+        @after-leave="cardLeaving = false">
+        <div 
+          v-if="showContent" 
+          class="relative">
+          <slot/>
+        </div>
+      </transition>
     </div>
-  </transition>
+  </portal>
 </template>
 <script>
+/* copyright (c) adamwathan
+ https://github.com/adamwathan/vue-tailwind-examples
+*/
 export default {
   name: 'ZModal',
   props: {
-    title: {
-      type: String,
-      default: null
+    visible: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      showModal: false,
+      showBackdrop: false,
+      showContent: false,
+      backdropLeaving: false,
+      cardLeaving: false
+    };
+  },
+  computed: {
+    leaving() {
+      return this.backdropLeaving || this.cardLeaving;
+    }
+  },
+  watch: {
+    visible: {
+      handler: function(newValue) {
+        if (newValue) {
+          this.show();
+        } else {
+          this.close();
+        }
+      },
+      immediate: true
+    },
+    leaving(newValue) {
+      if (newValue === false) {
+        this.showModal = false;
+        this.$emit('close');
+      }
+    }
+  },
+  created() {
+    const onEscape = e => {
+      if (this.visible && e.keyCode === 27) {
+        this.close();
+      }
+    };
+    document.addEventListener('keydown', onEscape);
+    this.$once('hook:destroyed', () => {
+      document.removeEventListener('keydown', onEscape);
+    });
+  },
+  methods: {
+    show() {
+      this.showModal = true;
+      this.showBackdrop = true;
+      this.showContent = true;
+    },
+    close() {
+      this.showBackdrop = false;
+      this.showContent = false;
     }
   }
 };
 </script>
-<style scoped lang="scss">
-.modal {
-  &-enter {
-    opacity: 0;
-  }
-  &-leave-active {
-    opacity: 0;
-  }
-  &--mask {
-    transition: opacity 0.3s ease;
-  }
-  &--container {
-    transition: all 0.3s ease;
-    max-height: 80vh;
-    min-height: 300px;
-  }
-  &--header {
-    @apply px-10 pt-8 pb-4;
-    h3 {
-      letter-spacing: 0.02rem;
-    }
-  }
-  &--content {
-    @apply px-10 pb-8 pt-4;
-    max-height: calc(80vh - 9rem);
-    overflow: scroll;
-    &.full {
-      max-height: calc(80vh - 5rem);
-    }
-  }
-  &--footer {
-    @apply px-10 pb-4 pt-4;
-  }
-}
-
-.modal-enter .modal--container,
-.modal-leave-active .modal--container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
-</style>

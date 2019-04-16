@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="flex flex-row px-4" >
+    class="flex flex-row px-4 items-center">
     <input 
       v-bind="$attrs" 
       type="radio"

@@ -12,8 +12,7 @@
           id="password" 
           v-bind="$attrs"
           type="text" 
-          class="appearance-none flex-shrink flex-grow flex-auto 
-            leading-normal w-px flex-1
+          class="appearance-none leading-normal w-px flex-1
             relative bg-grey-lighter font-semibold
             text-grey-darkest border border-grey-lighter 
             rounded py-3 px-4 mb-3 leading-tight 
@@ -21,9 +20,6 @@
         />
         <slot/>
       </div>
-      <p 
-        :class="{'text-red': notification.error}" 
-        class="text-grey-darker text-xs italic">{{ notification.text }}</p>
     </div>
   </div>
 </template>
@@ -34,15 +30,6 @@ export default {
     label: {
       type: String,
       default: ''
-    },
-    notification: {
-      type: Object,
-      default() {
-        return {
-          error: false,
-          text: ''
-        };
-      }
     }
   }
 };
