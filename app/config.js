@@ -21,21 +21,24 @@ export default {
       img: 'private-key.svg',
       title: 'Private Key',
       body: 'Access your wallet using 64 character hex string',
-      allowed: true
+      allowed: true,
+      buttonText: 'Access'
     },
     {
       id: 1002,
       img: 'keystore.svg',
       title: 'Keystore file',
       body: 'Access your wallet using Keystore(JSON) file',
-      allowed: true
+      allowed: true,
+      buttonText: 'Import File'
     },
     {
       id: 1003,
       img: 'mnemonic.svg',
       title: 'Mnemonic phrase',
-      body: 'Coming Soon',
-      allowed: false
+      body: 'Access your wallet using human readable string',
+      allowed: false,
+      buttonText: 'Coming Soon'
     }
   ]
 };

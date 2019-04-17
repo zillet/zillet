@@ -9,7 +9,7 @@
       Ok
     </div>
     <div class="navigation__actions">
-      <!-- <node-dropdown/> -->
+      <node-dropdown/>
       <nuxt-link 
         v-if="$route.name!='create-wallet'"
         :to="{name: 'create-wallet'}"
@@ -63,10 +63,10 @@ export default {
   &__actions {
     @apply ml-4;
     flex: 0 0 auto;
-    @apply flex flex-col items-center justify-center;
+    @apply flex flex-col items-end justify-around;
   }
   &__link {
-    @apply text-grey-light uppercase font-bold tracking-wide text-lg;
+    @apply text-grey-light uppercase font-bold tracking-wide text-base;
     @apply flex items-center justify-end;
     &:hover {
       @apply text-teal;

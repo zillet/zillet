@@ -1,8 +1,9 @@
 .button {
     @apply font-bold text-white;
-
+    @include transition;
     &:hover {
         @apply shadow-md;
+        @include transition;
     }
 
     &--small {
@@ -37,28 +38,37 @@
             @apply bg-teal-dark;
         }
     }
-
+    
     &--danger {
         @apply bg-red text-white;
-
+        @include transition;
         &:hover {
+        @include transition;
             @apply bg-red-dark;
         }
     }
 
     &--danger {
         @apply bg-green text-white;
-
+        @include transition;
         &:hover {
             @apply bg-green-dark;
+            @include transition;
         }
     }
 
     &--warning {
         @apply bg-yellow text-white;
-
+        @include transition;
         &:hover {
             @apply bg-yellow-dark;
+            @include transition;
+        }
+    }
+    &[type="button"]:disabled {
+        cursor: not-allowed;
+        &:hover{
+            box-shadow: none;
         }
     }
 }

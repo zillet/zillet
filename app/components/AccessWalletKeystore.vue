@@ -16,6 +16,7 @@
       <z-upload
         :name="fileName"
         class="mt-8"
+        rounded
         @change="fileChanges"/>
       <div 
         v-if="isFile" 
@@ -33,6 +34,7 @@
         </z-alert>
         <z-button 
           class="w-full" 
+          rounded
           @click="unlock()">
           Unlock wallet
         </z-button>

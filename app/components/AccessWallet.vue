@@ -8,8 +8,7 @@
         v-for="method in accessMethods"
         :key="method.id" 
         :class="{'access-wallet__method-btn--disabled': !method.allowed}"
-        class="access-wallet__method-btn"
-        @click="selectMethod(method)">
+        class="access-wallet__method-btn">
         <div class="access-wallet__method-btn__title">
           <img 
             :src="getImg(method.img)">
@@ -19,20 +18,32 @@
           <span>{{ method.body }}</span>
         </div>
         <div class="access-wallet__method-btn__footer">
-          <!-- <i 
+          <z-button 
+            :disabled="!method.allowed"
+            :type="method.allowed ? 'primary': 'default'"
+            size="small"
+            rounded
+            class="access-wallet__button" 
+            @click="selectMethod(method)"> {{ method.buttonText }} </z-button>
+            <!-- <i 
               class="eva eva-question-mark-circle-outline" 
               data-balloon="Whats up!" 
               data-balloon-pos="right"/>
             <i class="eva eva-question-mark-circle-outline"/> -->
         </div>
       </div>
-      <p class="font-semibold text-gray-700 mt-8">Do not have a wallet? 
-        <nuxt-link 
-          :to="{name: 'create-wallet'}"
-          class="text-teal">Create A New Wallet
-        </nuxt-link>
-      </p>
     </div>
+    <p class="text-grey-darkest">
+      <code>Zillet.io</code> does not hold your keys for you. We cannot access accounts, 
+      recover keys, reset passwords, nor reverse transactions. Protect your keys & 
+      always check that you are on correct URL. <strong>You are responsible for your security</strong>.
+    </p>
+    <p class="font-semibold text-gray-700 mt-8">Do not have a wallet? 
+      <nuxt-link 
+        :to="{name: 'create-wallet'}"
+        class="text-teal">Create A New Wallet
+      </nuxt-link>
+    </p>
   </div>
 </template>
 <script>
@@ -63,10 +74,12 @@ export default {
 @import '@/assets/css/_variables.scss';
 @import '@/assets/css/_mixins.scss';
 .access-wallet {
+  max-width: 700px;
+  margin: auto;
   &__header {
     @apply mb-12;
     h3 {
-      @apply font-bold text-2xl mb-4 text-gray-700;
+      @apply font-bold text-2xl mb-4 text-gray-800;
     }
     p {
       @apply text-base;
@@ -74,44 +87,32 @@ export default {
   }
   &__methods {
     @apply flex items-center justify-center flex-wrap flex-row -mx-3 mb-4;
-    max-width: 700px;
     margin: auto;
   }
   &__method-btn {
     @apply rounded overflow-hidden bg-white cursor-pointer mx-3 mb-8;
-    width: 200px;
-    min-height: 202px;
+    width: 300px;
+    min-height: 100px;
     @include transition;
     &:not(&--disabled) {
-      @apply shadow;
-      &:hover {
-        @apply shadow-lg;
-        @include transition;
-      }
-    }
-    // @include mobile {
-    //   @apply w-full;
-    //   min-heigh: 50px;
-    // }
-    &__title {
-      @apply flex items-center justify-center p-4 flex-col;
-      img {
-        height: 4.6rem;
-        width: 4.6rem;
-      }
-      span {
-        @apply pl-2 font-semibold text-xl text-gray-700;
-      }
-      // @include mobile {
-      //   @apply flex items-start justify-start p-4 flex-row;
-      //   img {
-      //     height: 4rem;
-      //     width: 4rem;
-      //   }
+      @apply border rounded;
+      // &:hover {
+      //   @apply shadow-lg;
+      //   @include transition;
       // }
     }
+    &__title {
+      @apply flex items-center justify-center p-4 flex-row;
+      img {
+        height: 2rem;
+        width: 2rem;
+      }
+      span {
+        @apply pl-2 font-semibold text-xl text-gray-800;
+      }
+    }
     &__body {
-      @apply px-4 text-gray-700 pb-4;
+      @apply px-12 text-grey-darkest pb-4 text-sm;
     }
     &__footer {
       @apply px-2 text-gray-700 pb-4;
@@ -123,6 +124,9 @@ export default {
       @apply opacity-75 cursor-not-allowed;
       @apply border rounded;
     }
+  }
+  &__button {
+    min-width: 13rem;
   }
 }
 </style>

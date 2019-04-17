@@ -1,7 +1,7 @@
 <template>
   <div 
     v-if="showModal" 
-    class="fixed inset-0 flex items-center justify-center">
+    class="fixed inset-0 flex items-center justify-center z-50">
     <transition
       enter-active-class="transition-all transition-fast ease-out-quad"
       leave-active-class="transition-all transition-medium ease-in-quad"
@@ -30,7 +30,7 @@
       @after-leave="cardLeaving = false">
       <div 
         v-if="showContent" 
-        class="relative">
+        class="relative max-w-md w-full">
         <slot/>
       </div>
     </transition>
@@ -93,35 +93,3 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.origin-top-right {
-  transform-origin: top right;
-}
-.transition-all {
-  transition-property: all;
-}
-.transition-fastest {
-  transition-duration: 50ms;
-}
-.transition-faster {
-  transition-duration: 100ms;
-}
-.transition-fast {
-  transition-duration: 150ms;
-}
-.transition-medium {
-  transition-duration: 200ms;
-}
-.ease-out-quad {
-  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.ease-in-quad {
-  transition-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-.scale-70 {
-  transform: scale(0.7);
-}
-.scale-100 {
-  transform: scale(1);
-}
-</style>

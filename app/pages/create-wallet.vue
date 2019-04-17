@@ -19,6 +19,7 @@
         <z-button 
           :loading="loading" 
           :disabled="loading"
+          rounded
           @click="create">
           Create New Wallet
         </z-button>
