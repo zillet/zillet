@@ -2,16 +2,16 @@ html {
     font-family: 'Source Sans Pro', sans-serif;
     background: $background;
     -webkit-font-smoothing: antialiased;
-    @apply text-grey-darkest;
+    @apply text-gray-800;
     font-size: 15px;
-    @include tablet {
-        font-size: 13px;
-    }
     @include desktop {
         font-size: 14px;
     }
+    @include tablet {
+        font-size: 13px;
+    }
     @include mobile {
-        font-size: 12px;
+        font-size: 13px;
     }
 }
 

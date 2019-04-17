@@ -65,8 +65,7 @@ export default {
     '@/plugins/zilliqa',
     '@/plugins/nuxtClientInit',
     '@/plugins/clipboard',
-    '@/plugins/jazzicon',
-    '@/plugins/portal'
+    '@/plugins/jazzicon'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/tailwindcss'],
   axios: {

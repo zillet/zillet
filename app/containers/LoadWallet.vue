@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-xl w-full">
+  <div class="w-full">
     <div 
       class="card">
       <h3 class="header mb-8"> 
