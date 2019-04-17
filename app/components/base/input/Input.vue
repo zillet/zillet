@@ -67,7 +67,7 @@ i.eva {
 
   &__label {
     @apply block mb-4;
-    @apply uppercase tracking-wide text-grey-darker text-sm font-bold;
+    @apply uppercase tracking-wide text-grey-darker font-bold;
   }
 
   &__wrapper {
@@ -87,7 +87,7 @@ i.eva {
   &__side-btn {
     @apply flex items-center bg-white h-12 px-3;
     @apply border border-grey-lighter rounded rounded-l-none;
-    @apply leading-normal text-grey-dark text-sm;
+    @apply leading-normal text-grey-dark;
   }
 }
 </style>

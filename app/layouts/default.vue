@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <notifications/>
-    <z-nav/>
-    <nuxt/>
+    <Notifications/>
+    <Navigation/>
+    <Nuxt/>
   </div>
 </template>
 <script>
@@ -10,7 +10,14 @@ import Navigation from '@/components/Navigation';
 export default {
   name: 'Default',
   components: {
-    'z-nav': Navigation
+    Navigation
   }
 };
 </script>
+<style lang="scss" scoped>
+.container {
+  max-width: 960px;
+  width: 100%;
+  padding: 0rem 1rem;
+}
+</style>

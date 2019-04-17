@@ -48,7 +48,7 @@ i.eva {
 }
 .alert {
   @apply py-2 px-8  border border-grey-light bg-grey-lighter rounded;
-  @apply text-sm font-semibold leading-normal;
+  @apply font-semibold leading-normal;
   @apply flex items-center justify-start;
   &--center {
     @apply justify-center;

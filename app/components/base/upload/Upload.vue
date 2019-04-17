@@ -11,7 +11,7 @@
     </button>
     <input 
       v-bind="$attrs" 
-      class="cursor-pointer absolute block w-full py-3 px-8 opacity-0 pin-r pin-t"
+      class="cursor-pointer absolute block w-full py-3 px-8 opacity-0 right-0 top-0"
       type="file" 
       name="jsonImportFile" 
       v-on="$listeners">

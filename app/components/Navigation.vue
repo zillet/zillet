@@ -1,60 +1,29 @@
 <template>
-  <nav class="flex max-w-xl flex-wrap py-6 w-full">
-    <div class="flex items-center flex-no-shrink text-white mr-6">
+  <nav class="navigation">
+    <div class="navigation__logo">
       <nuxt-link :to="{name: 'index'}">
-        <img 
-          src="@/assets/images/logo.png"
-          class="nav-logo">
+        <img src="@/assets/images/logo.png">
       </nuxt-link>
     </div>
-    <div class="block lg:hidden">
-      <button class="flex items-center px-3 py-2 border rounded text-teal-lighter border-teal-light hover:text-white hover:border-white">
-        <svg 
-          class="fill-current h-3 w-3" 
-          viewBox="0 0 20 20" 
-          xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
-      </button>
+    <div class="navigation__account">
+      Ok
     </div>
-    <div class="w-full block flex-grow  flex-col lg:flex lg:items-end lg:w-auto">
-      <div class="text-sm lg:flex-grow nav-tl-wrapper">
-        <node-dropdown/>
-      </div>
-      <div class="text-sm lg:flex-grow nav-bl-wrapper font-semibold">
-        <nuxt-link 
-          :to="{name: 'index'}"
-          :class="{'text-teal':$route.name==='index', 'mr-4': !getAccount.address}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-6">
-          New Wallet
-        </nuxt-link>
-        <nuxt-link 
-          v-if="!getAccount.address"
-          :to="{name: 'access-wallet'}" 
-          :class="{'text-teal':$route.name==='access-wallet'}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light border-l pl-6 border-grey-darker">
-          Access wallet
-        </nuxt-link>
-        <nuxt-link 
-          v-if="getAccount.address" 
-          :to="{name: 'send-transaction'}" 
-          :class="{'text-teal':$route.name==='send-transaction'}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-6 ">
-          Send Zilliqa
-        </nuxt-link>
-        <nuxt-link 
-          v-if="getAccount.address" 
-          :to="{name: 'wallet-info'}" 
-          :class="{'text-teal':$route.name==='wallet-info'}" 
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light mr-2">
-          Wallet Info
-        </nuxt-link>
-        <a 
-          v-if="getAccount.address" 
-          href="#"
-          class="nav-link lg:inline-block lg:mt-0 hover:text-teal block mt-4 text-grey-light border-l pl-4 border-grey-darker"
-          @click="logout">
-          Logout
-        </a>
-      </div>
+    <div class="navigation__actions">
+      <!-- <node-dropdown/> -->
+      <nuxt-link 
+        v-if="$route.name!='create-wallet'"
+        :to="{name: 'create-wallet'}"
+        class="navigation__link">
+        <i class="eva eva-plus-outline font-bold text-base"/>
+        &nbsp;Create Wallet 
+      </nuxt-link>
+      <nuxt-link 
+        v-else
+        :to="{name: 'index'}"
+        class="navigation__link">
+        <i class="eva eva-layers-outline font-bold text-base"/>
+        &nbsp;Access Wallet
+      </nuxt-link>
     </div>
   </nav>
 </template>
@@ -69,14 +38,6 @@ export default {
   computed: {
     ...mapGetters(['getAccount'])
   },
-  watch: {
-    '$route.path': {
-      handler() {
-        // console.log(this.$route.name);
-      },
-      immediate: true
-    }
-  },
   methods: {
     ...mapActions(['clearWallet']),
     async logout() {
@@ -86,12 +47,30 @@ export default {
   }
 };
 </script>
-
-<style>
-.nav-logo {
-  max-height: 50px;
-}
-.nav-link {
-  margin-top: 7px !important;
+<style lang="scss" scoped>
+.navigation {
+  @apply flex py-6 w-full;
+  &__logo {
+    @apply items-center text-white mr-4;
+    flex: 0 0 auto;
+    img {
+      max-height: 50px;
+    }
+  }
+  &__account {
+    flex: 1 1 auto;
+  }
+  &__actions {
+    @apply ml-4;
+    flex: 0 0 auto;
+    @apply flex flex-col items-center justify-center;
+  }
+  &__link {
+    @apply text-grey-light uppercase font-bold tracking-wide text-lg;
+    @apply flex items-center justify-end;
+    &:hover {
+      @apply text-teal;
+    }
+  }
 }
 </style>

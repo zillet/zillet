@@ -14,5 +14,28 @@ export default {
       explorer: 'https://explorer.zilliqa.com/',
       version: 65537
     }
+  ],
+  WALLET_METHODS: [
+    {
+      id: 1001,
+      img: 'private-key.svg',
+      title: 'Private Key',
+      body: 'Access your wallet using 64 character hex string',
+      allowed: true
+    },
+    {
+      id: 1002,
+      img: 'keystore.svg',
+      title: 'Keystore file',
+      body: 'Access your wallet using Keystore(JSON) file',
+      allowed: true
+    },
+    {
+      id: 1003,
+      img: 'mnemonic.svg',
+      title: 'Mnemonic phrase',
+      body: 'Coming Soon',
+      allowed: false
+    }
   ]
 };
