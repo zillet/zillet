@@ -3,12 +3,16 @@
     :visible="visible" 
     @close="close">  
     <div class="card">
+      <h3 class="font-bold text-xl mb-8 text-gray-700"> 
+        Download Your Wallet
+      </h3>
       <z-textarea 
         :value="pk" 
         readonly/>
       <div class="flex -mx-2 mb-4">
         <div class="w-1/2 px-2">
           <z-button 
+            rounded
             class="w-full"
             @click="$emit('downloadKeystore')">
             <p>Download Keystore</p>
@@ -16,6 +20,7 @@
         </div>
         <div class="w-1/2 px-2">
           <z-button 
+            rounded
             class="w-full"
             @click="$emit('printWallet')">
             <p>Print Wallet</p>
@@ -26,7 +31,7 @@
         <b>Do not lose it!</b> It cannot be recovered if you lose it.
       </p>
       <p class=" text-grey-darker mb-2">
-        <b>Do not share it!</b> Your funds will be stolen if you use this file on a malicious/phishing site.
+        <b>Do not share it!</b> Your funds will be stolen if you use this file on a phishing site.
       </p>
       <p class="text-grey-darker mb-2">
         <b>Make a backup!</b> Secure it like the millions of dollars it may one day be worth.
@@ -41,6 +46,7 @@
         :disabled="!keySaved"
         class="w-full mt-8"
         type="default"
+        rounded
         @click="close">
         Okay, I've succesfully saved my key.
       </z-button>

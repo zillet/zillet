@@ -3,7 +3,8 @@
     <button 
       :class="{
         'bg-teal hover:bg-teal-dark text-white ': !name, 
-        'border-grey-dark text-grey-darkest border': name
+        'border-grey-dark text-grey-darkest border': name,
+        'rounded': rounded
       }"
       class="w-full hover:shadow-md 
             font-bold py-3 px-8">
@@ -24,6 +25,10 @@ export default {
     name: {
       type: String,
       default: ''
+    },
+    rounded: {
+      type: Boolean,
+      default: false
     }
   }
 };

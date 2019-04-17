@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h3 class="header"> 
-      Add custom node
+  <div class="card w-xl">
+    <h3 class="font-bold text-xl mb-4 text-gray-700"> 
+      Add Custom Node
     </h3>
     <z-input
       v-model="node.name"
@@ -9,35 +9,36 @@
       class="mb-4"
       label="Node name"
       placeholder="My Zilliqa Node"/>
-    <div class="flex -mx-2">
-      <div class="w-2/3 px-2">
-        <z-input
-          v-model="node.url"
-          :hide="false"
-          class="mb-4"
-          label="URL"
-          placeholder="http://127.0.0.1"/>
-      </div>
-      <div class="w-1/3 px-2">
-        <z-input
-          v-model="node.port"
-          :hide="false"
-          class="mb-4"
-          label="Port"
-          placeholder="4200"/>
-      </div>
+    <div class="flex items-center justify-between -mx-3">
+      <z-input
+        v-model="node.url"
+        :hide="false"
+        class="mb-4 flex-1 mx-3"
+        label="URL"
+        placeholder="http://127.0.0.1:4200"/>
+      <z-input
+        v-model="node.networkId"
+        :hide="false"
+        class="mb-4 flex-1 mx-3"
+        label="Network Id"
+        placeholder="1759155 (Optional)"/>
     </div>
-    <z-button  
-      class="w-full"
-      @click="add">
-      Save and Use Custom Node
-    </z-button>
-    <z-button  
-      class="w-full"
-      type="default"
-      @click="$emit('close')">
-      Cancel
-    </z-button>
+    <div class="flex items-center justify-between -mx-3">
+      <z-button  
+        class="w-full mx-3"
+        type="default"
+        rounded
+        @click="$emit('close')">
+        Cancel
+      </z-button>
+      <z-button  
+        class="w-full mx-3 min-w-32"
+        rounded
+        @click="add">
+        Save and Use
+      </z-button>
+    </div>
+   
   </div>
 </template>
 <script>
@@ -48,21 +49,13 @@ export default {
       node: {
         name: '',
         url: '',
-        port: ''
+        networkId: ''
       }
     };
   },
   methods: {
     add() {
-      let node = {
-        name: this.node.name
-      };
-      if (this.node.port) {
-        node.url = `${this.node.url}:${this.node.port}/`;
-      } else {
-        node.url = `${this.node.url}`;
-      }
-      this.$emit('add', node);
+      this.$emit('add', this.node);
     }
   }
 };
