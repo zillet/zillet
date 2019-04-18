@@ -20,7 +20,8 @@ const createStore = () =>
         nonce: ''
       },
       errorMsg: '',
-      encryptedWallets: []
+      encryptedWallets: [],
+      prices: {}
     },
     actions,
     mutations,

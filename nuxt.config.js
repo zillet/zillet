@@ -21,6 +21,12 @@ export default {
       }
     ]
   },
+  env: {
+    cryptocompare: {
+      url: 'https://min-api.cryptocompare.com/data/price',
+      token: process.env.CRYPTOCOMPARE_TOKEN
+    }
+  },
   workbox: {
     runtimeCaching: [
       {
