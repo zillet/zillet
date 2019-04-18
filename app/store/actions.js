@@ -7,42 +7,39 @@ function setData(method, params) {
   };
 }
 
-export function nuxtClientInit({ commit, dispatch, state }) {
-  dispatch('getMinimumGasPrice');
+export async function nuxtClientInit({ commit, dispatch }, app) {
   try {
     const node = JSON.parse(localStorage.getItem('_selected_node'));
-    const encryptedWallet = JSON.parse(
-      localStorage.getItem('_encrypted_wallets')
-    );
-    const selectedAccount = JSON.parse(
-      localStorage.getItem('_selected_account')
-    );
     if (node) {
       commit('SELECT_NODE', node);
     }
-    if (encryptedWallet) {
-      commit('LOAD_ENCRYPTED_WALLETS', encryptedWallet);
-    }
-    if (state.encryptedWallets.length) {
-      var account;
-      if (selectedAccount) {
-        account = state.encryptedWallets.find(
-          el => el.label == selectedAccount
-        );
-        account = { address: account.keystore.address };
-      } else {
-        account = state.encryptedWallets[0];
-        account = { address: account.keystore.address };
-      }
-      commit('IMPORT_ACCOUNT', account);
-      dispatch('getBalance', account.address);
-    }
+    await dispatch('getMinimumGasPrice');
+    await dispatch('getPrice', app.env.cryptocompare);
   } catch (error) {
     console.log(error);
   }
 }
 export function selectNode({ commit }, node) {
   commit('SELECT_NODE', node);
+}
+export function getPrice({ commit }, { url, token }) {
+  return new Promise((resolve, reject) => {
+    this.$axios
+      .$get(url, {
+        params: {
+          fsym: 'ZIL',
+          tsyms: 'BTC,ETH,USD,EUR,INR,',
+          api_key: token
+        }
+      })
+      .then(resData => {
+        commit('FETCHED_PRICE', resData);
+        resolve(resData);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 export function checkNetworkStatus({}, url) {
   return new Promise((resolve, reject) => {

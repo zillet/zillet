@@ -30,6 +30,9 @@ export const EMPTY_WALLET = (state, result) => {
     nonce: ''
   };
 };
+export const FETCHED_PRICE = (state, prices) => {
+  state.prices = prices;
+};
 export const LOAD_ENCRYPTED_WALLETS = (state, jsonData) => {
   state.encryptedWallets = jsonData;
 };
