@@ -11162,6 +11162,11 @@ vue-clipboard2@^0.3.0:
   dependencies:
     clipboard "^2.0.0"
 
+vue-cryptoicon@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/vue-cryptoicon/-/vue-cryptoicon-0.1.5.tgz#fba87cd209772c72f51c21ed363e9379541429f6"
+  integrity sha512-huenLWsYZ/S8fKhGr29Idt6JsPETuLX9YFgaEEodbZI9q5vB5tYUtDqSInpm1VdJw3ZTek4bV1Y2DBd40AI4PA==
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"

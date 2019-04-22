@@ -72,7 +72,8 @@ export default {
     '@/plugins/nuxtClientInit',
     '@/plugins/clipboard',
     '@/plugins/jazzicon',
-    '@/plugins/vue-filters'
+    '@/plugins/vue-filters',
+    '@/plugins/vue-cryptoicon'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/tailwindcss'],
   axios: {
