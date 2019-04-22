@@ -57,15 +57,15 @@
     }
 
     .alert.alert-success {
-        @apply text-green;
+        @apply text-green-600;
     }
 
     .alert.alert-danger {
-        @apply text-red;
+        @apply text-red-600;
     }
 
     .alert.alert-warning {
-        @apply text-yellow;
+        @apply text-yellow-600;
     }
 
     .alert.alert-primary {

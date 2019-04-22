@@ -40,28 +40,28 @@
     }
     
     &--danger {
-        @apply bg-red text-white;
+        @apply bg-red-600 text-white;
         @include transition;
         &:hover {
         @include transition;
-            @apply bg-red-dark;
+            @apply bg-red-700;
         }
     }
 
     &--danger {
-        @apply bg-green text-white;
+        @apply bg-green-600 text-white;
         @include transition;
         &:hover {
-            @apply bg-green-dark;
+            @apply bg-green-700;
             @include transition;
         }
     }
 
     &--warning {
-        @apply bg-yellow text-white;
+        @apply bg-yellow-600 text-white;
         @include transition;
         &:hover {
-            @apply bg-yellow-dark;
+            @apply bg-yellow-700;
             @include transition;
         }
     }

@@ -22,7 +22,11 @@ const createStore = () =>
       errorMsg: '',
       encryptedWallets: [],
       prices: {},
-      viewblockAccount: {}
+      viewblockAccount: {
+        txs: {
+          docs: []
+        }
+      }
     },
     actions,
     mutations,

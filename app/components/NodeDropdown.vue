@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       showDropDown: false,
-      connectionStatusClass: 'bg-grey',
+      connectionStatusClass: 'bg-gray-400',
       isNewNode: false
     };
   },
@@ -85,7 +85,7 @@ export default {
   methods: {
     ...mapActions(['checkNetworkStatus', 'selectNode']),
     async changeNode(node) {
-      this.connectionStatusClass = 'bg-yellow-dark';
+      this.connectionStatusClass = 'bg-yellow-400';
       this.showDropDown = false;
       if (await this.checkConnection(node.url)) {
         await localStorage.setItem('_selected_node', JSON.stringify(node));
@@ -100,14 +100,14 @@ export default {
           message: `Node successfully connected to ${result} at ${url}`,
           type: 'success'
         });
-        this.connectionStatusClass = 'bg-green';
+        this.connectionStatusClass = 'bg-green-500';
         return true;
       } catch (error) {
         this.$notify({
           message: `Unable to connect at ${url}`,
           type: 'danger'
         });
-        this.connectionStatusClass = 'bg-red';
+        this.connectionStatusClass = 'bg-red-500';
         return true;
       }
     }
