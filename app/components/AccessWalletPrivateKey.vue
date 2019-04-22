@@ -61,7 +61,7 @@ export default {
     importKey(pk) {
       this.importAccount(pk);
       this.$router.push({
-        name: this.$route.query.redirect || 'wallet-info'
+        name: this.$route.query.redirect || 'send'
       });
       return this.$notify({
         message: `Wallet loaded successfully.`,

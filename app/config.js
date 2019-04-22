@@ -1,4 +1,5 @@
 export default {
+  VIEWBLOCK_URL: 'https://api.viewblock.io/zilliqa/addresses/',
   MULTIPLIER: 12,
   MINIMUM_GAS_PRICE: 1000000000,
   NODES: [

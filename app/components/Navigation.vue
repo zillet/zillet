@@ -6,69 +6,83 @@
           <img src="@/assets/images/logo.png">
         </nuxt-link>
       </div>
+      <div class="navigation__account"/>
       <div class="navigation__actions">
-        <node-dropdown/>
+        <NodeDropdown/>
         <nuxt-link 
-          v-if="$route.name!='create-wallet'"
-          :to="{name: 'create-wallet'}"
+          v-if="$route.name!='create' && !getAccount.address"
+          :to="{name: 'create'}"
           class="navigation__link">
           <i class="eva eva-plus-outline font-bold text-base"/>
           &nbsp;Create Wallet 
         </nuxt-link>
         <nuxt-link 
-          v-else
+          v-else-if="!getAccount.address"
           :to="{name: 'index'}"
           class="navigation__link">
           <i class="eva eva-layers-outline font-bold text-base"/>
           &nbsp;Access Wallet
         </nuxt-link>
+        <a 
+          v-else
+          class="navigation__link cursor-pointer"
+          @click="doLogout">
+          <i class="eva eva-power-outline font-bold text-base"/>
+          &nbsp;Logout
+        </a>
       </div>
     </nav>
     <div 
       v-if="getAccount.address" 
-      class="account-info card px-6 py-4 mb-4">
-      <div class="account-info__main">
-        <div class="block tracking-wide text-grey-darker font-semibold">
-          Address
+      class="account-info card mb-4 p-0">
+      <div class="flex flex-row w-full p-4">
+        <div class="account-info__main">
+          <div class="block tracking-wide text-grey-darker text-sm font-semibold">
+            Address
+          </div>
+          <div class="account-info__address">
+            <jazzicon 
+              :diameter="22"
+              :address="getAccount.address" 
+              class="mt-1 mr-2" /> 
+            <h3>
+              {{ `0x${getAccount.address}` }}
+            </h3>
+            <i 
+              v-clipboard:copy="`0x${getAccount.address}`" 
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              class="eva eva-copy-outline"/> 
+            <i 
+              class="eva eva-grid-outline" 
+              @click="showQr=true"/> 
+          </div>
         </div>
-        <div class="account-info__address">
-          <jazzicon 
-            :diameter="22"
-            :address="getAccount.address" 
-            class="mt-1 mr-2" /> 
-          <h3>
-            {{ `0x${getAccount.address}` }}
-          </h3>
-          <i 
-            v-clipboard:copy="'message'" 
-            v-clipboard:success="onCopy"
-            v-clipboard:error="onError"
-            class="eva eva-copy-outline"/> 
-          <i 
-            class="eva eva-grid-outline" 
-            @click="showQr=true"/> 
-        </div>
-      </div>
-      <div class="account-info__balance">
-        <div class="block tracking-wide text-grey-darker font-semibold">
-          Balance
-        </div>
-        <div class="account-info__amount">
-          <span class="zil">
-            {{ getAccount.balance/Math.pow(10, multiplier) }} ZIL
-          </span>
-          <span class="usd">
-            &nbsp; &asymp; &nbsp; ${{ (getAccount.balance/Math.pow(10, multiplier) )* getPrices.USD }} 
-          </span>
-          <span
-            class="text-xs italic text-left inline-block ml-2
+        <div class="account-info__balance">
+          <div class="block tracking-wide text-grey-darker text-sm font-semibold">
+            Balance
+          </div>
+          <div class="account-info__amount">
+            <span class="zil">
+              {{ getAccount.balance/Math.pow(10, multiplier) }} ZIL
+            </span>
+            <span class="usd">
+              &nbsp; &asymp; &nbsp; {{ (getAccount.balance/Math.pow(10, multiplier) )* getPrices.USD | currency('$', 2) }} 
+            </span>
+            <span
+              class="text-xs italic text-left inline-block ml-2
             font-semibold align-middle text-grey-darker font-normal 
             underline cursor-pointer hover:text-teal"
-            @click="getBalance(getAccount.address)">
-            Refresh
-          </span>
+              @click="getBalance(getAccount.address)">
+              Refresh
+            </span>
+          </div>
         </div>
       </div>
+      <div class="divider" />
+      <NavigationTab 
+        class="mt-4 px-4" 
+        @tabSelected="changeRoute"/>
     </div>
     <z-modal 
       :visible="showQr" 
@@ -97,12 +111,14 @@
 </template>
 <script>
 import NodeDropdown from '@/components/NodeDropdown';
+import NavigationTab from './NavigationTab';
 import { mapGetters, mapActions } from 'vuex';
 import config from '@/config';
 export default {
   name: 'Navigation',
   components: {
-    'node-dropdown': NodeDropdown
+    NavigationTab,
+    NodeDropdown
   },
   data() {
     return {
@@ -132,26 +148,34 @@ export default {
         message: `Failed to copy address`,
         type: 'danger'
       });
+    },
+    changeRoute(path) {
+      this.$router.push({ name: path });
+    },
+    doLogout() {
+      location.reload();
     }
   }
 };
 </script>
 <style lang="scss" scoped>
 .navigation {
-  @apply py-6 w-full;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  @apply flex py-6 w-full;
+  // grid-template-columns: auto 1fr auto;
   &__logo {
+    flex: 0 0 auto;
     @apply items-center text-white;
     img {
       max-height: 3.66rem;
     }
   }
   &__account {
-    @apply mx-4 px-6 border-r border-l border-gray-600;
-    @apply text-white;
+    flex: 1 1 auto;
+    // @apply mx-4 px-6 border-r border-l border-gray-600;
+    // @apply text-white;
   }
   &__actions {
+    flex: 0 0 auto;
     @apply flex flex-col items-end justify-around;
   }
   &__link {
@@ -163,9 +187,12 @@ export default {
   }
 }
 .account-info {
-  @apply flex flex-row items-start justify-center;
+  @apply flex flex-col items-start justify-center w-full;
   &__main {
     @apply flex flex-1 flex-col items-start justify-center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   &__label {
     @apply flex items-center justify-center;
@@ -180,9 +207,12 @@ export default {
     }
   }
   &__address {
-    @apply flex flex-row items-center justify-start;
+    @apply flex flex-row items-center justify-start w-full;
     h3 {
       @apply leading-normal font-bold text-lg;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     // font-size: 1.1rem;
     i {
@@ -193,8 +223,8 @@ export default {
     }
   }
   &__balance {
-    @apply flex flex-col items-start justify-center;
-    min-width: 13rem;
+    @apply flex flex-col items-start justify-center pl-4;
+    flex: 0 0 15rem; /* do not grow, do not shrink, start at 13rem */
   }
   &__amount {
     @apply flex flex-row my-1 items-center;
@@ -208,5 +238,10 @@ export default {
 }
 .qr-code-btn {
   @apply flex justify-center items-center;
+}
+
+.divider {
+  @apply bg-gray-300 w-full;
+  height: 1px;
 }
 </style>

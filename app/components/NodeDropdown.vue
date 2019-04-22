@@ -5,18 +5,18 @@
         v-if="showDropDown" 
         class="fixed inset-0" 
         @click="showDropDown = false"/>
-      <button 
-        class="relative flex items-center focus:outline-none" 
+      <span 
+        class="flex items-center focus:outline-none" 
         @click="showDropDown = !showDropDown">
         <div :class="`h-2 w-2 mr-2 rounded-full inline-block align-middle ${connectionStatusClass}`"/>
         <span 
-          class="lg:inline-block lg:mt-0 hover:text-teal 
-          block mt-4 text-xs uppercase tracking-wide 
+          class="inline-block mt-0 hover:text-teal 
+          block text-xs uppercase tracking-wide cursor-pointer
           font-semibold text-gray-400">
           {{ selectedNode.name }}
         </span>
         <i class="eva eva-arrow-ios-downward-outline ml-1 text-gray-400 text-lg relative right-10" />
-      </button>
+      </span>
       <transition
         enter-active-class="transition-all transition-fastest ease-out-quad"
         leave-active-class="transition-all transition-faster ease-in-quad"
