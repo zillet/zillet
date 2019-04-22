@@ -33,6 +33,9 @@ export const EMPTY_WALLET = (state, result) => {
 export const FETCHED_PRICE = (state, prices) => {
   state.prices = prices;
 };
+export const SAVE_TRANSACTIONS = (state, data) => {
+  state.viewblockAccount = data;
+};
 export const LOAD_ENCRYPTED_WALLETS = (state, jsonData) => {
   state.encryptedWallets = jsonData;
 };

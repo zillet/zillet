@@ -112,7 +112,8 @@ export default {
       }
     }
     &__body {
-      @apply px-12 text-grey-darkest pb-4 text-sm;
+      @apply px-12 text-grey-darkest pb-4;
+      font-size: 0.9rem;
     }
     &__footer {
       @apply px-2 text-gray-700 pb-4;

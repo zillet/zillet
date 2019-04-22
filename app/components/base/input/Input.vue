@@ -1,4 +1,6 @@
 <template>
+  <!-- eslint-disable vue/no-parsing-error -->
+  <!-- eslint-disable vue/valid-v-on  -->
   <div class="input">
     <label
       v-if="label"
@@ -9,11 +11,11 @@
     <div class="input__wrapper">
       <input
         :value="value"
-        :type="`${isVisible || !hide ? 'text': 'password'}`"
-        v-bind="$attrs"
+        :type="`${number ? 'number': isVisible || !hide ? 'text': 'password'}`"
+        v-bind="$attrs" 
         :class="{'rounded-r-none': hide, 'focus:border-red': !valid, 'focus:border-green': valid && value}"
         class="input__field"
-        @input="$emit('input', $event.target.value)">
+        v-on="{...$listeners,input: event => $emit('input', event.target.value)}">
       <div
         v-if="hide"
         class="flex -mr-px">
@@ -48,6 +50,10 @@ export default {
     hide: {
       type: Boolean,
       default: true
+    },
+    number: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

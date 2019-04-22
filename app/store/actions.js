@@ -1,3 +1,4 @@
+import config from './../config';
 function setData(method, params) {
   return {
     id: '1',
@@ -37,6 +38,33 @@ export function getPrice({ commit }, { url, token }) {
         resolve(resData);
       })
       .catch(err => {
+        reject(err);
+      });
+  });
+}
+export function getTransactions({ commit }, data) {
+  return new Promise((resolve, reject) => {
+    console.log(data);
+    var address = data.address;
+    var network = data.network || 'mainnet';
+    var page = data.page || 1;
+    var type = data.type || 'all';
+    commit('LOADING');
+    this.$axios
+      .$get(`${config.VIEWBLOCK_URL}${address}`, {
+        params: {
+          network: network,
+          page: page,
+          type: type
+        }
+      })
+      .then(resData => {
+        resolve(resData);
+        commit('SUCCESS');
+        commit('SAVE_TRANSACTIONS', resData);
+      })
+      .catch(err => {
+        commit('ERROR');
         reject(err);
       });
   });
