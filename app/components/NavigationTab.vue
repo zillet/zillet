@@ -24,7 +24,7 @@
         <label 
           for="tab1" 
           role="button">
-          <i class="eva eva-diagonal-arrow-right-up-outline font-bold mr-2" />
+          <i class="eva eva-diagonal-arrow-right-up-outline font-semibold mr-2" />
           <span>Send Zilliqa</span>
         </label>
       </li>
@@ -34,8 +34,9 @@
         <label 
           for="tab2" 
           role="button">
-          <i class="eva eva-clock-outline font-bold mr-2" />
+          <i class="eva eva-clock-outline font-semibold mr-2" />
           <span>Transactions</span>
+          <!-- <div class="pending-transactions"> 2</div> -->
         </label>
       </li>
       <li 
@@ -44,7 +45,7 @@
         <label 
           for="tab3" 
           role="button">
-          <i class="eva eva-eye-outline font-bold mr-2" />
+          <i class="eva eva-eye-outline font-semibold mr-2" />
           <span>Wallet Info</span>
         </label>
       </li>   
@@ -111,7 +112,7 @@ $content-selector: '~ .content > section';
 
   .content section h2,
   ul li label {
-    @apply font-bold text-teal;
+    @apply font-semibold text-primary;
   }
 
   ul {
@@ -129,6 +130,7 @@ $content-selector: '~ .content > section';
         }
       }
       label {
+        @include no-select;
         transition: all 0.3s ease-in-out;
         @apply text-gray-700;
         padding: 5px auto;
@@ -139,7 +141,7 @@ $content-selector: '~ .content > section';
         transition: all 0.2s ease-in-out;
         white-space: nowrap;
         -webkit-touch-callout: none;
-        @apply flex flex-row items-center justify-center;
+        @apply flex flex-row items-center justify-center relative;
         br {
           display: none;
         }
@@ -163,7 +165,7 @@ $content-selector: '~ .content > section';
       max-width: 100%;
       margin: 0 20%;
       height: $indicator-height;
-      @apply bg-teal;
+      @apply bg-primary;
       border-radius: 1px;
     }
   }
@@ -171,7 +173,7 @@ $content-selector: '~ .content > section';
     @include tabs {
       > label {
         cursor: default;
-        @apply text-teal;
+        @apply text-primary;
         @media (max-width: map-get($breakpoints, small)) {
           background: rgba(0, 0, 0, 0.08);
           @apply flex flex-col;
@@ -214,5 +216,10 @@ $content-selector: '~ .content > section';
       display: none;
     }
   }
+}
+.pending-transactions {
+  @apply absolute right-0 text-xs bg-gray-200 rounded;
+  top: -0.25rem;
+  padding: 0.1rem 0.4rem;
 }
 </style>

@@ -10,8 +10,8 @@
     </p>
     <div class="keystore__body">
       <span>
-        If you must, please  <u>double-check the URL & SSL cert</u>.
-        For additional security, <b>turn off your internet connection</b> prior to accessing/ creating a wallet.
+        If you must, please double-check the URL & SSL cert. It should say 
+        <code>https://zillet.io</code> in your URL bar.
       </span>
       <z-upload
         :name="fileName"
@@ -20,7 +20,7 @@
         @change="fileChanges"/>
       <div 
         v-if="isFile" 
-        class="max-w-md mx-auto">
+        class="max-w-2xl mx-auto">
         <z-input
           v-model="passphrase"
           placeholder="Type your password"
@@ -142,10 +142,10 @@ export default {
     }
   }
   &__title {
-    @apply text-grey-darkest my-4 text-2xl font-semibold;
+    @apply text-gray-800 my-4 text-2xl font-semibold;
   }
   &__body {
-    @apply max-w-md;
+    @apply max-w-2xl;
     margin: auto;
   }
 }

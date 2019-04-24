@@ -13,33 +13,33 @@
           class="w-full"
           label="Enter a password"
           placeholder="Do not forget this password"/>
-        <p class="text-grey-darker max-w-md mx-auto -mt-2 mb-4 text-sm italic text-left font-semibold">
+        <p class="text-gray-700 -mt-1 text-left text-sm italic text-left">
           Password should be atleast 8 chracter long
         </p>
         <z-button 
           :loading="loading" 
           :disabled="loading"
+          class="my-8"
           rounded
           @click="create">
           Create New Wallet
         </z-button>
         <div class="">
-          <span class="text-grey-darkest">
-            This password <b>encrypts</b> your private key. 
+          <span class="text-gray-800">
+            This password <span class="font-semibold">encrypts</span> your private key. 
             This does not act as a seed to generate your keys. 
-            <b>You will need this password + your private key to unlock your wallet.</b>
+            <span class="font-semibold">You will need this password + your private key to unlock your wallet.</span>
           </span>
           <br >
         </div>
-        <p class="font-semibold text-gray-700 mt-8">Already have a wallet? 
+        <p class="text-gray-700 mt-8">Already have a wallet? 
           <nuxt-link 
-            :to="{name: 'index'}"
-            class="text-teal">Access now
+            :to="{name: 'create-wallet'}"
+            class="text-teal-500 font-semibold">Access now
           </nuxt-link>
         </p>
       </div>
     </div>
-    {{ downloadModal }}
     <DownloadWallet 
       :visible="downloadModal" 
       :pk="privateKey" 
@@ -165,14 +165,14 @@ export default {
   &__header {
     @apply mb-8;
     h3 {
-      @apply font-bold text-2xl mb-4 text-gray-700;
+      @apply font-semibold text-2xl mb-4 text-gray-800;
     }
     p {
       @apply text-base;
     }
   }
   &__body {
-    @apply max-w-md;
+    @apply max-w-2xl;
     margin: auto;
   }
 }

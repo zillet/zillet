@@ -5,10 +5,14 @@
       'button--rounded': rounded,
     }, `button--${type}`, `button--${size}`]"
     v-bind="$attrs"
+    :disabled="loading"
     class="button"
     type="button"
     v-on="$listeners">
-    <slot />
+    <i 
+      v-if="loading"
+      class="eva eva-loader-outline rotating text-2xl"/>
+    <slot v-else />
   </button>
 </template>
 <script>

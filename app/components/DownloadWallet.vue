@@ -3,7 +3,7 @@
     :visible="visible" 
     @close="close">  
     <div class="card">
-      <h3 class="font-bold text-xl mb-8 text-gray-700"> 
+      <h3 class="font-semibold text-xl mb-8 text-gray-700"> 
         Download Your Wallet
       </h3>
       <z-textarea 
@@ -27,13 +27,13 @@
           </z-button>
         </div>
       </div>
-      <p class="text-grey-darker mb-2">
+      <p class="text-gray-700 mb-2">
         <b>Do not lose it!</b> It cannot be recovered if you lose it.
       </p>
-      <p class=" text-grey-darker mb-2">
+      <p class=" text-gray-700 mb-2">
         <b>Do not share it!</b> Your funds will be stolen if you use this file on a phishing site.
       </p>
-      <p class="text-grey-darker mb-2">
+      <p class="text-gray-700 mb-2">
         <b>Make a backup!</b> Secure it like the millions of dollars it may one day be worth.
       </p>
       <z-alert 

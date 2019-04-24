@@ -7,13 +7,15 @@ export default {
       name: 'Zilliqa Mainnet',
       url: ' https://api.zilliqa.com',
       explorer: 'https://explorer.zilliqa.com/',
-      version: 65537
+      version: 65537,
+      id: 1001
     },
     {
-      name: 'Zilliqa Dev',
+      name: 'Zilliqa Testnet',
       url: 'https://dev-api.zilliqa.com',
       explorer: 'https://dev-explorer.zilliqa.com/',
-      version: 21823489
+      version: 21823489,
+      id: 1002
     }
   ],
   WALLET_METHODS: [
@@ -37,7 +39,7 @@ export default {
       id: 1003,
       img: 'mnemonic.svg',
       title: 'Mnemonic phrase',
-      body: 'Access your wallet using human readable string',
+      body: '',
       allowed: false,
       buttonText: 'Coming Soon'
     }

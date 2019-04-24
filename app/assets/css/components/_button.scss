@@ -1,6 +1,7 @@
 .button {
-    @apply font-bold text-white;
+    @apply font-semibold text-white flex items-center justify-center m-auto;
     @include transition;
+
     &:hover {
         @apply shadow-md;
         @include transition;
@@ -20,7 +21,11 @@
     }
 
     &--default {
-        @apply border text-grey-darkest;
+        @apply border text-gray-800;
+
+        &:hover {
+            box-shadow: none;
+        }
     }
 
     &--rounded {
@@ -32,18 +37,19 @@
     }
 
     &--primary {
-        @apply bg-teal;
+        @apply bg-primary;
 
         &:hover {
-            @apply bg-teal-dark;
+            @apply bg-teal-500;
         }
     }
-    
+
     &--danger {
         @apply bg-red-600 text-white;
         @include transition;
+
         &:hover {
-        @include transition;
+            @include transition;
             @apply bg-red-700;
         }
     }
@@ -51,6 +57,7 @@
     &--danger {
         @apply bg-green-600 text-white;
         @include transition;
+
         &:hover {
             @apply bg-green-700;
             @include transition;
@@ -60,14 +67,17 @@
     &--warning {
         @apply bg-yellow-600 text-white;
         @include transition;
+
         &:hover {
             @apply bg-yellow-700;
             @include transition;
         }
     }
+
     &[type="button"]:disabled {
         cursor: not-allowed;
-        &:hover{
+
+        &:hover {
             box-shadow: none;
         }
     }

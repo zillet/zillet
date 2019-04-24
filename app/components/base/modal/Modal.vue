@@ -14,7 +14,7 @@
       @after-leave="backdropLeaving = false">
       <div 
         v-if="showBackdrop" 
-        @click="$emit('close')">
+        @click="backdropClick">
         <div class="absolute inset-0 bg-black opacity-25"/>
       </div>
     </transition>
@@ -30,7 +30,7 @@
       @after-leave="cardLeaving = false">
       <div 
         v-if="showContent" 
-        class="relative max-w-md w-full">
+        class="relative max-w-2xl w-full">
         <slot/>
       </div>
     </transition>
@@ -46,6 +46,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    autoclose: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -89,6 +93,11 @@ export default {
     close() {
       this.showBackdrop = false;
       this.showContent = false;
+    },
+    backdropClick() {
+      if (this.autoclose) {
+        this.$emit('close');
+      }
     }
   }
 };

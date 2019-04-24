@@ -35,9 +35,9 @@
     <div 
       v-if="getAccount.address" 
       class="account-info card mb-4 p-0">
-      <div class="flex flex-row w-full p-4">
+      <div class="account-info__top">
         <div class="account-info__main">
-          <div class="block tracking-wide text-grey-darker text-sm font-semibold">
+          <div class="block tracking-wide text-gray-700 text-sm font-semibold">
             Address
           </div>
           <div class="account-info__address">
@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="account-info__balance">
-          <div class="block tracking-wide text-grey-darker text-sm font-semibold">
+          <div class="block tracking-wide text-gray-700 text-sm font-semibold">
             Balance
           </div>
           <div class="account-info__amount">
@@ -71,8 +71,8 @@
             </span>
             <span
               class="text-xs italic text-left inline-block ml-2
-            font-semibold align-middle text-grey-darker font-normal 
-            underline cursor-pointer hover:text-teal"
+            font-semibold align-middle text-gray-700 font-normal 
+            underline cursor-pointer hover:text-teal-500"
               @click="getBalance(getAccount.address)">
               Refresh
             </span>
@@ -98,7 +98,7 @@
               :options="{ width: 250, color:{ dark: '#303133'}}"/>
           </div>
           <span class="mb-4 font-semibold">{{ `0x${getAccount.address}` }}</span>
-          <p class="text-grey-darker text-xs italic font-semibold">Scan QR code to import Address</p>
+          <p class="text-gray-700 text-xs italic font-semibold">Scan QR code to import Address</p>
           <z-button 
             type="default" 
             class="mt-6 w-full" 
@@ -159,6 +159,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import './../assets/css/_variables';
+@import './../assets/css/_mixins';
+
 .navigation {
   @apply flex py-6 w-full;
   // grid-template-columns: auto 1fr auto;
@@ -179,15 +182,21 @@ export default {
     @apply flex flex-col items-end justify-around;
   }
   &__link {
-    @apply text-grey-light uppercase font-bold tracking-wide text-base;
+    @apply text-gray-300 uppercase font-bold tracking-wide text-base;
     @apply flex items-center justify-end;
     &:hover {
-      @apply text-teal;
+      @apply text-primary;
     }
   }
 }
 .account-info {
   @apply flex flex-col items-start justify-center w-full;
+  &__top {
+    @apply flex flex-row w-full p-4;
+    @include mobile {
+      @apply flex flex-col;
+    }
+  }
   &__main {
     @apply flex flex-1 flex-col items-start justify-center;
     white-space: nowrap;
@@ -225,6 +234,9 @@ export default {
   &__balance {
     @apply flex flex-col items-start justify-center pl-4;
     flex: 0 0 15rem; /* do not grow, do not shrink, start at 13rem */
+    @include mobile {
+      @apply flex-1  pl-0 pt-2;
+    }
   }
   &__amount {
     @apply flex flex-row my-1 items-center;
@@ -232,7 +244,7 @@ export default {
       @apply leading-normal font-bold text-lg;
     }
     .usd {
-      @apply tracking-wide text-grey-darker font-semibold;
+      @apply tracking-wide text-gray-700 font-semibold;
     }
   }
 }

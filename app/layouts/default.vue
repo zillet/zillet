@@ -3,14 +3,18 @@
     <Notifications/>
     <Navigation/>
     <Nuxt/>
+    <Footer />
   </div>
 </template>
 <script>
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+
 export default {
   name: 'Default',
   components: {
-    Navigation
+    Navigation,
+    Footer
   }
 };
 </script>

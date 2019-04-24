@@ -13,7 +13,7 @@
 }
 
 .list-enter,
-.list-leave-to{
+.list-leave-to {
     @apply opacity-0;
 }
 
@@ -69,7 +69,7 @@
     }
 
     .alert.alert-primary {
-        @apply text-teal;
+        @apply text-primary;
     }
 
     .alert i {

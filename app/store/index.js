@@ -26,7 +26,8 @@ const createStore = () =>
         txs: {
           docs: []
         }
-      }
+      },
+      localTxns: []
     },
     actions,
     mutations,

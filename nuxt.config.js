@@ -73,7 +73,8 @@ export default {
     '@/plugins/clipboard',
     '@/plugins/jazzicon',
     '@/plugins/vue-filters',
-    '@/plugins/vue-cryptoicon'
+    '@/plugins/vue-cryptoicon',
+    '@/plugins/vue-moment'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/tailwindcss'],
   axios: {

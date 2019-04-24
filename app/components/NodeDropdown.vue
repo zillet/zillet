@@ -10,7 +10,7 @@
         @click="showDropDown = !showDropDown">
         <div :class="`h-2 w-2 mr-2 rounded-full inline-block align-middle ${connectionStatusClass}`"/>
         <span 
-          class="inline-block mt-0 hover:text-teal 
+          class="inline-block mt-0 hover:text-teal-500 
           block text-xs uppercase tracking-wide cursor-pointer
           font-semibold text-gray-400">
           {{ selectedNode.name }}
@@ -30,16 +30,16 @@
           <div 
             v-for="node in nodes" 
             :key="node.name"
-            :class="{'bg-grey-lighter':selectedNode.name === node.name}"
+            :class="{'bg-gray-200':selectedNode.name === node.name}"
             class="flex items-start text-left px-4 py-2 cursor-pointer hover:bg-grey-lightest"
             @click="changeNode(node)">
             <div class="text-sm">
-              <p class="text-grey-darkest leading-none font-semibold mb-1"> {{ node.name }}</p>
-              <p class="text-grey-darker text-xs"> {{ node.url }}</p>
+              <p class="text-gray-800 leading-none font-semibold mb-1"> {{ node.name }}</p>
+              <p class="text-gray-700 text-xs"> {{ node.url }}</p>
             </div>
           </div>
           <button 
-            class="bg-teal text-white px-4 py-3 w-full text-sm font-semibold" 
+            class="bg-primary text-white px-4 py-3 w-full text-sm font-semibold" 
             type="button"
             @click="isNewNode=true; showDropDown=false;">
             Add Custom node
