@@ -2,8 +2,8 @@
   <div class="overflow-hidden relative w-full mb-6">
     <button 
       :class="{
-        'bg-teal hover:bg-teal-dark text-white ': !name, 
-        'border-grey-dark text-grey-darkest border': name,
+        'bg-primary hover:bg-teal-500 text-white ': !name, 
+        'border-gray-400-dark text-gray-800 border': name,
         'rounded': rounded
       }"
       class="w-full hover:shadow-md 

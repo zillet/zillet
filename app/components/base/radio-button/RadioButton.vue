@@ -8,7 +8,7 @@
     {{ $listeners }}
     <label 
       :for="$attrs.id"
-      class="block text-grey-darker ml-2" 
+      class="block text-gray-700 ml-2" 
     >
       <slot/>
     </label>

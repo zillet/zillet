@@ -1,57 +1,60 @@
 <template>
   <div class="footer">
-    <slot v-if="this.$slots.default" />
-    <nuxt-link 
-      v-else
-      :to="{name: 'access-wallet'}" 
-      class="text-teal text-sm font-semibold">
-      Already have wallet
-    </nuxt-link>
-    &nbsp;
-    &nbsp;
-    ·  
-    &nbsp;
-    &nbsp;
-    <a 
-      class="text-teal text-sm font-semibold cursor-pointer"
-      @click="showDisclaimer=!showDisclaimer">
-      Disclaimer
-    </a>
-    <z-modal 
-      v-if="showDisclaimer" 
-      title="Disclaimer"> 
-      <template v-slot:header>
-        <h3 class="header modal"> Disclaimer</h3>
-      </template>
-      <div class="disclaimer--wrapper">
-        <p>
-          <strong>Always be vigilant about safety and security!</strong>
-        </p>
-        <p>
-          <strong>Always backup your keys:</strong>
-          We do not have access to, nor do we store, your keys to the 
-          tokens or funds you have on our software. No data leaves 
-          your computer/phone/browser. We only provide a service to 
-          make it easy for users to create, save and access information
-          that is needed to interact with the blockchain. It is your
-          responsibility to securely store and backup your keys.
-        </p>
-        <p>
-          <strong>We are not responsible for any loss:</strong>
-          The Zilliqa blockchain as well as the software are under active 
-          development. There is always the possibility of something 
-          unexpected happening that causes your tokens or funds to be lost. 
-          Please do not use the software for more than what you are willing 
-          to lose, and please be careful. By using the software, you agree
-          that each of developer of this software and Zilliqa Research Pte Ltd. 
-          assume no responsibility or liability for any error, omission, delay, 
-          damages, costs, loss or expense (together “Losses”) incurred 
-          by you from the use of the software. You acknowledge that you
-          may suffer a Loss from the use of the software and that the use 
-          of the software is at your own risk.
-        </p>
+    <div class="footer__links">
+      <div class="left">
+        <a 
+          @click="showDisclaimer=!showDisclaimer">
+          Disclaimer
+        </a>
       </div>
-      <template v-slot:footer>
+      <div class="right">
+        <a 
+          href="https://github.com/man15h/zillet"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="showDisclaimer=!showDisclaimer">
+          <i class="eva eva-github-outline mr-1" />
+          Github
+        </a>
+      </div>
+    </div>
+    <z-modal 
+      :visible="showDisclaimer" 
+      :autoclose="false"
+      title="Disclaimer"
+      @close="showDisclaimer=false"> 
+      <div class="card">
+        <h3 class="font-semibold text-xl mb-8 text-gray-700"> 
+          Disclaimer
+        </h3>
+        <div class="disclaimer--wrapper">
+          <p class="font-semibold">
+            Always be vigilant about safety and security!
+          </p>
+          <p>
+            <span class="font-semibold">Always backup your keys:</span>
+            We do not have access to, nor do we store, your keys to the 
+            tokens or funds you have on our software. No data leaves 
+            your computer/phone/browser. We only provide a service to 
+            make it easy for users to create, save and access information
+            that is needed to interact with the blockchain. It is your
+            responsibility to securely store and backup your keys.
+          </p>
+          <p>
+            <span class="font-semibold">We are not responsible for any loss:</span>
+            The Zilliqa blockchain as well as the software are under active 
+            development. There is always the possibility of something 
+            unexpected happening that causes your tokens or funds to be lost. 
+            Please do not use the software for more than what you are willing 
+            to lose, and please be careful. By using the software, you agree
+            that each of developer of this software and Zilliqa Research Pte Ltd. 
+            assume no responsibility or liability for any error, omission, delay, 
+            damages, costs, loss or expense (together “Losses”) incurred 
+            by you from the use of the software. You acknowledge that you
+            may suffer a Loss from the use of the software and that the use 
+            of the software is at your own risk.
+          </p>
+        </div>
         <div class="disclaimer--footer">
           <div 
             class="cursor-pointer" 
@@ -63,12 +66,13 @@
           <div>
             <z-button 
               size="small"
+              rounded
               @click="saveConsent">
               Okay, Got it.
             </z-button>
           </div>
         </div>
-      </template>
+      </div>
     </z-modal>
   </div>
 </template>
@@ -108,22 +112,38 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/css/_mixins.scss';
 .disclaimer {
   &--wrapper {
-    @apply text-grey-darkest;
+    @apply text-gray-800;
     h3 {
       @apply mb-8;
     }
     p {
       text-align: left;
-      @apply leading-normal text-grey-darkest mb-4;
+      @apply leading-normal text-gray-800 mb-4;
     }
   }
   &--footer {
     @apply flex items-center justify-between;
     @include no-select;
+  }
+}
+.footer {
+  @apply w-full mt-2;
+  &__links {
+    @apply flex flex-row justify-between;
+    a {
+      @apply tracking-wide text-gray-500 cursor-pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.92rem;
+      &:hover {
+        @apply text-gray-500;
+      }
+    }
   }
 }
 </style>

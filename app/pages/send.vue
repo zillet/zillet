@@ -1,10 +1,10 @@
 <template>
   <div class="w-full card">
-    <h3 class="font-bold text-2xl mb-4 text-gray-700 text-center w-full"> 
+    <h3 class="font-semibold text-2xl mb-4 text-gray-700 text-center w-full"> 
       Send Zilliqa
     </h3>
-    <div class="max-w-md m-auto text-left">
-      <div class="tracking-wide text-grey-darker text-sm font-semibold mb-2">Recipient Address</div>
+    <div class="max-w-2xl m-auto text-left">
+      <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">Recipient Address</div>
       <z-input
         v-model="transaction.address"
         :hide="false"
@@ -18,7 +18,7 @@
       </z-alert>
       <div class="amount-wrapper">
         <div class="label">
-          <div class="tracking-wide text-grey-darker text-sm font-semibold mb-2">
+          <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
             Amount
           </div>
           <div 
@@ -57,7 +57,7 @@
         v-if="isAdvance" 
         class="gas-form">
         <div class="gas__limit">
-          <div class="tracking-wide text-grey-darker text-sm font-semibold mb-2">
+          <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
             Gas Limit
           </div>
           <z-input
@@ -69,7 +69,7 @@
         </div>
         <div class="gas__space"/>
         <div class="gas__price">
-          <div class="tracking-wide text-grey-darker text-sm font-semibold mb-2">
+          <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
             Gas Price (QA)
           </div>
           <z-input
@@ -84,7 +84,7 @@
         <div >
           <div
             class="text-sm text-left inline-block
-          align-middle text-grey-darker font-normal  font-semibold">
+          align-middle text-gray-700 font-normal  font-semibold">
             Fee: 
             <span class="text-md font-bold">
               {{ transactionFee }}
@@ -96,8 +96,8 @@
           @click="isAdvance=!isAdvance">
           <span
             class="text-sm italic text-left inline-block 
-        align-middle text-grey-darker font-normal 
-        cursor-pointer hover:text-teal font-semibold"
+        align-middle text-gray-700 font-normal 
+        cursor-pointer hover:text-teal-500 font-semibold"
             @click="getBalance(getAccount.address)">
             {{ isAdvance ? '-': '+' }} Advance
           </span>
@@ -112,17 +112,17 @@
           label="Nonce"
           placeholder="Enter nonce here"/>
       </div>
-      <z-button 
-        v-show="!isSigned || !isAdvance" 
+      <z-button  
+        :loading="loading"
         class="w-full"
         rounded
         @click="makeTxn">
-        {{ isAdvance ? ' Generate Transaction' : 'Send Transaction' }}
+        {{ 'Send Transaction' }}
       </z-button>
-      <div 
+      <!-- <div 
         v-show="isSigned && isAdvance" 
         class="mt-4">
-        <div class="tracking-wide text-grey-darker text-sm font-semibold mb-2">
+        <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
           Signed Transaction
         </div>
         <z-textarea
@@ -137,7 +137,7 @@
           @click="send">
           Send Transaction
         </z-button>
-      </div>
+      </div> -->
     </div>
     <z-modal 
       :visible="isBroadcast" 
@@ -148,7 +148,7 @@
         </h3>
         <div class="flex flex-col">
           <z-icon type="success" />
-          <span class="text-base text-grey-darkest">
+          <span class="text-base text-gray-800 leading-normal font-semibold">
             {{ `0x${tranxId}` }}
           </span>
           <div class="flex flex-row -mx-2">
@@ -168,7 +168,8 @@
                 rounded
                 class="w-full flex-1" >
                 <z-button 
-                  class="mt-8">
+                  rounded
+                  class="mt-8 w-full">
                   Check on Explorer
                 </z-button>
               </a>
@@ -214,7 +215,8 @@ export default {
     ...mapGetters(['getAccount', 'isOnline', 'getPrices']),
     ...mapState({
       gasPrice: state => state.minimumGasPrice,
-      selectedNode: state => state.selectedNode
+      selectedNode: state => state.selectedNode,
+      loading: state => state.loading
     }),
     stringifySignedTx() {
       return JSON.stringify(this.signedTx);
@@ -262,14 +264,14 @@ export default {
     usdAmount: {
       handler(value) {
         if (this.isFiatAmountFocus) {
-          this.transaction.amount = value / this.getPrices.USD;
+          this.transaction.amount = (value / this.getPrices.USD).toFixed(4);
         }
       }
     },
     'transaction.amount': {
       handler(value) {
         if (this.isCryptoAmountFocus) {
-          this.usdAmount = value * this.getPrices.USD;
+          this.usdAmount = (value * this.getPrices.USD).toFixed(2);
         }
       }
     }
@@ -280,10 +282,11 @@ export default {
       const { BN, Long, validation, units } = this.$zil.util;
       const amount = this.transaction.amount * Math.pow(10, this.multiplier);
       if (!validation.isAddress(this.transaction.address)) {
-        return this.$notify({
+        this.$notify({
           message: `Reciever's address is invalid`,
           type: 'danger'
         });
+        return false;
       }
       for (const key in this.transaction) {
         if (
@@ -291,10 +294,11 @@ export default {
           (this.transaction[key] == '' ||
             !this.$validation.isNumber(this.transaction[key]))
         ) {
-          return this.$notify({
+          this.$notify({
             message: lookupMap.get(key),
             type: 'danger'
           });
+          return false;
         }
       }
       if (this.isOnline) {
@@ -303,10 +307,11 @@ export default {
           Number(amount) + Number(this.transactionFee) >
           Number(this.getAccount.balance)
         ) {
-          return this.$notify({
+          this.$notify({
             message: `Amount+Fee can not be greater than your balance`,
             type: 'danger'
           });
+          return false;
         }
       } else {
         this.$notify({
@@ -343,6 +348,7 @@ export default {
         signature
       };
       this.isSigned = true;
+      return true;
     },
     async send() {
       try {
@@ -381,6 +387,11 @@ export default {
       const { units } = this.$zil.util;
       this.transaction.amount =
         this.getAccount.balance * Math.pow(10, -this.multiplier);
+      this.usdAmount = (
+        this.getAccount.balance *
+        Math.pow(10, -this.multiplier) *
+        this.getPrices.USD
+      ).toFixed(2);
     },
     cryptoAmountFocus(test) {
       this.isCryptoAmountFocus = true;
@@ -392,10 +403,8 @@ export default {
       this.isFiatAmountFocus = true;
     },
     async makeTxn() {
-      if (this.isAdvance) {
-        this.sign();
-      } else {
-        await this.sign();
+      const isSigned = await this.sign();
+      if (isSigned) {
         await this.send();
       }
     }
@@ -403,13 +412,18 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import './../assets/css/_variables';
+@import './../assets/css/_mixins';
 .amount-wrapper {
   @apply flex flex-col w-full;
   .label {
     @apply flex flex-row;
+    @include mobile {
+      @apply justify-between;
+    }
     &__btn {
-      @apply text-teal text-sm cursor-pointer;
-      margin-left: 12.4rem;
+      @apply text-teal-600 text-sm cursor-pointer;
+      margin-left: 13.3rem;
     }
   }
   .amount-form {

@@ -11,8 +11,12 @@ function setData(method, params) {
 export async function nuxtClientInit({ commit, dispatch }, app) {
   try {
     const node = JSON.parse(localStorage.getItem('_selected_node'));
+    const localTxn = JSON.parse(localStorage.getItem('_local_txn'));
     if (node) {
       commit('SELECT_NODE', node);
+    }
+    if (localTxn) {
+      commit('LOAD_LOCAL_TXN', localTxn);
     }
     await dispatch('getMinimumGasPrice');
     await dispatch('getPrice', app.env.cryptocompare);
@@ -44,7 +48,6 @@ export function getPrice({ commit }, { url, token }) {
 }
 export function getTransactions({ commit }, data) {
   return new Promise((resolve, reject) => {
-    console.log(data);
     var address = data.address;
     var network = data.network || 'mainnet';
     var page = data.page || 1;
@@ -131,6 +134,8 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
       .$post('', data)
       .then(res => {
         commit('SUCCESS');
+        tx.res = res;
+        commit('SAVE_TXN', tx);
         dispatch('getBalance', state.wallet.address);
         resolve(res);
       })
@@ -147,10 +152,12 @@ export function getMinimumGasPrice({ commit }) {
     this.$axios
       .$post('', data)
       .then(res => {
+        commit('SUCCESS');
         commit('MIN_GAS_PRICE', res.result);
         resolve(res);
       })
       .catch(err => {
+        commit('ERROR');
         reject(err);
       });
   });

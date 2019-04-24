@@ -10,11 +10,12 @@
     </p>
     <div class="private-key__body">
       <span>
-        If you must, please  <u>double-check the URL & SSL cert</u>. 
-        For additional security, <b>turn off your internet connection</b> prior to accessing/ creating a wallet.
+        If you must, please double-check the URL & SSL cert. It should say <code>https://zillet.io</code> in your URL bar.
+        <!-- If you must, please  <u>double-check the URL & SSL cert</u>. 
+        For additional security, <b>turn off your internet connection</b> prior to accessing/ creating a wallet. -->
       </span>
       <div 
-        class="max-w-md mx-auto mt-4">
+        class="max-w-2xl mx-auto mt-4">
         <z-input
           v-model="privateKey"
           placeholder="Enter your private key here"
@@ -85,10 +86,10 @@ export default {
     }
   }
   &__title {
-    @apply text-grey-darkest my-4 text-2xl font-semibold;
+    @apply text-gray-800 my-4 text-2xl font-semibold;
   }
   &__body {
-    @apply max-w-md;
+    @apply max-w-2xl;
     margin: auto;
   }
 }

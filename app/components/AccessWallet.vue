@@ -33,15 +33,16 @@
         </div>
       </div>
     </div>
-    <p class="text-grey-darkest">
+    <p class="text-gray-800">
       <code>Zillet.io</code> does not hold your keys for you. We cannot access accounts, 
       recover keys, reset passwords, nor reverse transactions. Protect your keys & 
-      always check that you are on correct URL. <strong>You are responsible for your security</strong>.
+      always check that you are on correct URL. 
+      <span class="font-semibold">You are responsible for your security</span>.
     </p>
-    <p class="font-semibold text-gray-700 mt-8">Do not have a wallet? 
+    <p class="text-gray-700 mt-8">Do not have a wallet? 
       <nuxt-link 
         :to="{name: 'create-wallet'}"
-        class="text-teal">Create A New Wallet
+        class="text-teal-500 font-semibold">Create A New Wallet
       </nuxt-link>
     </p>
   </div>
@@ -79,7 +80,7 @@ export default {
   &__header {
     @apply mb-12;
     h3 {
-      @apply font-bold text-2xl mb-4 text-gray-800;
+      @apply font-semibold text-2xl mb-4 text-gray-800;
     }
     p {
       @apply text-base;
@@ -112,7 +113,7 @@ export default {
       }
     }
     &__body {
-      @apply px-12 text-grey-darkest pb-4;
+      @apply px-12 text-gray-800 pb-4;
       font-size: 0.9rem;
     }
     &__footer {

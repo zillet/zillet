@@ -3,7 +3,7 @@
     <div class="w-full my-auto text-left">
       <label
         v-if="label"
-        class="block uppercase tracking-wide text-grey-darker text-sm font-bold mb-4" 
+        class="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-4" 
         for="address">
         {{ label }}
       </label>
@@ -13,10 +13,10 @@
           v-bind="$attrs"
           type="text" 
           class="appearance-none leading-normal w-px flex-1
-            relative bg-grey-lighter font-semibold
-            text-grey-darkest border border-grey-lighter 
+            relative bg-gray-200 font-semibold
+            text-gray-800 border border-gray-400 
             rounded py-3 px-4 mb-3 leading-tight 
-            focus:outline-none focus:bg-white focus:border-grey"
+            focus:outline-none focus:bg-white focus:border-gray-400"
         />
         <slot/>
       </div>

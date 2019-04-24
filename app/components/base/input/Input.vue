@@ -66,34 +66,37 @@ export default {
 <style lang="scss" scoped>
 i.eva {
   font-size: 1.6rem;
-  @apply text-grey-darkest;
+  @apply text-gray-800;
 }
 .input {
   @apply w-full my-auto text-left;
 
   &__label {
     @apply block mb-4;
-    @apply uppercase tracking-wide text-grey-darker font-bold;
+    @apply uppercase tracking-wide text-gray-700 font-bold;
   }
 
   &__wrapper {
     @apply flex flex-wrap items-stretch w-full relative;
+    input {
+      @apply w-full;
+    }
   }
 
   &__field {
-    @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-grey-lighter;
-    @apply border border-grey-lighter rounded;
-    @apply appearance-none leading-normal font-semibold text-grey-darkest;
+    @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-gray-200;
+    @apply border border-gray-200 rounded;
+    @apply appearance-none leading-normal font-semibold text-gray-800;
 
     &:focus {
-      @apply outline-none bg-white border-grey;
+      @apply outline-none bg-white border-gray-400;
     }
   }
 
   &__side-btn {
     @apply flex items-center bg-white h-12 px-3;
-    @apply border border-grey-lighter rounded rounded-l-none;
-    @apply leading-normal text-grey-dark;
+    @apply border border-gray-200 rounded rounded-l-none;
+    @apply leading-normal text-gray-500;
   }
 }
 </style>
