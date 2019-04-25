@@ -1,36 +1,22 @@
-# Zilliqa Wallet
+# zilliqa-wallet
 
-UI/UX focused minimal wallet. It is work in progress.
+> Nuxt.js project
 
 ## Build Setup
 
 ``` bash
 # install dependencies
-$ npm install # yarn install
+$ npm install # Or yarn install
 
-# serve with hot reload
-$ npm run dev #  yarn dev
+# serve with hot reload at localhost:3000
+$ npm run dev
 
 # build for production and launch server
-$ npm run build # yarn build
-$ npm start # yarn start
+$ npm run build
+$ npm start
+
+# generate static project
+$ npm run generate
 ```
 
-## Docker
-
-```
-$ docker build -t "zilliqa-wallet" .  # build docker image
-$ docker run --name zilliqa-wallet  -d -p 80:80  zilliqa-wallet # run docker image at port 80
-```
-
-### Todo
-
-- [x] Simple user flow
-- [x] Offline signing
-- [ ] Contract interaction
-- [ ] Transaction history
-- [ ] Multiple account management
-
-
-## License
-[MIT](LICENSE) license.
+For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).

@@ -41,7 +41,7 @@
     </p>
     <p class="text-gray-700 mt-8">Do not have a wallet? 
       <nuxt-link 
-        :to="{name: 'create-wallet'}"
+        :to="{name: 'create'}"
         class="text-teal-500 font-semibold">Create A New Wallet
       </nuxt-link>
     </p>
