@@ -5,10 +5,16 @@
     </h3>
     <div class="flex w-full">
       <div 
-        v-if="!transactions.length" 
+        v-if="!transactions.length && loading" 
         class="spinner">
         <div class="double-bounce1"/>
         <div class="double-bounce2"/>
+      </div>
+      <div 
+        v-else-if="!transactions.length" 
+        style="min-height:16rem"
+        class="w-full flex flex-col justify-center items-center">
+        No transaction found.
       </div>
       <div 
         v-else 
@@ -83,30 +89,42 @@
             <div 
               v-if="selectedTxn===txn.hash" 
               class="transaction__bottom-row">
-              <div class="block tracking-wide text-gray-700 text-sm font-semibold">
-                Transaction Hash
-              </div>
-              <span>
-                <a 
-                  :href="`${selectedNode.explorer}transactions/${txn.hash}`" 
-                  class="hover:text-teal-600"
-                  target="_blank">{{ txn.hash }}</a>
-                <i 
-                  v-clipboard:copy="`${txn.hash}`" 
-                  v-clipboard:success="onCopyTxn"
-                  v-clipboard:error="onErrorTxn"
-                  class="eva eva-copy-outline"/>
-                <a 
-                  :href="`${selectedNode.explorer}transactions/${txn.hash}`" 
-                  target="_blank">
+              <div>
+                <div class="block tracking-wide text-gray-700 text-sm font-semibold">
+                  Transaction Hash
+                </div>
+                <span>
+                  <a 
+                    :href="`${selectedNode.explorer}transactions/${txn.hash}`" 
+                    class="hover:text-teal-600"
+                    target="_blank">{{ txn.hash }}</a>
                   <i 
-                    class="eva eva-compass-outline"/>
-                </a>
-              </span>
+                    v-clipboard:copy="`${txn.hash}`" 
+                    v-clipboard:success="onCopyTxn"
+                    v-clipboard:error="onErrorTxn"
+                    class="eva eva-copy-outline"/>
+                  <a 
+                    :href="`${selectedNode.explorer}transactions/${txn.hash}`" 
+                    target="_blank">
+                    <i 
+                      class="eva eva-external-link-outline"/>
+                  </a>
+                </span>
+              </div>
+              <div class="ml-12">
+                <div class="block tracking-wide text-gray-700 text-sm font-semibold">
+                  Fee
+                </div>
+                <span>
+                  {{ txn.fee* Math.pow(10, -12) }} ZIL
+                </span>
+              </div>
             </div>
           </div>
         </transition-group>
-        <span class="text-gray-700 pt-4 text-left text-sm italic text-left"> 
+        <span 
+          v-if="transactions.length > 24" 
+          class="text-gray-700 pt-4 text-left text-sm italic text-left"> 
           * These are only last 25 Transactions 
         </span>
       </div>
@@ -134,7 +152,8 @@ export default {
     ...mapState({
       viewTxns: state => state.viewblockAccount.txs,
       selectedNode: state => state.selectedNode,
-      localTxns: state => state.localTxns
+      localTxns: state => state.localTxns,
+      loading: state => state.loading
     }),
     transactions() {
       const address = this.getAccount.address;
@@ -144,14 +163,23 @@ export default {
       return [...txn, ...this.viewTxns.docs];
     }
   },
-  beforeMount() {
+  watch: {
+    selectedNode: {
+      handler(value) {
+        console.log(value);
+        this.getTransactions(this.requestParams);
+      },
+      deep: true
+    }
+  },
+  async beforeMount() {
     this.requestParams.address = this.getAccount.address;
     if (this.selectedNode.id == 1001) {
       this.requestParams.network = 'mainnet';
-      this.getTransactions(this.requestParams);
+      await this.getTransactions(this.requestParams);
     } else if (this.selectedNode.id == 1002) {
       this.requestParams.network = 'testnet';
-      this.getTransactions(this.requestParams);
+      await this.getTransactions(this.requestParams);
     } else {
       console.error('Can not fetch transaction from unknown network');
     }
@@ -269,7 +297,7 @@ export default {
     @apply flex flex-row w-full px-4 py-3;
   }
   &__bottom-row {
-    @apply flex flex-col w-full px-4 py-3 text-left;
+    @apply flex flex-row w-full px-4 py-3 text-left;
     span {
       @apply leading-normal;
       white-space: nowrap;

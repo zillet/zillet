@@ -7,7 +7,7 @@
         'rounded': rounded
       }"
       class="w-full hover:shadow-md 
-            font-bold py-3 px-8">
+            font-semibold py-3 px-8">
       <span class="ml-2">{{ name ? name : 'Select wallet file' }}</span>
     </button>
     <input 

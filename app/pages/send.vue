@@ -97,8 +97,7 @@
           <span
             class="text-sm italic text-left inline-block 
         align-middle text-gray-700 font-normal 
-        cursor-pointer hover:text-teal-500 font-semibold"
-            @click="getBalance(getAccount.address)">
+        cursor-pointer hover:text-teal-500 font-semibold">
             {{ isAdvance ? '-': '+' }} Advance
           </span>
         </div>

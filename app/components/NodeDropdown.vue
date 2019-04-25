@@ -92,6 +92,9 @@ export default {
         this.isNewNode = false;
         this.selectNode(node);
       }
+      this.$router.push({
+        name: 'index'
+      });
     },
     async checkConnection(url) {
       try {
