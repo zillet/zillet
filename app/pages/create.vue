@@ -2,7 +2,7 @@
   <div class="create-wallet">
     <div class="card">
       <div class="create-wallet__header">
-        <h3> 
+        <h3>
           Generate your own Zilliqa wallet instantly!
         </h3>
       </div>
@@ -16,8 +16,8 @@
         <p class="text-gray-700 -mt-1 text-left text-sm italic text-left">
           Password should be atleast 8 chracter long
         </p>
-        <z-button 
-          :loading="loading" 
+        <z-button
+          :loading="loading"
           :disabled="loading"
           class="my-8"
           rounded
@@ -26,27 +26,33 @@
         </z-button>
         <div class="">
           <span class="text-gray-800">
-            This password <span class="font-semibold">encrypts</span> your private key. 
-            This does not act as a seed to generate your keys. 
-            <span class="font-semibold">You will need this password + your private key to unlock your wallet.</span>
+            This password <span class="font-semibold">encrypts</span> your
+            private key. This does not act as a seed to generate your keys.
+            <span 
+              class="font-semibold">You will need this password + your private key to unlock your
+              wallet.
+            </span>
           </span>
           <br >
         </div>
-        <p class="text-gray-700 mt-8">Already have a wallet? 
+        <p class="text-gray-700 mt-8">
+          Already have a wallet?
           <nuxt-link 
-            :to="{name: 'create-wallet'}"
-            class="text-teal-500 font-semibold">Access now
+            :to="{ name: 'index' }" 
+            class="text-teal-500 font-semibold"
+          >Access now
           </nuxt-link>
         </p>
       </div>
     </div>
-    <DownloadWallet 
-      :visible="downloadModal" 
-      :pk="privateKey" 
+    <DownloadWallet
+      :visible="downloadModal"
+      :pk="privateKey"
       :key-saved="isKeyDownloaded"
-      @printWallet="print" 
+      @printWallet="print"
       @downloadKeystore="downloadWalletJson"
-      @close="downloadModal = false" />
+      @close="downloadModal = false"
+    />
   </div>
 </template>
 <script>

@@ -1,8 +1,11 @@
+import path from 'path';
+
 export default {
   mode: 'spa',
   srcDir: 'app/',
   head: {
-    title: 'Zilliqa Wallet',
+    titleTemplate: '%s | Zillet.io',
+    htmlAttrs: { lang: 'en' },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -54,10 +57,9 @@ export default {
     start_url: '/',
     display: 'standalone'
   },
-  loading: { color: '#fff' },
   css: [
     {
-      src: '~/assets/css/main.scss',
+      src: '@/assets/css/main.scss',
       lang: 'scss'
     },
     'balloon-css/balloon.min.css',
@@ -73,18 +75,32 @@ export default {
     '@/plugins/clipboard',
     '@/plugins/jazzicon',
     '@/plugins/vue-filters',
-    '@/plugins/vue-cryptoicon',
+    { src: '@/plugins/vue-cryptoicon', ssr: false },
     '@/plugins/vue-moment'
   ],
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/tailwindcss'],
-  axios: {
-    baseURL: process.env.API_BASE_URL
-      ? process.env.API_BASE_URL
-      : 'http://localhost:4200/'
-  },
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-purgecss'],
+  loading: { color: '#3B8070' },
   build: {
-    extend(config, ctx) {
-      if (ctx.isDev && ctx.isClient) {
+    postcss: {
+      plugins: {
+        'postcss-url': {},
+        tailwindcss: path.resolve(__dirname, './tailwind.config.js'),
+        cssnano: {
+          preset: 'default',
+          discardComments: { removeAll: true },
+          zIndex: false
+        }
+      },
+      preset: {
+        stage: 0,
+        autoprefixer: {
+          cascade: false,
+          grid: true
+        }
+      }
+    },
+    extend(config, { isDev, isClient }) {
+      if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
