@@ -1482,7 +1482,7 @@
   resolved "https://registry.yarnpkg.com/@nuxtjs/pwa-utils/-/pwa-utils-3.0.0-beta.14.tgz#c5f6ebc483db4d341d52a067e97c2fc0977e3f53"
   integrity sha512-z98S3jNO2S8tBEQbE6AM/w3NjJup5IKwIV/a/bTfaI8pV8IkVsxedZDlYXnCSr0h34L/mED+yQMbSpAS8Mgf6w==
 
-"@nuxtjs/pwa@^3.0.0-beta.12":
+"@nuxtjs/pwa@^3.0.0-beta.14":
   version "3.0.0-beta.14"
   resolved "https://registry.yarnpkg.com/@nuxtjs/pwa/-/pwa-3.0.0-beta.14.tgz#47b06554aff23c3d20cd0c42d74dac22706ad29b"
   integrity sha512-nKZw2NmFJDw9R8M7o+ncWvmkvJ6rLARHbnRBkx8aOiCjLmd//8DAKeo/gz3RnCesueTcct0peYID0VDtiED6hg==

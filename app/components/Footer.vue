@@ -11,9 +11,8 @@
         <a 
           href="https://github.com/man15h/zillet"
           target="_blank"
-          rel="noopener noreferrer"
-          @click="showDisclaimer=!showDisclaimer">
-          <i class="eva eva-github-outline mr-1" />
+          rel="noopener noreferrer">
+          <i class="eva eva-github mr-1" />
           Github
         </a>
       </div>

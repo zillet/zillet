@@ -38,6 +38,12 @@
           @click="unlock()">
           Unlock wallet
         </z-button>
+        <div class="flex flex-row mt-8 justify-center">
+          <i 
+            class="eva eva-shield text-xl mr-2 relative text-gray-700" 
+            style="top:2px;"/>
+          We do not store your private key on our servers or transmit it over the network at any time.
+        </div>
       </div>
     </div>
   </div>

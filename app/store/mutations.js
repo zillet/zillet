@@ -17,6 +17,13 @@ export const BALANCE = (state, result) => {
 };
 export const SELECT_NODE = (state, node) => {
   state.selectedNode = { ...state.selectedNode, ...node };
+  state.wallet = {
+    address: '',
+    privateKey: '',
+    publicKey: '',
+    balance: '',
+    nonce: ''
+  };
 };
 export const MIN_GAS_PRICE = (state, price) => {
   state.minimumGasPrice = price;

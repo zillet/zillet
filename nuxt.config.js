@@ -47,7 +47,7 @@ export default {
     name: 'Zilliqa Wallet',
     short_name: 'Zilliqa',
     lang: 'en',
-    description: 'Lightweight UX focused Zilliqa wallet',
+    description: 'Lightweight UI/UX focused Zilliqa wallet',
     theme_color: '#00c2b6',
     background_color: '#2a2f39',
     scope: '/',
