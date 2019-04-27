@@ -28,6 +28,11 @@
             </button>
           </div>
         </z-input>
+        <z-alert 
+          type="danger" 
+          class="mb-6 mt-2">
+          Do not send ERC-20 ZILfunds to this address.
+        </z-alert>
         <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">Public Key</div>
         <z-input
           :value="`0x${getAccount.publicKey}`"
