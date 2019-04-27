@@ -76,7 +76,8 @@ export default {
     '@/plugins/jazzicon',
     '@/plugins/vue-filters',
     { src: '@/plugins/vue-cryptoicon', ssr: false },
-    '@/plugins/vue-moment'
+    '@/plugins/vue-moment',
+    '@/plugins/vuelidate'
   ],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-purgecss'],
   loading: { color: '#3B8070' },

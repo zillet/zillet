@@ -21,6 +21,16 @@
           placeholder="Enter your private key here"
           label="Private Key"
         />
+        <transition 
+          name="fade" 
+          mode="out-in">
+          <p 
+            v-if="!$v.privateKey.required && $v.privateKey.$dirty" 
+            class="text-red-600 text-sm italic font-semibold text-left">Private Key is required.</p>
+          <p 
+            v-if="(!$v.privateKey.minLength || !$v.privateKey.maxLength) && $v.privateKey.$dirty" 
+            class="text-red-600 text-sm italic font-semibold text-left">Invalid private key</p>
+        </transition>
         <z-alert 
           type="warning" 
           class="my-4">
@@ -45,6 +55,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex';
+import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 export default {
   name: 'PrivateKey',
   data() {
@@ -53,16 +64,27 @@ export default {
       privateKey: ''
     };
   },
+  validations: {
+    privateKey: {
+      required,
+      minLength: minLength(62),
+      maxLength: maxLength(64)
+    }
+  },
   methods: {
     ...mapActions(['importAccount']),
     validateKey() {
-      if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
-        return this.$notify({
-          message: `Invalid private key`,
-          type: 'danger'
-        });
+      this.$v.$touch();
+      if (this.$v.$invalid) {
       } else {
-        this.importKey(this.privateKey);
+        if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
+          return this.$notify({
+            message: `Invalid private key`,
+            type: 'danger'
+          });
+        } else {
+          this.importKey(this.privateKey);
+        }
       }
     },
     importKey(pk) {
