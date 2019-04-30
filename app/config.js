@@ -5,7 +5,7 @@ export default {
   NODES: [
     {
       name: 'Zilliqa Mainnet',
-      url: ' https://api.zilliqa.com',
+      url: 'https://api.zilliqa.com',
       explorer: 'https://explorer.zilliqa.com/',
       version: 65537,
       id: 1001

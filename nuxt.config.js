@@ -1,5 +1,5 @@
+require('dotenv').config();
 import path from 'path';
-
 export default {
   mode: 'spa',
   srcDir: 'app/',
@@ -79,13 +79,23 @@ export default {
     '@/plugins/vue-moment',
     '@/plugins/vuelidate'
   ],
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-purgecss'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/pwa',
+    'nuxt-purgecss',
+    [
+      '@nuxtjs/google-analytics',
+      {
+        id: 'UA-139308938-1'
+      }
+    ]
+  ],
   loading: { color: '#3B8070' },
   build: {
     postcss: {
       plugins: {
         'postcss-url': {},
-        tailwindcss: path.resolve(__dirname, './tailwind.config.js'),
+        tailwindcss: path.resolve(__dirname, './app/tailwind.config.js'),
         cssnano: {
           preset: 'default',
           discardComments: { removeAll: true },
