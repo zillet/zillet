@@ -1,3 +1,11 @@
+/*
+ * printWallet
+ *
+ * print paper wallet
+ *
+ * @param {string, string}
+ * @returns {HTMLDom}
+ */
 export function printWallet(address, pk) {
   return `<html id="print-wallet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
