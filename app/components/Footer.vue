@@ -2,13 +2,13 @@
   <div class="footer">
     <div class="footer__links">
       <div class="left">
-        <a 
+        <a
           @click="showDisclaimer=!showDisclaimer">
           Disclaimer
         </a>
       </div>
       <div class="right">
-        <a 
+        <a
           href="https://github.com/man15h/zillet"
           target="_blank"
           rel="noopener noreferrer">
@@ -17,13 +17,13 @@
         </a>
       </div>
     </div>
-    <z-modal 
-      :visible="showDisclaimer" 
+    <z-modal
+      :visible="showDisclaimer"
       :autoclose="false"
       title="Disclaimer"
-      @close="showDisclaimer=false"> 
+      @close="showDisclaimer=false">
       <div class="card">
-        <h3 class="font-semibold text-xl mb-8 text-gray-700"> 
+        <h3 class="font-semibold text-xl mb-8 text-gray-700">
           Disclaimer
         </h3>
         <div class="disclaimer--wrapper">
@@ -32,38 +32,38 @@
           </p>
           <p>
             <span class="font-semibold">Always backup your keys:</span>
-            We do not have access to, nor do we store, your keys to the 
-            tokens or funds you have on our software. No data leaves 
-            your computer/phone/browser. We only provide a service to 
+            We do not have access to, nor do we store, your keys to the
+            tokens or funds you have on our software. No data leaves
+            your computer/phone/browser. We only provide a service to
             make it easy for users to create, save and access information
             that is needed to interact with the blockchain. It is your
             responsibility to securely store and backup your keys.
           </p>
           <p>
             <span class="font-semibold">We are not responsible for any loss:</span>
-            The Zilliqa blockchain as well as the software are under active 
-            development. There is always the possibility of something 
-            unexpected happening that causes your tokens or funds to be lost. 
-            Please do not use the software for more than what you are willing 
+            The Zilliqa blockchain as well as the software are under active
+            development. There is always the possibility of something
+            unexpected happening that causes your tokens or funds to be lost.
+            Please do not use the software for more than what you are willing
             to lose, and please be careful. By using the software, you agree
-            that each of developer of this software and Zilliqa Research Pte Ltd. 
-            assume no responsibility or liability for any error, omission, delay, 
-            damages, costs, loss or expense (together “Losses”) incurred 
+            that each of developer of this software and Zilliqa Research Pte Ltd.
+            assume no responsibility or liability for any error, omission, delay,
+            damages, costs, loss or expense (together “Losses”) incurred
             by you from the use of the software. You acknowledge that you
-            may suffer a Loss from the use of the software and that the use 
+            may suffer a Loss from the use of the software and that the use
             of the software is at your own risk.
           </p>
         </div>
         <div class="disclaimer--footer">
-          <div 
-            class="cursor-pointer" 
+          <div
+            class="cursor-pointer"
             @click="hasConsent=!hasConsent">
-            <input 
-              :checked="hasConsent" 
+            <input
+              :checked="hasConsent"
               type="checkbox"> &nbsp; &nbsp;Yes, I agree with these terms and conditions.
           </div>
           <div>
-            <z-button 
+            <z-button
               size="small"
               rounded
               @click="saveConsent">

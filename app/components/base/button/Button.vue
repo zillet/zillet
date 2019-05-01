@@ -9,9 +9,9 @@
     class="button"
     type="button"
     v-on="$listeners">
-    <i 
+    <i
       v-if="loading"
-      class="eva eva-loader-outline rotating text-2xl"/>
+      class="eva eva-loader-outline rotating text-2xl" />
     <slot v-else />
   </button>
 </template>

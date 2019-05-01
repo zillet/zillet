@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <Notifications/>
-    <Navigation/>
-    <Nuxt/>
+    <Notifications />
+    <Navigation />
+    <Nuxt />
     <Footer />
   </div>
 </template>

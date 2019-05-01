@@ -1,22 +1,22 @@
 <template>
   <div class="w-full">
     <div class="card">
-      <transition 
-        name="fade" 
+      <transition
+        name="fade"
         mode="out-in">
-        <AccessWallet 
-          v-if="accessMethodId==0" 
+        <AccessWallet
+          v-if="accessMethodId==0"
           @wallet="selectAccessMethod" />
       </transition>
-      <transition 
-        name="fade" 
+      <transition
+        name="fade"
         mode="out-in">
-        <PrivateKey 
-          v-if="accessMethodId==1001" 
-          @exit="accessMethodId=0"/>
-        <Keystore 
-          v-else-if="accessMethodId==1002" 
-          @exit="accessMethodId=0"/>
+        <PrivateKey
+          v-if="accessMethodId==1001"
+          @exit="accessMethodId=0" />
+        <Keystore
+          v-else-if="accessMethodId==1002"
+          @exit="accessMethodId=0" />
       </transition>
     </div>
   </div>

@@ -1,113 +1,113 @@
 <template>
   <div class="card">
-    <h3 class="font-semibold text-2xl mb-8 text-gray-700 text-center w-full"> 
+    <h3 class="font-semibold text-2xl mb-8 text-gray-700 text-center w-full">
       Transactions
     </h3>
     <div class="flex w-full">
-      <div 
-        v-if="!transactions.length && loading" 
+      <div
+        v-if="!transactions.length && loading"
         class="spinner">
-        <div class="double-bounce1"/>
-        <div class="double-bounce2"/>
+        <div class="double-bounce1" />
+        <div class="double-bounce2" />
       </div>
-      <div 
-        v-else-if="!transactions.length" 
+      <div
+        v-else-if="!transactions.length"
         style="min-height:16rem"
         class="w-full flex flex-col justify-center items-center">
         No transaction found.
       </div>
-      <div 
-        v-else 
+      <div
+        v-else
         class="w-full">
-        <transition-group name="list-item" >
-          <div 
-            v-for="txn in transactions" 
+        <transition-group name="list-item">
+          <div
+            v-for="txn in transactions"
             :key="txn.hash"
             :class="{'selected': selectedTxn==txn.hash}"
             class="transaction">
-            <div 
-              class="transaction__top-row" 
+            <div
+              class="transaction__top-row"
               @click="toggleTxn(txn.hash)">
               <div class="transaction__token">
-                <cryptoicon 
-                  symbol="zil" 
-                  size="24" /> 
+                <cryptoicon
+                  symbol="zil"
+                  size="24" />
                 &nbsp;<span class="font-semibold ml-2">Zilliqa</span>
               </div>
               <div class="transaction__status">
-                <span 
+                <span
                   :class="txn.direction">
                   {{ txnStatus(txn.direction) }}
-                  <i 
-                    v-if="txn.direction=='out' && !txn.status" 
-                    class="eva eva-arrow-upward-outline font-bold ml-1"/>
-                  <i 
+                  <i
+                    v-if="txn.direction=='out' && !txn.status"
+                    class="eva eva-arrow-upward-outline font-bold ml-1" />
+                  <i
                     v-else-if="txn.direction=='in'"
                     class="eva eva-arrow-downward-outline font-bold ml-1" />
-                  <i 
+                  <i
                     v-else-if="txn.direction=='self'"
                     class="eva eva-radio-button-on-outline ml-1 font-bold" />
-                  <i 
-                    v-else-if="txn.status" 
-                    class="eva eva-loader-outline rotating ml-1 font-bold"/>
+                  <i
+                    v-else-if="txn.status"
+                    class="eva eva-loader-outline rotating ml-1 font-bold" />
                 </span>
                 <!-- <span></span> -->
                 <!-- Zilliqa -->
               </div>
               <div class="transaction__amount">
-                <span 
-                  :class="{'text-green-600': txn.direction=='in'}" 
+                <span
+                  :class="{'text-green-600': txn.direction=='in'}"
                   class="zil">
                   <span v-if="txn.direction=='in'">+</span>
                   <span v-else>-</span>
                   {{ txn.direction=='self'? '--' :txn.value* Math.pow(10, -12) | currency('', 4) }}
                 </span>
                 &nbsp; ZIL
-                <span 
-                  v-if="txn.direction!='self'" 
+                <span
+                  v-if="txn.direction!='self'"
                   class="usd">
-                  &nbsp; &asymp; &nbsp; {{ (txn.value*Math.pow(10, -12) )* getPrices.USD | currency('$', 2) }} 
+                  &nbsp; &asymp; &nbsp; {{ (txn.value*Math.pow(10, -12) )* getPrices.USD | currency('$', 2) }}
                 </span>
               </div>
               <div class="transaction__address">
-                <span 
-                  v-clipboard:copy="`0x${txn.direction=='in' ? txn.from:txn.to}`" 
+                <span
+                  v-clipboard:copy="`0x${txn.direction=='in' ? txn.from:txn.to}`"
                   v-clipboard:success="onCopy"
                   v-clipboard:error="onError">
-                  <jazzicon 
+                  <jazzicon
                     :diameter="18"
-                    :address="txn.direction=='in' ? txn.from:txn.to" 
-                    class="mt-1 mr-2" /> 
+                    :address="txn.direction=='in' ? txn.from:txn.to"
+                    class="mt-1 mr-2" />
                   {{ txn.direction=='in' ? toAddress(txn.from):toAddress(txn.to) }}
                 </span>
               </div>
-              <div class="transaction__time"> 
+              <div class="transaction__time">
                 {{ txn.timestamp | moment(" MMM Do, h:mm a") }}
               </div>
             </div>
             <div class="divider" />
-            <div 
-              v-if="selectedTxn===txn.hash" 
+            <div
+              v-if="selectedTxn===txn.hash"
               class="transaction__bottom-row">
               <div>
                 <div class="block tracking-wide text-gray-700 text-sm font-semibold">
                   Transaction Hash
                 </div>
                 <span>
-                  <a 
-                    :href="`${selectedNode.explorer}transactions/${txn.hash}`" 
+                  <a
+                    :href="`${selectedNode.explorer}transactions/${txn.hash}`"
                     class="hover:text-teal-600"
                     target="_blank">{{ txn.hash }}</a>
-                  <i 
-                    v-clipboard:copy="`${txn.hash}`" 
+                  <i
+                    v-clipboard:copy="`${txn.hash}`"
                     v-clipboard:success="onCopyTxn"
                     v-clipboard:error="onErrorTxn"
-                    class="eva eva-copy-outline"/>
-                  <a 
-                    :href="`${selectedNode.explorer}transactions/${txn.hash}`" 
+                    class="eva eva-copy-outline" />
+                  <a
+                    :href="`${selectedNode.explorer}transactions/${txn.hash}`"
                     target="_blank">
-                    <i 
-                      class="eva eva-external-link-outline"/>
+                    <i
+                      class="eva eva-external-link-outline" />
                   </a>
                 </span>
               </div>
@@ -122,10 +122,10 @@
             </div>
           </div>
         </transition-group>
-        <span 
-          v-if="transactions.length > 24" 
-          class="text-gray-700 pt-4 text-left text-sm italic text-left"> 
-          * These are only last 25 Transactions 
+        <span
+          v-if="transactions.length > 24"
+          class="text-gray-700 pt-4 text-left text-sm italic text-left">
+          * These are only last 25 Transactions
         </span>
       </div>
     </div>

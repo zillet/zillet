@@ -1,7 +1,7 @@
 <template>
   <div class="keystore">
-    <div 
-      class="keystore__head-actions" 
+    <div
+      class="keystore__head-actions"
       @click="$emit('exit')">
       <i class="eva eva-arrow-back-outline" />  &nbsp;Other Methods
     </div>
@@ -10,38 +10,38 @@
     </p>
     <div class="keystore__body">
       <span>
-        If you must, please double-check the URL & SSL cert. It should say 
+        If you must, please double-check the URL & SSL cert. It should say
         <code>https://zillet.io</code> in your URL bar.
       </span>
       <z-upload
         :name="fileName"
         class="mt-8"
         rounded
-        @change="fileChanges"/>
-      <div 
-        v-if="isFile" 
+        @change="fileChanges" />
+      <div
+        v-if="isFile"
         class="max-w-2xl mx-auto">
         <z-input
           v-model="passphrase"
           placeholder="Type your password"
           label="Your wallet is encrypted. Good! Please enter the password."
         />
-        <z-alert 
-          type="danger" 
+        <z-alert
+          type="danger"
           class="my-2">
-          This is Zilliqa wallet. Do not send any 
+          This is Zilliqa wallet. Do not send any
           ERC-20 ZIL tokens to this wallet.
         </z-alert>
-        <z-button 
-          class="w-full" 
+        <z-button
+          class="w-full"
           rounded
           @click="unlock()">
           Unlock wallet
         </z-button>
         <div class="flex flex-row mt-8 justify-center">
-          <i 
-            class="eva eva-shield text-xl mr-2 relative text-gray-700" 
-            style="top:2px;"/>
+          <i
+            class="eva eva-shield text-xl mr-2 relative text-gray-700"
+            style="top:2px;" />
           We do not store your private key on our servers or transmit it over the network at any time.
         </div>
       </div>
