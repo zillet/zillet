@@ -1,5 +1,4 @@
 import Alert from './alert';
-import Blockies from './blockies';
 import Button from './button';
 import Icon from './icon';
 import Input from './input';
@@ -11,7 +10,6 @@ import Upload from './upload';
 
 export {
   Alert,
-  Blockies,
   Button,
   Icon,
   Input,
