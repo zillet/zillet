@@ -85,3 +85,6 @@ dist
 
 # Service worker
 sw.*
+
+# test coverage
+coverage

@@ -8,12 +8,8 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=80 nuxt start",
-    "generate": "nuxt generate",
-    "now-build": "nuxt build --spa",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest",
-    "test-watch": "npm run test --watch",
-    "snapshot": "jest --updateSnapshot"
+    "test:unit": "vue-cli-service test:unit"
   },
   "keywords": [
     "vue",
@@ -32,9 +28,9 @@
     "@nuxtjs/google-analytics": "^2.2.0",
     "@nuxtjs/pwa": "^3.0.0-beta.14",
     "@zilliqa-js/zilliqa": "^0.5.3",
-    "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "balloon-css": "^0.5.0",
     "cross-env": "^5.2.0",
+    "core-js": "^2.6.5",
     "dotenv": "^7.0.0",
     "eva-icons": "^1.1.1",
     "nuxt": "^2.6.2",
@@ -50,65 +46,31 @@
     "vuelidate": "^0.7.4"
   },
   "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-eslint": "^3.7.0",
+    "@vue/cli-plugin-unit-jest": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "@vue/eslint-config-prettier": "^4.0.1",
+    "@vue/test-utils": "1.0.0-beta.29",
     "@vue/server-test-utils": "^1.0.0-beta.27",
-    "@vue/test-utils": "^1.0.0-beta.27",
     "autoprefixer": "^8.6.4",
-    "babel-eslint": "^8.2.1",
-    "babel-jest": "^24.1.0",
-    "babel-preset-env": "^1.7.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
     "babel-preset-vue-app": "^2.0.0",
     "cssnano": "^4.1.10",
-    "eslint": "^5.0.1",
+    "eslint": "^5.16.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-prettier": "2.6.2",
-    "eslint-plugin-vue": "^4.0.0",
+    "eslint-plugin-vue": "^5.0.0",
     "husky": "^1.1.4",
-    "jest": "^24.1.0",
-    "jest-serializer-vue": "^2.0.2",
-    "jsdom": "^12.2.0",
     "node-sass": "^4.10.0",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.6.0",
     "postcss-url": "^8.0.0",
     "prettier": "1.14.3",
     "sass-loader": "^7.1.0",
-    "vue-jest": "^3.0.2"
-  },
-  "babel": {
-    "env": {
-      "test": {
-        "presets": [
-          "env",
-          "vue-app"
-        ]
-      }
-    }
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      ".*\\.(vue)$": "vue-jest",
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/app/$1"
-    },
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "**/*.{js,vue}",
-      "!**/node_modules/**"
-    ],
-    "coverageReporters": [
-      "html",
-      "text-summary"
-    ],
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ]
+    "vue-template-compiler": "^2.5.21"
   }
 }
