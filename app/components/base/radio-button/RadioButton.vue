@@ -1,16 +1,16 @@
 <template>
-  <div 
+  <div
     class="flex flex-row px-4 items-center">
-    <input 
-      v-bind="$attrs" 
+    <input
+      v-bind="$attrs"
       type="radio"
       v-on="$listeners">
     {{ $listeners }}
-    <label 
+    <label
       :for="$attrs.id"
-      class="block text-gray-700 ml-2" 
+      class="block text-gray-700 ml-2"
     >
-      <slot/>
+      <slot />
     </label>
   </div>
 </template>

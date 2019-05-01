@@ -1,6 +1,6 @@
 <template>
-  <div 
-    v-if="showModal" 
+  <div
+    v-if="showModal"
     class="fixed inset-0 flex items-center justify-center z-50">
     <transition
       enter-active-class="transition-all transition-fast ease-out-quad"
@@ -12,10 +12,10 @@
       appear
       @before-leave="backdropLeaving = true"
       @after-leave="backdropLeaving = false">
-      <div 
-        v-if="showBackdrop" 
+      <div
+        v-if="showBackdrop"
         @click="backdropClick">
-        <div class="absolute inset-0 bg-black opacity-25"/>
+        <div class="absolute inset-0 bg-black opacity-25" />
       </div>
     </transition>
     <transition
@@ -28,10 +28,10 @@
       appear
       @before-leave="cardLeaving = true"
       @after-leave="cardLeaving = false">
-      <div 
-        v-if="showContent" 
+      <div
+        v-if="showContent"
         class="relative max-w-2xl w-full">
-        <slot/>
+        <slot />
       </div>
     </transition>
   </div>

@@ -1,8 +1,8 @@
 <template>
-  <div 
-    :class="[{'alert--center': center,},`alert--${type}`]" 
+  <div
+    :class="[{'alert--center': center,},`alert--${type}`]"
     class="alert">
-    <i 
+    <i
       :class="{
         'eva-alert-triangle-outline': type==='warning' || type==='danger',
         'eva-close-circle-outline': type==='', // danger

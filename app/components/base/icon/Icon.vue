@@ -1,28 +1,28 @@
 <template>
   <div class="pb-8 z-icon">
-    <div 
-      v-if="type==='success'" 
+    <div
+      v-if="type==='success'"
       class="modal-icon modal-success animate">
-      <span class="modal-line modal-tip animateSuccessTip"/>
-      <span class="modal-line modal-long animateSuccessLong"/>
-      <div class="modal-placeholder"/>
-      <div class="modal-fix"/>
+      <span class="modal-line modal-tip animateSuccessTip" />
+      <span class="modal-line modal-long animateSuccessLong" />
+      <div class="modal-placeholder" />
+      <div class="modal-fix" />
     </div>
-    <div 
-      v-else-if="type==='error'" 
+    <div
+      v-else-if="type==='error'"
       class="modal-icon modal-error animate">
       <span class="modal-x-mark">
-        <span class="modal-line modal-left animateXLeft"/>
-        <span class="modal-line modal-right animateXRight"/>
+        <span class="modal-line modal-left animateXLeft" />
+        <span class="modal-line modal-right animateXRight" />
       </span>
-      <div class="modal-placeholder"/>
-      <div class="modal-fix"/>
+      <div class="modal-placeholder" />
+      <div class="modal-fix" />
     </div>
-    <div 
-      v-else 
+    <div
+      v-else
       class="modal-icon modal-warning scaleWarning">
-      <span class="modal-body pulseWarningIns"/>
-      <span class="modal-dot pulseWarningIns"/>
+      <span class="modal-body pulseWarningIns" />
+      <span class="modal-dot pulseWarningIns" />
     </div>
   </div>
 </template>

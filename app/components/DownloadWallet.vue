@@ -1,17 +1,17 @@
 <template>
-  <z-modal 
-    :visible="visible" 
-    @close="close">  
+  <z-modal
+    :visible="visible"
+    @close="close">
     <div class="card">
-      <h3 class="font-semibold text-xl mb-8 text-gray-700"> 
+      <h3 class="font-semibold text-xl mb-8 text-gray-700">
         Download Your Wallet
       </h3>
-      <z-textarea 
-        :value="pk" 
-        readonly/>
+      <z-textarea
+        :value="pk"
+        readonly />
       <div class="flex -mx-2 mb-4">
         <div class="w-1/2 px-2">
-          <z-button 
+          <z-button
             rounded
             class="w-full"
             @click="$emit('downloadKeystore')">
@@ -19,7 +19,7 @@
           </z-button>
         </div>
         <div class="w-1/2 px-2">
-          <z-button 
+          <z-button
             rounded
             class="w-full"
             @click="$emit('printWallet')">
@@ -36,13 +36,13 @@
       <p class="text-gray-700 mb-2">
         <b>Make a backup!</b> Secure it like the millions of dollars it may one day be worth.
       </p>
-      <z-alert 
-        type="danger" 
+      <z-alert
+        type="danger"
         class="mt-8">
-        This is Zilliqa wallet. Do not send any 
+        This is Zilliqa wallet. Do not send any
         ERC-20 ZIL tokens to this wallet.
       </z-alert>
-      <z-button 
+      <z-button
         :disabled="!keySaved"
         class="w-full mt-8"
         type="default"
@@ -50,7 +50,7 @@
         @click="close">
         Okay, I've succesfully saved my key.
       </z-button>
-    </div> 
+    </div>
   </z-modal>
 </template>
 <script>

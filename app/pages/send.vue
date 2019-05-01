@@ -1,18 +1,20 @@
 <template>
   <div class="w-full card">
-    <h3 class="font-semibold text-2xl mb-4 text-gray-700 text-center w-full"> 
+    <h3 class="font-semibold text-2xl mb-4 text-gray-700 text-center w-full">
       Send Zilliqa
     </h3>
     <div class="max-w-2xl m-auto text-left">
-      <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">Recipient Address</div>
+      <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
+        Recipient Address
+      </div>
       <z-input
         v-model="transaction.address"
         :hide="false"
         :valid="$zil.util.validation.isAddress(transaction.address)"
         class="mb-2"
-        placeholder="Enter Zilliqa Mainnet address here"/>
-      <z-alert 
-        type="danger" 
+        placeholder="Enter Zilliqa Mainnet address here" />
+      <z-alert
+        type="danger"
         class="mb-6">
         Do not send funds to ERC-20 ZIL address.
       </z-alert>
@@ -21,8 +23,8 @@
           <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
             Amount
           </div>
-          <div 
-            class="label__btn" 
+          <div
+            class="label__btn"
             @click="fullAmount">
             Send All
           </div>
@@ -30,12 +32,12 @@
         <div class="amount-form">
           <div class="amount__crypto">
             <z-input
+              v-model.number="transaction.amount"
               :hide="false"
               :valid="validateCryptoAmount"
-              v-model.number="transaction.amount"
               number
               placeholder="Enter amount here"
-              @focus="cryptoAmountFocus"/>
+              @focus="cryptoAmountFocus" />
             <span>ZIL</span>
           </div>
           <div class="amount__approx">
@@ -43,18 +45,18 @@
           </div>
           <div class="amount__fiat">
             <z-input
-              :hide="false"
               v-model.number="usdAmount"
+              :hide="false"
               :valid="validateFiatAmount"
               number
               placeholder="Enter amount here"
-              @focus="fiatAmountFocus"/>
+              @focus="fiatAmountFocus" />
             <span>USD</span>
           </div>
         </div>
       </div>
-      <div 
-        v-if="isAdvance" 
+      <div
+        v-if="isAdvance"
         class="gas-form">
         <div class="gas__limit">
           <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
@@ -65,9 +67,9 @@
             :hide="false"
             :valid="$validation.isNumber(transaction.gasLimit) && transaction.gasLimit > 0"
             number
-            placeholder="10"/>
+            placeholder="10" />
         </div>
-        <div class="gas__space"/>
+        <div class="gas__space" />
         <div class="gas__price">
           <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
             Gas Price (QA)
@@ -77,26 +79,26 @@
             :valid="$validation.isNumber(transaction.gasPrice) && transaction.gasPrice > 0"
             :hide="false"
             number
-            placeholder="1"/>
+            placeholder="1" />
         </div>
       </div>
       <div class="flex items-center justify-between">
-        <div >
+        <div>
           <div
             class="text-sm text-left inline-block
           align-middle text-gray-700 font-normal  font-semibold">
-            Fee: 
+            Fee:
             <span class="text-md font-bold">
               {{ transactionFee }}
-            </span> 
+            </span>
             ZIL
           </div>
         </div>
-        <div 
+        <div
           @click="isAdvance=!isAdvance">
           <span
-            class="text-sm italic text-left inline-block 
-        align-middle text-gray-700 font-normal 
+            class="text-sm italic text-left inline-block
+        align-middle text-gray-700 font-normal
         cursor-pointer hover:text-teal-500 font-semibold">
             {{ isAdvance ? '-': '+' }} Advance
           </span>
@@ -109,17 +111,17 @@
           :valid="$validation.isNumber(transaction.nonce)"
           class="mb-4"
           label="Nonce"
-          placeholder="Enter nonce here"/>
+          placeholder="Enter nonce here" />
       </div>
-      <z-button  
+      <z-button
         :loading="loading"
         class="w-full"
         rounded
         @click="makeTxn">
         {{ 'Send Transaction' }}
       </z-button>
-      <!-- <div 
-        v-show="isSigned && isAdvance" 
+      <!-- <div
+        v-show="isSigned && isAdvance"
         class="mt-4">
         <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
           Signed Transaction
@@ -130,7 +132,7 @@
           readonly
           rows="5"
           class="mb-2"/>
-        <z-button 
+        <z-button
           class="w-full"
           rounded
           @click="send">
@@ -138,11 +140,11 @@
         </z-button>
       </div> -->
     </div>
-    <z-modal 
-      :visible="isBroadcast" 
+    <z-modal
+      :visible="isBroadcast"
       @close="isBroadcast=false">
       <div class="card">
-        <h3 class="font-bold text-xl mb-8 text-gray-700"> 
+        <h3 class="font-bold text-xl mb-8 text-gray-700">
           Transaction Sent
         </h3>
         <div class="flex flex-col">
@@ -152,7 +154,7 @@
           </span>
           <div class="flex flex-row -mx-2">
             <div class="w-1/2 px-2">
-              <z-button 
+              <z-button
                 class="w-full mt-8"
                 type="default"
                 rounded
@@ -161,12 +163,12 @@
               </z-button>
             </div>
             <div class="w-1/2 px-2">
-              <a 
-                :href="`${selectedNode.explorer}/transactions/${tranxId}`" 
-                target="_blank" 
+              <a
+                :href="`${selectedNode.explorer}/transactions/${tranxId}`"
+                target="_blank"
                 rounded
-                class="w-full flex-1" >
-                <z-button 
+                class="w-full flex-1">
+                <z-button
                   rounded
                   class="mt-8 w-full">
                   Check on Explorer
@@ -176,7 +178,7 @@
           </div>
         </div>
       </div>
-    </z-modal>   
+    </z-modal>
   </div>
 </template>
 <script>
