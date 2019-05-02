@@ -166,7 +166,6 @@ export default {
   watch: {
     selectedNode: {
       handler(value) {
-        console.log(value);
         this.getTransactions(this.requestParams);
       },
       deep: true

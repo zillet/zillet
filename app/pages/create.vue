@@ -39,8 +39,7 @@
           Already have a wallet?
           <nuxt-link
             :to="{ name: 'index' }"
-            class="text-teal-500 font-semibold"
-          >
+            class="text-teal-500 font-semibold">
             Access now
           </nuxt-link>
         </p>
@@ -59,7 +58,6 @@
 <script>
 import { printWallet } from '@/utils/printWallet';
 import DownloadWallet from '@/components/DownloadWallet';
-const CP = require('@zilliqa-js/crypto');
 
 export default {
   name: 'NewWallet',
@@ -78,7 +76,11 @@ export default {
       privateKey: ''
     };
   },
+  async beforeMount() {},
   methods: {
+    sleep(milisec) {
+      return new Promise(resolve => setTimeout(resolve, milisec));
+    },
     async create() {
       this.isKeyDownloaded = false;
       if (!this.passphrase || this.passphrase.length < 8) {

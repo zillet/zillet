@@ -1,3 +1,5 @@
+import { HTTPProvider } from '@zilliqa-js/core';
+
 import config from './../config';
 function setData(method, params) {
   return {
@@ -20,11 +22,11 @@ export async function nuxtClientInit({ commit, dispatch }, app) {
     }
     await dispatch('getMinimumGasPrice');
     await dispatch('getPrice', app.env.cryptocompare);
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 }
 export function selectNode({ commit }, node) {
+  this.$zilliqa.setProvider(new HTTPProvider(node.url));
+  console.log(this.$zilliqa);
   commit('SELECT_NODE', node);
 }
 export function getPrice({ commit }, { url, token }) {
