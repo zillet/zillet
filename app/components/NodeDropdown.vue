@@ -134,7 +134,6 @@ export default {
   },
   async beforeMount() {
     await this.changeNode(this.selectedNode);
-    console.log(this.$zilliqa);
   },
   methods: {
     ...mapActions(['checkNetworkStatus', 'selectNode']),

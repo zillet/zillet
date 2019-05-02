@@ -399,7 +399,6 @@ export default {
       this.isFiatAmountFocus = false;
     },
     fiatAmountFocus() {
-      console.log('fiatAmountFocus');
       this.isCryptoAmountFocus = false;
       this.isFiatAmountFocus = true;
     },
