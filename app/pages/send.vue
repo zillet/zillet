@@ -72,7 +72,7 @@
         <div class="gas__space" />
         <div class="gas__price">
           <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
-            Gas Price (QA)
+            Gas Price (Li)
           </div>
           <z-input
             v-model="transaction.gasPrice"
@@ -117,7 +117,7 @@
         :loading="loading"
         class="w-full"
         rounded
-        @click="makeTxn">
+        @click="createTxn">
         {{ 'Send Transaction' }}
       </z-button>
       <!-- <div
@@ -164,7 +164,7 @@
             </div>
             <div class="w-1/2 px-2">
               <a
-                :href="`${selectedNode.explorer}/transactions/${tranxId}`"
+                :href="explorerLink(`0x${tranxId}`)"
                 target="_blank"
                 rounded
                 class="w-full flex-1">
@@ -182,7 +182,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
 import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
@@ -198,7 +198,7 @@ export default {
         address: '',
         amount: 0,
         gasLimit: 1,
-        gasPrice: 100,
+        gasPrice: config.MINIMUM_GAS_PRICE,
         nonce: ''
       },
       usdAmount: 0,
@@ -208,6 +208,7 @@ export default {
       isSigned: false,
       isBroadcast: false,
       tranxId: '',
+      loading: false,
       isCryptoAmountFocus: false,
       isFiatAmountFocus: false
     };
@@ -215,13 +216,8 @@ export default {
   computed: {
     ...mapGetters(['getAccount', 'isOnline', 'getPrices']),
     ...mapState({
-      gasPrice: state => state.minimumGasPrice,
-      selectedNode: state => state.selectedNode,
-      loading: state => state.loading
+      selectedNode: state => state.selectedNode
     }),
-    stringifySignedTx() {
-      return JSON.stringify(this.signedTx);
-    },
     validateCryptoAmount() {
       return (
         this.$validation.isNumber(this.transaction.amount) &&
@@ -256,12 +252,6 @@ export default {
       },
       deep: true
     },
-    gasPrice: {
-      handler(value) {
-        this.transaction.gasPrice = value;
-      },
-      immediate: true
-    },
     usdAmount: {
       handler(value) {
         if (this.isFiatAmountFocus) {
@@ -277,82 +267,88 @@ export default {
       }
     }
   },
+  async beforeMount() {
+    try {
+      const minGasPrice = await this.$zilliqa.blockchain.getMinimumGasPrice();
+      this.transaction.gasPrice = minGasPrice.result;
+    } catch (error) {
+      this.$notify({
+        message: `Something went wrong ${error}`,
+        type: 'danger'
+      });
+    }
+  },
   methods: {
-    ...mapActions(['getBalance', 'sendTransaction']),
-    async sign() {
+    ...mapActions(['sendTransaction']),
+    ...mapMutations(['updateBalance']),
+    async createTxn() {
       const { BN, Long, validation, units } = this.$zil.util;
-      const amount = this.transaction.amount * Math.pow(10, this.multiplier);
+      const VERSION = this.selectedNode.version;
+      const amount = units.toQa(
+        String(this.transaction.amount),
+        units.Units.Zil
+      );
+      const fee = new BN(
+        String(this.transaction.gasLimit * this.transaction.gasPrice)
+      );
+      const balance = new BN(String(this.getAccount.balance));
+      const total = amount.add(fee);
       if (!validation.isAddress(this.transaction.address)) {
         this.$notify({
           message: `Reciever's address is invalid`,
           type: 'danger'
         });
-        return false;
-      }
-      for (const key in this.transaction) {
-        if (
-          lookupMap.has(key) &&
-          (this.transaction[key] == '' ||
-            !this.$validation.isNumber(this.transaction[key]))
-        ) {
-          this.$notify({
-            message: lookupMap.get(key),
-            type: 'danger'
-          });
-          return false;
-        }
-      }
-      if (this.isOnline) {
-        await this.getBalance(this.getAccount.address);
-        if (
-          Number(amount) + Number(this.transactionFee) >
-          Number(this.getAccount.balance)
-        ) {
-          this.$notify({
-            message: `Amount+Fee can not be greater than your balance`,
-            type: 'danger'
-          });
-          return false;
-        }
-      } else {
+      } else if (total.gt(balance)) {
         this.$notify({
-          message: `You are offline, Manual enter nonce else connect to network`,
-          type: 'warning'
+          message: `Amount+Fee can not be greater than your balance`,
+          type: 'danger'
         });
+      } else {
+        this.loading = true;
+        // Update nonce and balance
+        const balance = await this.$zilliqa.blockchain.getBalance(
+          this.getAccount.address
+        );
+        this.updateBalance(balance.result);
+        // transaction object
+        const tx = {
+          version: VERSION,
+          nonce: this.transaction.nonce
+            ? this.transaction.nonce
+            : this.getAccount.nonce + 1,
+          pubKey: this.getAccount.publicKey,
+          toAddr: this.$zil.crypto
+            .toChecksumAddress(this.transaction.address)
+            .slice(2),
+          amount: new BN(amount),
+          gasPrice: new BN(this.transaction.gasPrice),
+          gasLimit: Long.fromNumber(this.transaction.gasLimit)
+        };
+        // encoding transaction
+        const msg = await this.$zil.account.util.encodeTransactionProto(tx);
+        // signing transasction
+        const signature = await this.$zil.crypto.sign(
+          msg,
+          this.getAccount.privateKey,
+          this.getAccount.publicKey
+        );
+        // signed transaction object
+        this.signedTx = {
+          ...tx,
+          amount: tx.amount.toString(),
+          gasPrice: tx.gasPrice.toString(),
+          gasLimit: tx.gasLimit.toString(),
+          data: '',
+          code: '',
+          signature
+        };
+        this.loading = false;
+        this.sendTxn();
       }
-      const tx = {
-        version: this.selectedNode.version,
-        nonce: this.transaction.nonce
-          ? this.transaction.nonce
-          : this.getAccount.nonce + 1,
-        pubKey: this.getAccount.publicKey,
-        toAddr: this.$zil.crypto
-          .toChecksumAddress(this.transaction.address)
-          .slice(2),
-        amount: new BN(amount),
-        gasPrice: new BN(this.transaction.gasPrice),
-        gasLimit: Long.fromNumber(this.transaction.gasLimit)
-      };
-      const msg = this.$zil.account.util.encodeTransactionProto(tx);
-      const signature = this.$zil.crypto.sign(
-        msg,
-        this.getAccount.privateKey,
-        this.getAccount.publicKey
-      );
-      this.signedTx = {
-        ...tx,
-        amount: tx.amount.toString(),
-        gasPrice: tx.gasPrice.toString(),
-        gasLimit: tx.gasLimit.toString(),
-        data: '',
-        code: '',
-        signature
-      };
-      this.isSigned = true;
-      return true;
     },
-    async send() {
+    async sendTxn() {
       try {
+        this.loading = true;
         const { result } = await this.sendTransaction(this.signedTx);
         this.transaction = {
           ...this.transaction,
@@ -362,6 +358,7 @@ export default {
             nonce: ''
           }
         };
+        this.loading = false;
         if ('Error' in result) {
           return this.$notify({
             message: result.Error,
@@ -378,11 +375,17 @@ export default {
           });
         }
       } catch (error) {
+        this.loading = false;
         return this.$notify({
           message: `Something went wrong${JSON.stringify(error)}`,
           type: 'danger'
         });
       }
+    },
+    explorerLink(tx) {
+      return this.selectedNode.id === 1002
+        ? `${this.selectedNode.explorer}${tx}?network=testnet`
+        : `${this.selectedNode.explorer}${tx}`;
     },
     fullAmount() {
       const { units } = this.$zil.util;
@@ -401,12 +404,6 @@ export default {
     fiatAmountFocus() {
       this.isCryptoAmountFocus = false;
       this.isFiatAmountFocus = true;
-    },
-    async makeTxn() {
-      const isSigned = await this.sign();
-      if (isSigned) {
-        await this.send();
-      }
     }
   }
 };

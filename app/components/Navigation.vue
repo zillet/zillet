@@ -26,7 +26,7 @@
         <a
           v-else
           class="navigation__link cursor-pointer"
-          @click="doLogout">
+          @click="logout">
           <i class="eva eva-power-outline font-bold text-base" />
           &nbsp;Logout
         </a>
@@ -73,7 +73,7 @@
               class="text-xs italic text-left inline-block ml-2
             font-semibold align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
-              @click="getBalance(getAccount.address)">
+              @click="fetchBalance(getAccount.address)">
               Refresh
             </span>
           </div>
@@ -116,7 +116,7 @@
 <script>
 import NodeDropdown from '@/components/NodeDropdown';
 import NavigationTab from './NavigationTab';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import config from '@/config';
 export default {
   name: 'Navigation',
@@ -133,11 +133,35 @@ export default {
   computed: {
     ...mapGetters(['getAccount', 'getPrices'])
   },
+  watch: {
+    'getAccount.address': {
+      handler(value) {
+        if (value && value.length > 2) {
+          //fetch balance
+          this.fetchBalance(value);
+        }
+      }
+    }
+  },
   methods: {
-    ...mapActions(['clearWallet', 'getBalance']),
+    ...mapMutations(['updateBalance', 'clearWallet']),
     async logout() {
       await this.clearWallet();
       this.$router.push({ name: 'index' });
+    },
+    async fetchBalance(address) {
+      try {
+        this.$nuxt.$loading.start();
+        const balance = await this.$zilliqa.blockchain.getBalance(address);
+        this.updateBalance(balance.result);
+        this.$nuxt.$loading.finish();
+      } catch (error) {
+        this.$notify({
+          icon: 'eva eva-close-circle-outline',
+          message: `Something went wrong ${error}`,
+          type: 'danger'
+        });
+      }
     },
     onCopy(e) {
       this.$notify({
@@ -155,9 +179,6 @@ export default {
     },
     changeRoute(path) {
       this.$router.push({ name: path });
-    },
-    doLogout() {
-      location.reload();
     }
   }
 };

@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 export default {
   name: 'PrivateKey',
@@ -57,7 +57,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['importAccount']),
+    ...mapMutations(['importAccount']),
     validateKey() {
       if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
         return this.$notify({
@@ -65,19 +65,16 @@ export default {
           type: 'danger'
         });
       } else {
-        this.importKey(this.privateKey);
+        this.$zilliqa.wallet.addByPrivateKey(this.privateKey);
+        this.importAccount(this.$zilliqa.wallet.defaultAccount);
+        this.$router.push({
+          name: this.$route.query.redirect || 'send'
+        });
+        return this.$notify({
+          message: `Wallet loaded successfully.`,
+          type: 'success'
+        });
       }
-    },
-    importKey(pk) {
-      this.importAccount(pk);
-      this.$router.push({
-        name: this.$route.query.redirect || 'send'
-      });
-      return this.$notify({
-        message: `Wallet loaded successfully.`,
-        type: 'success'
-      });
-      this.loading = false;
     }
   }
 };
