@@ -95,7 +95,7 @@
                 </div>
                 <span>
                   <a
-                    :href="`${selectedNode.explorer}transactions/${txn.hash}`"
+                    :href="explorerLink(txn.hash)"
                     class="hover:text-teal-600"
                     target="_blank">{{ txn.hash }}</a>
                   <i
