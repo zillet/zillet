@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 export default {
   name: 'Keystore',
   data() {
@@ -62,9 +62,8 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['importAccount', 'saveEncryptedWallet']),
+    ...mapMutations(['importAccount']),
     checkEncryptedWallet(file) {
-      // todo - add more checks
       if (file == null) return false;
       try {
         let parsed = JSON.parse(file);
@@ -109,10 +108,15 @@ export default {
           this.passphrase,
           keystore
         );
-        if (this.canSave) {
-          this.saveEncryptedWallet(keystore);
-        }
-        this.importKey(pk);
+        this.$zilliqa.wallet.addByPrivateKey(pk);
+        this.importAccount(this.$zilliqa.wallet.defaultAccount);
+        this.$router.push({
+          name: this.$route.query.redirect || 'send'
+        });
+        return this.$notify({
+          message: `Wallet loaded successfully.`,
+          type: 'success'
+        });
       } catch (error) {
         return this.$notify({
           message: `Failed to decrypt, Please check your password.`,
@@ -120,17 +124,6 @@ export default {
         });
         this.loading = false;
       }
-    },
-    importKey(pk) {
-      this.importAccount(pk);
-      this.$router.push({
-        name: this.$route.query.redirect || 'send'
-      });
-      return this.$notify({
-        message: `Wallet loaded successfully.`,
-        type: 'success'
-      });
-      this.loading = false;
     }
   }
 };

@@ -104,10 +104,9 @@
                     v-clipboard:error="onErrorTxn"
                     class="eva eva-copy-outline" />
                   <a
-                    :href="`${selectedNode.explorer}transactions/${txn.hash}`"
+                    :href="explorerLink(txn.hash)"
                     target="_blank">
-                    <i
-                      class="eva eva-external-link-outline" />
+                    <i class="eva eva-external-link-outline" />
                   </a>
                 </span>
               </div>
@@ -195,7 +194,8 @@ export default {
       }
     },
     toAddress(address) {
-      return `0x${address.substr(0, 4)}...${address.substr(36)}`;
+      return `0x${address && address.substr(0, 4)}...${address &&
+        address.substr(36)}`;
     },
     onCopy(e) {
       this.$notify({
@@ -224,6 +224,12 @@ export default {
         message: `Failed to copy address`,
         type: 'danger'
       });
+    },
+    explorerLink(id) {
+      const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
+      return this.selectedNode.id === 1002
+        ? `${this.selectedNode.explorer}${hash}?network=testnet`
+        : `${this.selectedNode.explorer}${hash}`;
     },
     toggleTxn(hash) {
       if (hash == this.selectedTxn) {

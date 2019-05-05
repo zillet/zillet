@@ -12,4 +12,4 @@ function isNumber(value) {
   }
   return true;
 }
-export { isNumber };
+export default { isNumber };

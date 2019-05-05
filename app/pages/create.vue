@@ -76,7 +76,6 @@ export default {
       privateKey: ''
     };
   },
-  async beforeMount() {},
   methods: {
     sleep(milisec) {
       return new Promise(resolve => setTimeout(resolve, milisec));

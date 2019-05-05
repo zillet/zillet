@@ -9,8 +9,7 @@ const createStore = () =>
     state: {
       loading: false,
       nodes: config.NODES,
-      selectedNode: {},
-      minimumGasPrice: config.MINIMUM_GAS_PRICE,
+      selectedNode: config.NODES[0],
       selectedAccount: 'Account 1',
       wallet: {
         address: '',
