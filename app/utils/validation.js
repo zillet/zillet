@@ -1,3 +1,5 @@
+const bip39 = require('bip39');
+console.log(bip39);
 /*
  * isNumber
  *
@@ -12,4 +14,18 @@ function isNumber(value) {
   }
   return true;
 }
-export default { isNumber };
+/*
+ * isMnemonicValid
+ *
+ * Check if the mnemonic phrase is valid
+ *
+ * @param {string} value
+ * @returns {Boolean}
+ */
+function isMnemonicValid(mnemonic) {
+  if (mnemonic.trim().split(/\s+/g).length < 12) {
+    return false;
+  }
+  return bip39.validateMnemonic(mnemonic);
+}
+export default { isNumber, isMnemonicValid };

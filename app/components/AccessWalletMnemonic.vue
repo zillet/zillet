@@ -1,26 +1,26 @@
 <template>
-  <div class="private-key">
+  <div class="mnemonic">
     <div
-      class="private-key__head-actions"
+      class="mnemonic__head-actions"
       @click="$emit('exit')">
       <i class="eva eva-arrow-back-outline" />  &nbsp;Other Methods
     </div>
-    <p class="private-key__title">
-      Paste Your Private Key
+    <p class="mnemonic__title">
+      Enter Your Mnemonic Phrase
     </p>
-    <div class="private-key__body">
+    <div class="mnemonic__body">
       <span>
-        If you must, please double-check the URL & SSL cert. It should say <code>https://zillet.io</code> in your URL bar.
-        <!-- If you must, please  <u>double-check the URL & SSL cert</u>.
-        For additional security, <b>turn off your internet connection</b> prior to accessing/ creating a wallet. -->
+        If you must, please double-check the URL & SSL cert. It should say
+        <code>https://zillet.io</code> in your URL bar.
       </span>
       <div
         class="max-w-2xl mx-auto mt-4">
-        <z-input
-          v-model="privateKey"
-          :valid="$zil.util.validation.isPrivateKey(privateKey)"
-          placeholder="Enter your private key here"
-          label="Private Key"
+        <z-textarea
+          v-model="mnemonicPhrase"
+          :valid="$validation.isMnemonicValid(mnemonicPhrase)"
+          placeholder="Enter your Mnemonic phrase here"
+          class="textarea"
+          label="Mnemonic Phrase"
         />
         <z-alert
           type="warning"
@@ -32,7 +32,7 @@
           id="private-key"
           rounded
           class="w-full"
-          @click="validateKey()">
+          @click="validatePhrase()">
           Load wallet
         </z-button>
         <div class="flex flex-row mt-8 justify-center">
@@ -52,19 +52,19 @@ export default {
   data() {
     return {
       loading: false,
-      privateKey: ''
+      mnemonicPhrase: ''
     };
   },
   methods: {
     ...mapMutations(['importAccount']),
-    validateKey() {
-      if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
+    validatePhrase() {
+      if (!this.$validation.isMnemonicValid(this.mnemonicPhrase)) {
         return this.$notify({
-          message: `Invalid private key`,
+          message: `Invalid Mnemonic Phrase`,
           type: 'danger'
         });
       } else {
-        this.$zilliqa.wallet.addByPrivateKey(this.privateKey);
+        this.$zilliqa.wallet.addByMnemonic(this.mnemonicPhrase);
         this.importAccount(this.$zilliqa.wallet.defaultAccount);
         this.$router.push({
           name: this.$route.query.redirect || 'send'
@@ -78,8 +78,8 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.private-key {
+<style lang="scss">
+.mnemonic {
   &__head-actions {
     @apply flex items-center justify-start cursor-pointer;
     @apply text-base font-semibold text-gray-600;
@@ -96,6 +96,15 @@ export default {
   &__body {
     @apply max-w-2xl;
     margin: auto;
+  }
+  .textarea textarea {
+    font-family: Menlo, Monaco, Consolas, Courier New, monospace !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    &::placeholder {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 600;
+    }
   }
 }
 </style>
