@@ -39,9 +39,9 @@ export default {
       id: 1003,
       img: 'mnemonic.svg',
       title: 'Mnemonic phrase',
-      body: '',
-      allowed: false,
-      buttonText: 'Coming Soon'
+      body: 'Access your wallet using 12-word mnemonic Phrase',
+      allowed: true,
+      buttonText: 'Access'
     }
   ]
 };

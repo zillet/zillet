@@ -5,17 +5,20 @@
         name="fade"
         mode="out-in">
         <AccessWallet
-          v-if="accessMethodId==0"
+          v-if="accessMethodId===0"
           @wallet="selectAccessMethod" />
       </transition>
       <transition
         name="fade"
         mode="out-in">
         <PrivateKey
-          v-if="accessMethodId==1001"
+          v-if="accessMethodId===1001"
           @exit="accessMethodId=0" />
         <Keystore
-          v-else-if="accessMethodId==1002"
+          v-else-if="accessMethodId===1002"
+          @exit="accessMethodId=0" />
+        <Mnemonic
+          v-else-if="accessMethodId===1003"
           @exit="accessMethodId=0" />
       </transition>
     </div>
@@ -25,13 +28,15 @@
 import AccessWallet from '@/components/AccessWallet';
 import PrivateKey from '@/components/AccessWalletPrivateKey';
 import Keystore from '@/components/AccessWalletKeystore';
+import Mnemonic from '@/components/AccessWalletMnemonic';
 
 export default {
   name: 'Index',
   components: {
     AccessWallet,
     PrivateKey,
-    Keystore
+    Keystore,
+    Mnemonic
   },
   data() {
     return {
