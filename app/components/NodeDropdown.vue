@@ -1,16 +1,16 @@
 <template>
   <div class="flex items-center justify-center">
     <div class="relative">
-      <div 
-        v-if="showDropDown" 
-        class="fixed inset-0" 
-        @click="showDropDown = false"/>
-      <span 
-        class="flex items-center focus:outline-none" 
+      <div
+        v-if="showDropDown"
+        class="fixed inset-0"
+        @click="showDropDown = false" />
+      <span
+        class="flex items-center focus:outline-none"
         @click="showDropDown = !showDropDown">
-        <div :class="`h-2 w-2 mr-2 rounded-full inline-block align-middle ${connectionStatusClass}`"/>
-        <span 
-          class="inline-block mt-0 hover:text-teal-500 
+        <div :class="`h-2 w-2 mr-2 rounded-full inline-block align-middle ${connectionStatusClass}`" />
+        <span
+          class="inline-block mt-0 hover:text-teal-500
           block text-xs uppercase tracking-wide cursor-pointer
           font-semibold text-gray-400">
           {{ selectedNode.name }}
@@ -24,22 +24,26 @@
         enter-to-class="opacity-100 scale-100"
         leave-class="opacity-100 scale-100"
         leave-to-class="opacity-0 scale-70">
-        <div 
-          v-if="showDropDown" 
+        <div
+          v-if="showDropDown"
           class="origin-top-right absolute right-0 mt-2 w-64 bg-white rounded border shadow-md z-50 overflow-hidden">
-          <div 
-            v-for="node in nodes" 
-            :key="node.name"
-            :class="{'bg-gray-200':selectedNode.name === node.name}"
+          <div
+            v-for="n in nodes"
+            :key="n.name"
+            :class="{'bg-gray-200':selectedNode.name === n.name}"
             class="flex items-start text-left px-4 py-2 cursor-pointer hover:bg-grey-lightest"
-            @click="changeNode(node)">
+            @click="changeNode(n)">
             <div class="text-sm">
-              <p class="text-gray-800 leading-none font-semibold mb-1"> {{ node.name }}</p>
-              <p class="text-gray-700 text-xs"> {{ node.url }}</p>
+              <p class="text-gray-800 leading-none font-semibold mb-1">
+                {{ n.name }}
+              </p>
+              <p class="text-gray-700 text-xs">
+                {{ n.url }}
+              </p>
             </div>
           </div>
-          <button 
-            class="bg-primary text-white px-4 py-3 w-full text-sm font-semibold" 
+          <button
+            class="bg-primary text-white px-4 py-3 w-full text-sm font-semibold"
             type="button"
             @click="isNewNode=true; showDropDown=false;">
             Add Custom node
@@ -47,30 +51,79 @@
         </div>
       </transition>
     </div>
-    <z-modal 
-      :visible="isNewNode" 
+    <z-modal
+      :visible="isNewNode"
+      :autoclose="false"
       @close="isNewNode=false">
-      <add-custom-node 
-        @add="changeNode" 
-        @close="isNewNode=false" />
+      <div class="card w-xl pb-4">
+        <h3 class="font-semibold text-2xl mb-4 text-gray-700">
+          Add Custom Node
+        </h3>
+        <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
+          Node name
+        </div>
+        <z-input
+          v-model="node.name"
+          :hide="false"
+          class="mb-4"
+          placeholder="My Zilliqa Node" />
+        <div class="flex items-center justify-between -mx-3">
+          <div class="flex flex-1 flex-col mx-3">
+            <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
+              Node Url
+            </div>
+            <z-input
+              v-model="node.url"
+              :hide="false"
+              class="mb-4 flex-1"
+              placeholder="http://127.0.0.1:4200" />
+          </div>
+          <div class="flex flex-1 flex-col mx-3">
+            <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
+              Network ID
+            </div>
+            <z-input
+              v-model="node.networkId"
+              :hide="false"
+              class="mb-4 flex-1"
+              placeholder="1759155 (Optional)" />
+          </div>
+        </div>
+        <div class="flex items-center mt-4 justify-between -mx-3">
+          <z-button
+            class="w-full mx-3"
+            type="default"
+            rounded
+            @click="isNewNode=false">
+            Cancel
+          </z-button>
+          <z-button
+            class="w-full mx-3 min-w-32"
+            rounded
+            @click="changeNode(node)">
+            Save and Use
+          </z-button>
+        </div>
+      </div>
     </z-modal>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import AddCustomNode from '@/components/AddCustomNode';
 import config from '@/config';
 export default {
   name: 'ZDropdown',
-  components: {
-    'add-custom-node': AddCustomNode
-  },
   data() {
     return {
       showDropDown: false,
       connectionStatusClass: 'bg-gray-400',
-      isNewNode: false
+      isNewNode: false,
+      node: {
+        name: '',
+        url: '',
+        networkId: ''
+      }
     };
   },
   computed: {
@@ -79,8 +132,8 @@ export default {
       nodes: state => state.nodes
     })
   },
-  beforeMount() {
-    this.changeNode(this.selectedNode);
+  async beforeMount() {
+    await this.changeNode(this.selectedNode);
   },
   methods: {
     ...mapActions(['checkNetworkStatus', 'selectNode']),
@@ -92,9 +145,6 @@ export default {
         this.isNewNode = false;
         this.selectNode(node);
       }
-      this.$router.push({
-        name: 'index'
-      });
     },
     async checkConnection(url) {
       try {

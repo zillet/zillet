@@ -1,56 +1,56 @@
 <template>
   <div class="tabs">
-    <input 
-      id="tab1" 
-      :checked="$route.name=='send'" 
+    <input
+      id="tab1"
+      :checked="$route.name=='send'"
       type="radio"
-      name="tab-control" 
-    >
-    <input 
-      id="tab2" 
-      :checked="$route.name=='transactions'" 
-      type="radio" 
-      name="tab-control" 
-    >
-    <input 
-      id="tab3" 
-      :checked="$route.name=='info'" 
-      type="radio" 
-      name="tab-control">  
+      name="tab-control">
+    <input
+      id="tab2"
+      :checked="$route.name=='transactions'"
+      type="radio"
+      name="tab-control">
+    <input
+      id="tab3"
+      :checked="$route.name=='info'"
+      type="radio"
+      name="tab-control">
     <ul>
-      <li 
-        title="Send Zilliqa" 
+      <li
+        title="Send Zilliqa"
         @click="$emit('tabSelected', 'send')">
-        <label 
-          for="tab1" 
+        <label
+          for="tab1"
           role="button">
           <i class="eva eva-diagonal-arrow-right-up-outline font-semibold mr-2" />
           <span>Send Zilliqa</span>
         </label>
       </li>
-      <li 
-        title="Transactions" 
+      <li
+        title="Transactions"
         @click="$emit('tabSelected', 'transactions')">
-        <label 
-          for="tab2" 
+        <label
+          for="tab2"
           role="button">
           <i class="eva eva-clock-outline font-semibold mr-2" />
           <span>Transactions</span>
           <!-- <div class="pending-transactions"> 2</div> -->
         </label>
       </li>
-      <li 
-        title="Wallet Info" 
+      <li
+        title="Wallet Info"
         @click="$emit('tabSelected', 'info')">
-        <label 
-          for="tab3" 
+        <label
+          for="tab3"
           role="button">
           <i class="eva eva-eye-outline font-semibold mr-2" />
           <span>Wallet Info</span>
         </label>
-      </li>   
+      </li>
     </ul>
-    <div class="slider"><div class="indicator"/></div>
+    <div class="slider">
+      <div class="indicator" />
+    </div>
   </div>
 </template>
 <script>

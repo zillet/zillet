@@ -1,7 +1,7 @@
 <template>
   <div class="private-key">
-    <div 
-      class="private-key__head-actions" 
+    <div
+      class="private-key__head-actions"
       @click="$emit('exit')">
       <i class="eva eva-arrow-back-outline" />  &nbsp;Other Methods
     </div>
@@ -11,42 +11,34 @@
     <div class="private-key__body">
       <span>
         If you must, please double-check the URL & SSL cert. It should say <code>https://zillet.io</code> in your URL bar.
-        <!-- If you must, please  <u>double-check the URL & SSL cert</u>. 
+        <!-- If you must, please  <u>double-check the URL & SSL cert</u>.
         For additional security, <b>turn off your internet connection</b> prior to accessing/ creating a wallet. -->
       </span>
-      <div 
+      <div
         class="max-w-2xl mx-auto mt-4">
         <z-input
           v-model="privateKey"
+          :valid="$zil.util.validation.isPrivateKey(privateKey)"
           placeholder="Enter your private key here"
           label="Private Key"
         />
-        <transition 
-          name="fade" 
-          mode="out-in">
-          <p 
-            v-if="!$v.privateKey.required && $v.privateKey.$dirty" 
-            class="text-red-600 text-sm italic font-semibold text-left">Private Key is required.</p>
-          <p 
-            v-if="(!$v.privateKey.minLength || !$v.privateKey.maxLength) && $v.privateKey.$dirty" 
-            class="text-red-600 text-sm italic font-semibold text-left">Invalid private key</p>
-        </transition>
-        <z-alert 
-          type="warning" 
+        <z-alert
+          type="warning"
           class="my-4">
-          This is Zilliqa wallet. Do not send any 
+          This is Zilliqa wallet. Do not send any
           ERC-20 ZIL tokens to this wallet.
         </z-alert>
-        <z-button 
-          rounded 
+        <z-button
+          id="private-key"
+          rounded
           class="w-full"
           @click="validateKey()">
           Load wallet
         </z-button>
         <div class="flex flex-row mt-8 justify-center">
-          <i 
-            class="eva eva-shield text-xl mr-2 relative text-gray-700" 
-            style="top:2px;"/>
+          <i
+            class="eva eva-shield text-xl mr-2 relative text-gray-700"
+            style="top:2px;" />
           We do not store your private key on our servers or transmit it over the network at any time.
         </div>
       </div>
@@ -54,7 +46,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 export default {
   name: 'PrivateKey',
@@ -64,39 +56,25 @@ export default {
       privateKey: ''
     };
   },
-  validations: {
-    privateKey: {
-      required,
-      minLength: minLength(62),
-      maxLength: maxLength(64)
-    }
-  },
   methods: {
-    ...mapActions(['importAccount']),
+    ...mapMutations(['importAccount']),
     validateKey() {
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
+        return this.$notify({
+          message: `Invalid private key`,
+          type: 'danger'
+        });
       } else {
-        if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
-          return this.$notify({
-            message: `Invalid private key`,
-            type: 'danger'
-          });
-        } else {
-          this.importKey(this.privateKey);
-        }
+        this.$zilliqa.wallet.addByPrivateKey(this.privateKey);
+        this.importAccount(this.$zilliqa.wallet.defaultAccount);
+        this.$router.push({
+          name: this.$route.query.redirect || 'send'
+        });
+        return this.$notify({
+          message: `Wallet loaded successfully.`,
+          type: 'success'
+        });
       }
-    },
-    importKey(pk) {
-      this.importAccount(pk);
-      this.$router.push({
-        name: this.$route.query.redirect || 'send'
-      });
-      return this.$notify({
-        message: `Wallet loaded successfully.`,
-        type: 'success'
-      });
-      this.loading = false;
     }
   }
 };

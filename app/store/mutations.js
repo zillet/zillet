@@ -9,11 +9,20 @@ export const ERROR = (state, msg) => {
   state.loading = false;
   state.errorMsg = msg;
 };
-export const IMPORT_ACCOUNT = (state, result) => {
+export const importAccount = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
 };
-export const BALANCE = (state, result) => {
+export const updateBalance = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
+};
+export const clearWallet = (state, result) => {
+  state.wallet = {
+    address: '',
+    privateKey: '',
+    publicKey: '',
+    balance: '',
+    nonce: ''
+  };
 };
 export const SELECT_NODE = (state, node) => {
   state.selectedNode = { ...state.selectedNode, ...node };
@@ -25,18 +34,7 @@ export const SELECT_NODE = (state, node) => {
     nonce: ''
   };
 };
-export const MIN_GAS_PRICE = (state, price) => {
-  state.minimumGasPrice = price;
-};
-export const EMPTY_WALLET = (state, result) => {
-  state.wallet = {
-    address: '',
-    privateKey: '',
-    publicKey: '',
-    balance: '',
-    nonce: ''
-  };
-};
+
 export const FETCHED_PRICE = (state, prices) => {
   state.prices = prices;
 };
@@ -54,7 +52,7 @@ export const SAVE_TXN = (state, data) => {
   let txn = {
     direction: data.toAddr == state.wallet.address ? 'self' : 'out',
     timestamp: new Date(),
-    hash: data.res && data.res.result && data.res.result.TranID,
+    hash: '0x' + (data.res && data.res.result && data.res.result.TranID),
     from: state.wallet.address,
     to: data.toAddr,
     value: data.amount,

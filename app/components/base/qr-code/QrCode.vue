@@ -1,5 +1,5 @@
 <template>
-  <canvas id="canvas"/>
+  <canvas id="canvas" />
 </template>
 <script>
 export default {

@@ -12,7 +12,7 @@
       <input
         :value="value"
         :type="`${number ? 'number': isVisible || !hide ? 'text': 'password'}`"
-        v-bind="$attrs" 
+        v-bind="$attrs"
         :class="{'rounded-r-none': hide, 'focus:border-red-500': !valid, 'focus:border-green-500': valid && value}"
         class="input__field"
         v-on="{...$listeners,input: event => $emit('input', event.target.value)}">
@@ -22,12 +22,12 @@
         <button
           class="input__side-btn"
           @click="isVisible=!isVisible">
-          <i 
-            :class="isVisible ? 'eva-eye-off-outline' : 'eva-eye-outline'" 
-            class="eva"/>
+          <i
+            :class="isVisible ? 'eva-eye-off-outline' : 'eva-eye-outline'"
+            class="eva" />
         </button>
       </div>
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>

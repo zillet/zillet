@@ -12,7 +12,7 @@
           :valid="passphrase.length > 7"
           class="w-full"
           label="Enter a password"
-          placeholder="Do not forget this password"/>
+          placeholder="Do not forget this password" />
         <p class="text-gray-700 -mt-1 text-left text-sm italic text-left">
           Password should be atleast 8 chracter long
         </p>
@@ -28,19 +28,19 @@
           <span class="text-gray-800">
             This password <span class="font-semibold">encrypts</span> your
             private key. This does not act as a seed to generate your keys.
-            <span 
+            <span
               class="font-semibold">You will need this password + your private key to unlock your
               wallet.
             </span>
           </span>
-          <br >
+          <br>
         </div>
         <p class="text-gray-700 mt-8">
           Already have a wallet?
-          <nuxt-link 
-            :to="{ name: 'index' }" 
-            class="text-teal-500 font-semibold"
-          >Access now
+          <nuxt-link
+            :to="{ name: 'index' }"
+            class="text-teal-500 font-semibold">
+            Access now
           </nuxt-link>
         </p>
       </div>
@@ -58,6 +58,7 @@
 <script>
 import { printWallet } from '@/utils/printWallet';
 import DownloadWallet from '@/components/DownloadWallet';
+
 export default {
   name: 'NewWallet',
   components: {
@@ -76,6 +77,9 @@ export default {
     };
   },
   methods: {
+    sleep(milisec) {
+      return new Promise(resolve => setTimeout(resolve, milisec));
+    },
     async create() {
       this.isKeyDownloaded = false;
       if (!this.passphrase || this.passphrase.length < 8) {

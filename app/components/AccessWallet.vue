@@ -1,16 +1,16 @@
 <template>
   <div class="access-wallet">
-    <div class="access-wallet__header"> 
+    <div class="access-wallet__header">
       <h3>How would you like to access your wallet?</h3>
     </div>
     <div class="access-wallet__methods">
-      <div 
+      <div
         v-for="method in accessMethods"
-        :key="method.id" 
+        :key="method.id"
         :class="{'access-wallet__method-btn--disabled': !method.allowed}"
         class="access-wallet__method-btn">
         <div class="access-wallet__method-btn__title">
-          <img 
+          <img
             :src="getImg(method.img)">
           <span>{{ method.title }}</span>
         </div>
@@ -18,31 +18,35 @@
           <span>{{ method.body }}</span>
         </div>
         <div class="access-wallet__method-btn__footer">
-          <z-button 
+          <z-button
             :disabled="!method.allowed"
             :type="method.allowed ? 'primary': 'default'"
             size="small"
             rounded
-            class="access-wallet__button" 
-            @click="selectMethod(method)"> {{ method.buttonText }} </z-button>
-            <!-- <i 
-              class="eva eva-question-mark-circle-outline" 
-              data-balloon="Whats up!" 
+            class="access-wallet__button"
+            @click="selectMethod(method)">
+            {{ method.buttonText }}
+          </z-button>
+          <!-- <i
+              class="eva eva-question-mark-circle-outline"
+              data-balloon="Whats up!"
               data-balloon-pos="right"/>
             <i class="eva eva-question-mark-circle-outline"/> -->
         </div>
       </div>
     </div>
     <p class="text-gray-800">
-      <code>Zillet.io</code> does not hold your keys for you. We cannot access accounts, 
-      recover keys, reset passwords, nor reverse transactions. Protect your keys & 
-      always check that you are on correct URL. 
+      <code>Zillet.io</code> does not hold your keys for you. We cannot access accounts,
+      recover keys, reset passwords, nor reverse transactions. Protect your keys &
+      always check that you are on correct URL.
       <span class="font-semibold">You are responsible for your security</span>.
     </p>
-    <p class="text-gray-700 mt-8">Do not have a wallet? 
-      <nuxt-link 
+    <p class="text-gray-700 mt-8">
+      Do not have a wallet?
+      <nuxt-link
         :to="{name: 'create'}"
-        class="text-teal-500 font-semibold">Create A New Wallet
+        class="text-teal-500 font-semibold">
+        Create A New Wallet
       </nuxt-link>
     </p>
   </div>

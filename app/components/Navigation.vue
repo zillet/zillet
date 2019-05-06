@@ -6,34 +6,34 @@
           <img src="@/assets/images/logo.png">
         </nuxt-link>
       </div>
-      <div class="navigation__account"/>
+      <div class="navigation__account" />
       <div class="navigation__actions">
-        <NodeDropdown/>
-        <nuxt-link 
+        <NodeDropdown />
+        <nuxt-link
           v-if="$route.name!='create' && !getAccount.address"
           :to="{name: 'create'}"
           class="navigation__link">
-          <i class="eva eva-plus-outline font-bold text-base"/>
-          &nbsp;Create Wallet 
+          <i class="eva eva-plus-outline font-bold text-base" />
+          &nbsp;Create Wallet
         </nuxt-link>
-        <nuxt-link 
+        <nuxt-link
           v-else-if="!getAccount.address"
           :to="{name: 'index'}"
           class="navigation__link">
-          <i class="eva eva-layers-outline font-bold text-base"/>
+          <i class="eva eva-layers-outline font-bold text-base" />
           &nbsp;Access Wallet
         </nuxt-link>
-        <a 
+        <a
           v-else
           class="navigation__link cursor-pointer"
-          @click="doLogout">
-          <i class="eva eva-power-outline font-bold text-base"/>
+          @click="logout">
+          <i class="eva eva-power-outline font-bold text-base" />
           &nbsp;Logout
         </a>
       </div>
     </nav>
-    <div 
-      v-if="getAccount.address" 
+    <div
+      v-if="getAccount.address"
       class="account-info card mb-4 p-0">
       <div class="account-info__top">
         <div class="account-info__main">
@@ -41,21 +41,21 @@
             Address
           </div>
           <div class="account-info__address">
-            <jazzicon 
+            <jazzicon
               :diameter="22"
-              :address="getAccount.address" 
-              class="mt-1 mr-2" /> 
+              :address="getAccount.address"
+              class="mt-1 mr-2" />
             <h3>
               {{ `0x${getAccount.address}` }}
             </h3>
-            <i 
-              v-clipboard:copy="`0x${getAccount.address}`" 
+            <i
+              v-clipboard:copy="`0x${getAccount.address}`"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              class="eva eva-copy-outline"/> 
-            <i 
-              class="eva eva-grid-outline" 
-              @click="showQr=true"/> 
+              class="eva eva-copy-outline" />
+            <i
+              class="eva eva-grid-outline"
+              @click="showQr=true" />
           </div>
         </div>
         <div class="account-info__balance">
@@ -67,43 +67,47 @@
               {{ getAccount.balance/Math.pow(10, multiplier) }} ZIL
             </span>
             <span class="usd">
-              &nbsp; &asymp; &nbsp; {{ (getAccount.balance/Math.pow(10, multiplier) )* getPrices.USD | currency('$', 2) }} 
+              &nbsp; &asymp; &nbsp; {{ (getAccount.balance/Math.pow(10, multiplier) )* getPrices.USD | currency('$', 2) }}
             </span>
             <span
               class="text-xs italic text-left inline-block ml-2
-            font-semibold align-middle text-gray-700 font-normal 
+            font-semibold align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
-              @click="getBalance(getAccount.address)">
+              @click="fetchBalance(getAccount.address)">
               Refresh
             </span>
           </div>
         </div>
       </div>
       <div class="divider" />
-      <NavigationTab 
-        class="mt-4 px-4" 
-        @tabSelected="changeRoute"/>
+      <NavigationTab
+        class="mt-4 px-4"
+        @tabSelected="changeRoute" />
     </div>
-    <z-modal 
-      :visible="showQr" 
+    <z-modal
+      :visible="showQr"
       @close="showQr=false">
       <div class="card w-xl pb-2">
-        <h3 class="font-bold text-xl mb-4 text-gray-800"> 
+        <h3 class="font-bold text-xl mb-4 text-gray-800">
           Your Zilliqa Address
         </h3>
         <div class="flex justify-center items-center flex-col">
           <div class="qr-code">
-            <z-qrcode 
-              :value="`0x${getAccount.address}`" 
-              :options="{ width: 250, color:{ dark: '#303133'}}"/>
+            <z-qrcode
+              :value="`0x${getAccount.address}`"
+              :options="{ width: 250, color:{ dark: '#303133'}}" />
           </div>
           <span class="mb-4 font-semibold">{{ `0x${getAccount.address}` }}</span>
-          <p class="text-gray-700 text-xs italic font-semibold">Scan QR code to import Address</p>
-          <z-button 
-            type="default" 
-            class="mt-6 w-full" 
+          <p class="text-gray-700 text-xs italic font-semibold">
+            Scan QR code to import Address
+          </p>
+          <z-button
+            type="default"
+            class="mt-6 w-full"
             rounded
-            @click="showQr=false">Okay, Got it </z-button>
+            @click="showQr=false">
+            Okay, Got it
+          </z-button>
         </div>
       </div>
     </z-modal>
@@ -112,7 +116,7 @@
 <script>
 import NodeDropdown from '@/components/NodeDropdown';
 import NavigationTab from './NavigationTab';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import config from '@/config';
 export default {
   name: 'Navigation',
@@ -129,11 +133,35 @@ export default {
   computed: {
     ...mapGetters(['getAccount', 'getPrices'])
   },
+  watch: {
+    'getAccount.address': {
+      handler(value) {
+        if (value && value.length > 2) {
+          //fetch balance
+          this.fetchBalance(value);
+        }
+      }
+    }
+  },
   methods: {
-    ...mapActions(['clearWallet', 'getBalance']),
+    ...mapMutations(['updateBalance', 'clearWallet']),
     async logout() {
       await this.clearWallet();
       this.$router.push({ name: 'index' });
+    },
+    async fetchBalance(address) {
+      try {
+        this.$nuxt.$loading.start();
+        const balance = await this.$zilliqa.blockchain.getBalance(address);
+        this.updateBalance(balance.result);
+        this.$nuxt.$loading.finish();
+      } catch (error) {
+        this.$notify({
+          icon: 'eva eva-close-circle-outline',
+          message: `Something went wrong ${error}`,
+          type: 'danger'
+        });
+      }
     },
     onCopy(e) {
       this.$notify({
@@ -151,9 +179,6 @@ export default {
     },
     changeRoute(path) {
       this.$router.push({ name: path });
-    },
-    doLogout() {
-      location.reload();
     }
   }
 };
