@@ -22,6 +22,11 @@
           class="textarea"
           label="Mnemonic Phrase"
         />
+        <z-input
+          v-model="passphrase"
+          placeholder="Type your password (Optional)"
+          label="Type your password (Optional)"
+        />
         <z-alert
           type="warning"
           class="my-4">
@@ -32,7 +37,7 @@
           id="private-key"
           rounded
           class="w-full"
-          @click="validatePhrase()">
+          @click="loadWallet()">
           Load wallet
         </z-button>
         <div class="flex flex-row mt-8 justify-center">
@@ -47,24 +52,47 @@
 </template>
 <script>
 import { mapActions, mapMutations } from 'vuex';
+const bip39 = require('bip39');
+const hdkey = require('hdkey');
+
 export default {
   name: 'PrivateKey',
   data() {
     return {
       loading: false,
-      mnemonicPhrase: ''
+      mnemonicPhrase: '',
+      passphrase: '',
+      index: 0
     };
   },
   methods: {
     ...mapMutations(['importAccount']),
-    validatePhrase() {
+    async loadWallet() {
       if (!this.$validation.isMnemonicValid(this.mnemonicPhrase)) {
         return this.$notify({
           message: `Invalid Mnemonic Phrase`,
           type: 'danger'
         });
       } else {
-        this.$zilliqa.wallet.addByMnemonic(this.mnemonicPhrase);
+        if (this.passphrase) {
+          const seed = await bip39.mnemonicToSeedSync(
+            this.mnemonicPhrase,
+            this.passphrase
+          );
+          const hdKey = hdkey.fromMasterSeed(seed);
+          const childKey = hdKey.derive(`m/44'/313'/0'/0/${this.index}`);
+          const privateKey = childKey.privateKey.toString('hex');
+          this.$zilliqa.wallet.addByPrivateKey(privateKey);
+          this.importAccount(this.$zilliqa.wallet.defaultAccount);
+          this.$router.push({
+            name: this.$route.query.redirect || 'send'
+          });
+          return this.$notify({
+            message: `Wallet loaded successfully.`,
+            type: 'success'
+          });
+        }
+        this.$zilliqa.wallet.addByMnemonic(this.mnemonicPhrase, this.index);
         this.importAccount(this.$zilliqa.wallet.defaultAccount);
         this.$router.push({
           name: this.$route.query.redirect || 'send'

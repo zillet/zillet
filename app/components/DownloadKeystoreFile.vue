@@ -1,20 +1,22 @@
 <template>
   <z-modal
     :visible="visible"
-    @close="close">
+    :autoclose="false"
+    @close="$emit('close')">
     <div class="card">
       <h3 class="font-semibold text-xl mb-8 text-gray-700">
         Download Your Wallet
       </h3>
       <z-textarea
         :value="pk"
+        type="password"
         readonly />
       <div class="flex -mx-2 mb-4">
         <div class="w-1/2 px-2">
           <z-button
             rounded
             class="w-full"
-            @click="$emit('downloadKeystore')">
+            @click="$emit('download')">
             <p>Download Keystore</p>
           </z-button>
         </div>
@@ -22,7 +24,7 @@
           <z-button
             rounded
             class="w-full"
-            @click="$emit('printWallet')">
+            @click="$emit('print')">
             <p>Print Wallet</p>
           </z-button>
         </div>
@@ -47,7 +49,7 @@
         class="w-full mt-8"
         type="default"
         rounded
-        @click="close">
+        @click="$emit('close')">
         Okay, I've succesfully saved my key.
       </z-button>
     </div>
@@ -55,7 +57,7 @@
 </template>
 <script>
 export default {
-  name: 'DownloadWallet',
+  name: 'DownloadKeystoreFile',
   props: {
     visible: {
       type: Boolean,
@@ -68,18 +70,6 @@ export default {
     keySaved: {
       type: Boolean,
       default: false
-    }
-  },
-  methods: {
-    close() {
-      if (this.keySaved) {
-        this.$emit('close');
-      } else {
-        return this.$notify({
-          message: `Kindly save wallet file in secure location first.`,
-          type: 'danger'
-        });
-      }
     }
   }
 };
