@@ -2,16 +2,50 @@
   <div class="create-wallet">
     <div class="card">
       <div class="create-wallet__header">
-        <h3>
+        <h3 class="mb-6">
           Generate your own Zilliqa wallet instantly!
         </h3>
+        <div class="flex flex-row justify-center">
+          <div
+            aria-flowto="aria5"
+            class="flex flex-row px-4 items-center">
+            <input
+              id="json"
+              v-model="walletType"
+              type="radio"
+              aria-label="Import JSON Keystore"
+              value="json"
+              name="json">
+            <label
+              class="block text-grey-darkest ml-2"
+              for="json">
+              By Keystore/JSON File
+            </label>
+          </div>
+          <div
+            aria-flowto="aria5"
+            class="flex flex-row px-4 items-center">
+            <input
+              id="mnemonic"
+              v-model="walletType"
+              type="radio"
+              aria-label="Private Key"
+              value="mnemonic"
+              name="mnemonic">
+            <label
+              class="block text-grey-darkest ml-2"
+              for="mnemonic">
+              By Mnemonic Phrase
+            </label>
+          </div>
+        </div>
       </div>
       <div class="create-wallet__body">
         <z-input
           v-model="passphrase"
           :valid="passphrase.length > 7"
           class="w-full"
-          label="Enter a password"
+          label="Set a password"
           placeholder="Do not forget this password" />
         <p class="text-gray-700 -mt-1 text-left text-sm italic text-left">
           Password should be atleast 8 chracter long
@@ -28,10 +62,14 @@
           <span class="text-gray-800">
             This password <span class="font-semibold">encrypts</span> your
             private key. This does not act as a seed to generate your keys.
+            You will need this
             <span
-              class="font-semibold">You will need this password + your private key to unlock your
-              wallet.
-            </span>
+              v-if="walletType==='json'"
+              class="font-semibold">Password + Keystore File </span>
+            <span
+              v-if="walletType==='mnemonic'"
+              class="font-semibold">Password + Mnemonic Phrase </span>
+            to unlock your wallet.
           </span>
           <br>
         </div>
@@ -45,35 +83,48 @@
         </p>
       </div>
     </div>
-    <DownloadWallet
-      :visible="downloadModal"
+    <DownloadKeystoreFile
+      :visible="downloadKeystoreModal"
       :pk="privateKey"
       :key-saved="isKeyDownloaded"
-      @printWallet="print"
-      @downloadKeystore="downloadWalletJson"
-      @close="downloadModal = false"
+      @print="printPk"
+      @download="downloadWalletJson"
+      @close="downloadKeystoreModal = false"
+    />
+    <DownloadMnemonicPhrase
+      :visible="downloadMnemonicModal"
+      :phrase="phrase"
+      :key-saved="isKeyDownloaded"
+      @print="printSeed"
+      @download="downloadWalletJson"
+      @close="downloadMnemonicModal = false"
     />
   </div>
 </template>
 <script>
-import { printWallet } from '@/utils/printWallet';
-import DownloadWallet from '@/components/DownloadWallet';
-
+import { printKeystore, printMnemonic } from '@/utils/print';
+import DownloadKeystoreFile from '@/components/DownloadKeystoreFile';
+import DownloadMnemonicPhrase from '@/components/DownloadMnemonicPhrase';
+// cube village gate curious enforce blur yard equal weekend bronze voice name
+const bip39 = require('bip39');
 export default {
   name: 'NewWallet',
   components: {
-    DownloadWallet
+    DownloadKeystoreFile,
+    DownloadMnemonicPhrase
   },
   data() {
     return {
       passphrase: '',
-      isVisible: false,
       loading: false,
-      downloadModal: false,
+      downloadKeystoreModal: false,
+      downloadMnemonicModal: false,
       address: '',
       encryptedWallet: '',
       isKeyDownloaded: false,
-      privateKey: ''
+      privateKey: '',
+      walletType: 'json',
+      phrase: ''
     };
   },
   methods: {
@@ -87,26 +138,36 @@ export default {
           message: `Password should be atleast 8 chracter long`,
           type: 'danger'
         });
+      }
+      if (this.walletType === 'json') {
+        this.loading = true;
+        await this.generatePk();
+        this.loading = false;
       } else {
         this.loading = true;
-        this.privateKey = this.$zil.crypto.schnorr.generatePrivateKey();
-        this.address = this.$zil.crypto.getAddressFromPrivateKey(
-          this.privateKey
+        // generate BIP39
+        this.phrase = await bip39.generateMnemonic();
+        this.downloadMnemonicModal = true;
+        this.passphrase = '';
+        this.loading = false;
+      }
+    },
+    async generatePk() {
+      this.privateKey = this.$zil.crypto.schnorr.generatePrivateKey();
+      this.address = this.$zil.crypto.getAddressFromPrivateKey(this.privateKey);
+      try {
+        this.encryptedWallet = await this.$zil.crypto.encryptPrivateKey(
+          'scrypt',
+          this.privateKey,
+          this.passphrase
         );
-        try {
-          this.encryptedWallet = await this.$zil.crypto.encryptPrivateKey(
-            'scrypt',
-            this.privateKey,
-            this.passphrase
-          );
-          // await this.downloadWalletJson(address, result);
-          this.loading = false;
-          this.downloadModal = true;
-          this.passphrase = '';
-        } catch (error) {
-          this.loading = false;
-          this.passphrase = '';
-        }
+        // await this.downloadWalletJson(address, result);
+        this.loading = false;
+        this.downloadKeystoreModal = true;
+        this.passphrase = '';
+      } catch (error) {
+        this.loading = false;
+        this.passphrase = '';
       }
     },
     getWalletFilename(address) {
@@ -127,7 +188,18 @@ export default {
       document.body.removeChild(element);
       this.isKeyDownloaded = true;
     },
-    print() {
+    printSeed() {
+      const paperWallet = printMnemonic(this.phrase);
+      let paperBody = document.createElement('BODY');
+      paperBody.innerHTML = paperWallet;
+      var win = window.open('about:blank', '_blank');
+      this.isKeyDownloaded = true;
+      win.document.body = paperBody;
+      setTimeout(() => {
+        win.print();
+      }, 500);
+    },
+    printPk() {
       var addressCanvas = document.createElement('CANVAS');
       var pkCanvas = document.createElement('CANVAS');
       const addressQr = this.$qr.toDataURL(
@@ -150,7 +222,7 @@ export default {
           }
         }
       );
-      const paperWallet = printWallet(this.address, this.privateKey);
+      const paperWallet = printKeystore(this.address, this.privateKey);
       let paperBody = document.createElement('BODY');
       paperBody.setAttribute('id', 'paper-wallet');
       paperBody.innerHTML = paperWallet;

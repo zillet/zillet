@@ -30,7 +30,8 @@
       @after-leave="cardLeaving = false">
       <div
         v-if="showContent"
-        class="relative max-w-2xl w-full">
+        style="max-height: calc(100vh - 2rem);"
+        class="relative max-w-2xl w-full h-auto overflow-hidden lg:py-4">
         <slot />
       </div>
     </transition>

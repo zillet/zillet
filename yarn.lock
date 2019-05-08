@@ -6482,7 +6482,7 @@ hash.js@^1.0.0, hash.js@^1.0.3, hash.js@^1.1.5:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
-hdkey@^1.1.0:
+hdkey@^1.1.0, hdkey@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/hdkey/-/hdkey-1.1.1.tgz#c2b3bfd5883ff9529b72f2f08b28be0972a9f64a"
   integrity sha512-DvHZ5OuavsfWs5yfVJZestsnc3wzPvLWNk6c2nRUfo6X+OtxypGt20vDDf7Ba+MJzjL3KS1og2nw2eBbLCOUTA==

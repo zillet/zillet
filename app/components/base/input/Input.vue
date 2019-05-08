@@ -85,7 +85,7 @@ i.eva {
 
   &__field {
     @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-gray-200;
-    @apply border border-gray-200 rounded;
+    @apply border border-gray-400 rounded;
     @apply appearance-none leading-normal font-semibold text-gray-800;
 
     &:focus {
@@ -95,7 +95,7 @@ i.eva {
 
   &__side-btn {
     @apply flex items-center bg-white h-12 px-3;
-    @apply border border-gray-200 rounded rounded-l-none;
+    @apply border border-gray-400 border-l-0 rounded rounded-l-none;
     @apply leading-normal text-gray-500;
   }
 }
