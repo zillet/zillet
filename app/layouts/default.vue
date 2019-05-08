@@ -4,17 +4,20 @@
     <Navigation />
     <Nuxt />
     <Footer />
+    <Onboarding />
   </div>
 </template>
 <script>
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import Onboarding from '@/components/Onboarding';
 
 export default {
   name: 'Default',
   components: {
     Navigation,
-    Footer
+    Footer,
+    Onboarding
   }
 };
 </script>

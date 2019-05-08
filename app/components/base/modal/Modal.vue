@@ -15,7 +15,7 @@
       <div
         v-if="showBackdrop"
         @click="backdropClick">
-        <div class="absolute inset-0 bg-black opacity-25" />
+        <div class="absolute inset-0 bg-black opacity-50" />
       </div>
     </transition>
     <transition
@@ -30,6 +30,7 @@
       @after-leave="cardLeaving = false">
       <div
         v-if="showContent"
+        :class="customClass"
         style="max-height: calc(100vh - 2rem);"
         class="relative max-w-2xl w-full h-auto overflow-hidden lg:py-4">
         <slot />
@@ -51,6 +52,10 @@ export default {
     autoclose: {
       type: Boolean,
       default: true
+    },
+    // eslint-disable-next-line vue/require-default-prop
+    customClass: {
+      type: [String, Object, Array]
     }
   },
   data() {
