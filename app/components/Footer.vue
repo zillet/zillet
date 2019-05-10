@@ -3,8 +3,11 @@
     <div class="footer__links">
       <div class="left">
         <a
-          @click="showDisclaimer=!showDisclaimer">
-          Disclaimer
+          href="https://github.com/man15h/zillet"
+          target="_blank"
+          rel="noopener noreferrer">
+          <i class="eva eva-github mr-1" />
+          Github
         </a>
       </div>
       <div class="right">
@@ -15,11 +18,8 @@
           Help Center
         </a>
         <a
-          href="https://github.com/man15h/zillet"
-          target="_blank"
-          rel="noopener noreferrer">
-          <i class="eva eva-github mr-1" />
-          Github
+          @click="showDisclaimer=!showDisclaimer">
+          Disclaimer
         </a>
       </div>
     </div>
@@ -138,7 +138,7 @@ export default {
     .right {
       @apply flex flex-row;
       a {
-        @apply ml-4;
+        @apply px-2;
       }
     }
   }

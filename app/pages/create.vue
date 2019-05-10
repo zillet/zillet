@@ -279,7 +279,7 @@ export default {
   &__header {
     @apply mb-8;
     h3 {
-      @apply font-semibold text-2xl mb-4 text-gray-800;
+      @apply font-bold text-2xl mt-4 text-gray-800;
     }
     p {
       @apply text-base;
