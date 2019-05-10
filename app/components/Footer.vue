@@ -9,6 +9,12 @@
       </div>
       <div class="right">
         <a
+          href="//support.zillet.io"
+          target="_blank"
+          rel="noopener noreferrer">
+          Help Center
+        </a>
+        <a
           href="https://github.com/man15h/zillet"
           target="_blank"
           rel="noopener noreferrer">
@@ -19,7 +25,6 @@
     </div>
     <z-modal
       :visible="showDisclaimer"
-      :autoclose="false"
       title="Disclaimer"
       @close="showDisclaimer=false">
       <div class="card">
@@ -55,18 +60,11 @@
           </p>
         </div>
         <div class="disclaimer--footer">
-          <div
-            class="cursor-pointer"
-            @click="hasConsent=!hasConsent">
-            <input
-              :checked="hasConsent"
-              type="checkbox"> &nbsp; &nbsp;Yes, I agree with these terms and conditions.
-          </div>
           <div>
             <z-button
               size="small"
               rounded
-              @click="saveConsent">
+              @click="showDisclaimer=false">
               Okay, Got it.
             </z-button>
           </div>
@@ -90,12 +88,6 @@ export default {
         localStorage.setItem('_user_consent', value);
       }
     }
-  },
-  beforeMount() {
-    this.showDisclaimer =
-      localStorage.getItem('_user_consent') == 'true' ? false : true;
-    this.hasConsent =
-      localStorage.getItem('_user_consent') == 'true' ? true : false;
   },
   methods: {
     saveConsent() {
@@ -130,9 +122,9 @@ export default {
   }
 }
 .footer {
-  @apply w-full mt-2;
+  @apply w-full mt-2 flex items-center;
   &__links {
-    @apply flex flex-row justify-between;
+    @apply flex flex-row justify-between w-full;
     a {
       @apply tracking-wide text-gray-500 cursor-pointer;
       display: flex;
@@ -141,6 +133,12 @@ export default {
       font-size: 0.92rem;
       &:hover {
         @apply text-gray-500;
+      }
+    }
+    .right {
+      @apply flex flex-row;
+      a {
+        @apply ml-4;
       }
     }
   }

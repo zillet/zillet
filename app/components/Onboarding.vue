@@ -3,7 +3,7 @@
     :visible="visible"
     :autoclose="false"
     class="onboarding"
-    custom-class="max-w-5xl"
+    custom-class="max-w-4xl"
     @close="$emit('close')">
     <div class="card">
       <transition
@@ -39,7 +39,7 @@
               <z-button
                 rounded
                 class="w-full mt-12 mb-0 flex"
-                style="min-width:200px;"
+                style="min-width:190px;"
                 @click="nextStep">
                 {{ nextBtnText }}  <i class="ml-2 eva eva-arrow-forward-outline font-bold" />
               </z-button>
@@ -70,7 +70,7 @@ export default {
         },
         {
           heading: 'What is Zillet?',
-          text: `Zillet is a free, open-source,client-side interface.
+          text: `Zillet is a free, open-source, client-side interface.
           Zillet allows you to interact directly with the Zilliqa blockchain,
           while you remain in full control of your keys and funds.
           <br /> <br />
@@ -156,7 +156,9 @@ export default {
         {
           heading: `Congratulations!`,
           text: `Thanks for reading through our introduction! Now you're ready to
-          dive in. If you want to know more, please head to our Help Center. We are
+          dive in. If you want to know more, please head to our
+          <a href="//support.zillet.io" class="text-primary"
+          target="_blank" rel="noreferer nofollow"> Help Center</a>. We are
           here to help you have the most secure and most convenient experience possible!`,
           image: 'congratulations.svg'
         }
@@ -222,7 +224,7 @@ export default {
   }
   &__illustration {
     @apply w-1/2 px-12 flex items-center;
-    max-width: 400px;
+    max-width: 350px;
   }
   &__guide {
     @apply w-1/2 px-12 flex items-start flex-col justify-center text-left flex-1;

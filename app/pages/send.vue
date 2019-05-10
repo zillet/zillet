@@ -1,10 +1,10 @@
 <template>
   <div class="w-full card">
-    <h3 class="font-semibold text-2xl mb-4 text-gray-700 text-center w-full">
+    <h3 class="font-semibold text-2xl mb-4 text-center w-full">
       Send Zilliqa
     </h3>
     <div class="max-w-2xl m-auto text-left">
-      <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
+      <div class="tracking-wide text-sm font-semibold mb-2">
         Recipient Address
       </div>
       <z-input
@@ -20,7 +20,7 @@
       </z-alert>
       <div class="amount-wrapper">
         <div class="label">
-          <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
+          <div class="tracking-wide text-sm font-semibold mb-2">
             Amount
           </div>
           <div
@@ -59,7 +59,7 @@
         v-if="isAdvance"
         class="gas-form">
         <div class="gas__limit">
-          <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
+          <div class="tracking-wide text-sm font-semibold mb-2">
             Gas Limit
           </div>
           <z-input
@@ -71,7 +71,7 @@
         </div>
         <div class="gas__space" />
         <div class="gas__price">
-          <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
+          <div class="tracking-wide text-sm font-semibold mb-2">
             Gas Price (Li)
           </div>
           <z-input
@@ -86,7 +86,7 @@
         <div>
           <div
             class="text-sm text-left inline-block
-          align-middle text-gray-700 font-normal  font-semibold">
+          align-middle font-normal  font-semibold">
             Fee:
             <span class="text-md font-bold">
               {{ transactionFee }}
@@ -98,7 +98,7 @@
           @click="isAdvance=!isAdvance">
           <span
             class="text-sm italic text-left inline-block
-        align-middle text-gray-700 font-normal
+        align-middle font-normal
         cursor-pointer hover:text-teal-500 font-semibold">
             {{ isAdvance ? '-': '+' }} Advance
           </span>
@@ -123,7 +123,7 @@
       <!-- <div
         v-show="isSigned && isAdvance"
         class="mt-4">
-        <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2">
+        <div class="tracking-wide text-sm font-semibold mb-2">
           Signed Transaction
         </div>
         <z-textarea
@@ -144,12 +144,12 @@
       :visible="isBroadcast"
       @close="isBroadcast=false">
       <div class="card">
-        <h3 class="font-bold text-xl mb-8 text-gray-700">
+        <h3 class="font-bold text-xl mb-8">
           Transaction Sent
         </h3>
         <div class="flex flex-col">
           <z-icon type="success" />
-          <span class="text-base text-gray-800 leading-normal font-semibold">
+          <span class="text-base leading-normal font-semibold">
             {{ `0x${tranxId}` }}
           </span>
           <div class="flex flex-row -mx-2">

@@ -35,6 +35,26 @@
         </div>
       </div>
     </div>
+    <div class="flex justify-center mb-6">
+      <h3 class="font-semibold mr-4">
+        Helpful articles:
+      </h3>
+      <a
+        class="link post"
+        href="//support.zillet.io/security/avoid-phishing-and-scams"
+        target="_blank">
+        15 Simple tips to avoid Phishing and Scams
+      </a>
+      &nbsp;
+      and
+      &nbsp;
+      <a
+        class="link post"
+        href="//support.zillet.io/getting-started/how-to-access-your-wallet"
+        target="_blank">
+        How to access your Wallet
+      </a>
+    </div>
     <p class="text-gray-800">
       <code>Zillet.io</code> does not hold your keys for you. We cannot access accounts,
       recover keys, reset passwords, nor reverse transactions. Protect your keys &

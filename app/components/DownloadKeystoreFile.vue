@@ -4,14 +4,23 @@
     :autoclose="false"
     @close="$emit('close')">
     <div class="card">
-      <h3 class="font-semibold text-xl mb-8 text-gray-700">
+      <h3 class="font-bold text-2xl mb-8">
         Download Your Wallet
       </h3>
+      <p class="mb-2">
+        <b>Do not lose it!</b> It cannot be recovered if you lose it.
+      </p>
+      <p class=" mb-2">
+        <b>Do not share it!</b> Your funds will be stolen if you use this file on a phishing site.
+      </p>
+      <p class="mb-8">
+        <b>Make a backup!</b> Secure it like the millions of dollars it may one day be worth.
+      </p>
       <z-textarea
         :value="pk"
         type="password"
         readonly />
-      <div class="flex -mx-2 mb-4">
+      <div class="flex -mx-2 mb-2">
         <div class="w-1/2 px-2">
           <z-button
             rounded
@@ -29,24 +38,29 @@
           </z-button>
         </div>
       </div>
-      <p class="text-gray-700 mb-2">
-        <b>Do not lose it!</b> It cannot be recovered if you lose it.
-      </p>
-      <p class=" text-gray-700 mb-2">
-        <b>Do not share it!</b> Your funds will be stolen if you use this file on a phishing site.
-      </p>
-      <p class="text-gray-700 mb-2">
-        <b>Make a backup!</b> Secure it like the millions of dollars it may one day be worth.
-      </p>
-      <z-alert
-        type="danger"
-        class="mt-8">
-        This is Zilliqa wallet. Do not send any
-        ERC-20 ZIL tokens to this wallet.
-      </z-alert>
+      <div class="flex justify-center">
+        <h3 class="font-semibold mr-4">
+          Helpful articles:
+        </h3>
+        <a
+          class="link post"
+          href="https://support.zillet.io/security/avoid-phishing-and-scams"
+          target="_blank">
+          Avoid Phishing And Scams
+        </a>
+        &nbsp;
+        and
+        &nbsp;
+        <a
+          class="link post"
+          href="//support.zillet.io/getting-started/how-to-access-your-wallet"
+          target="_blank">
+          How to Access Your Wallet
+        </a>
+      </div>
       <z-button
         :disabled="!keySaved"
-        class="w-full mt-8"
+        class="w-full mt-6"
         type="default"
         rounded
         @click="$emit('close')">
