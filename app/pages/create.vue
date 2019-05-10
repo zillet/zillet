@@ -45,20 +45,49 @@
           v-model="passphrase"
           :valid="passphrase.length > 7"
           class="w-full"
-          label="Set a password"
+          :label="walletType==='json' ? 'Set a password' : 'Set a password (Optional)'"
           placeholder="Do not forget this password" />
-        <p class="text-gray-700 -mt-1 text-left text-sm italic text-left">
+        <p
+          v-if="walletType==='json'"
+          class="text-gray-700 -mt-1 text-left text-sm italic text-left">
           Password should be atleast 8 chracter long
+        </p>
+        <p
+          v-else
+          class="text-gray-700 -mt-1 text-left text-sm italic text-left">
+          This password field is optional for Mnemonic Phrase.
         </p>
         <z-button
           :loading="loading"
           :disabled="loading"
-          class="my-8"
+          class="mt-6 w-full"
           rounded
           @click="create">
           Create New Wallet
         </z-button>
-        <div class="">
+        <div class="flex justify-center">
+          <h3 class="font-semibold mr-3">
+            Helpful articles:
+          </h3>
+          <div v-if="walletType==='mnemonic'">
+            <a
+              class="link post"
+              href="//support.zillet.io/security/mnemonic-phrase-password"
+              target="_blank">
+              Should I include password in Mnemonic phrase
+            </a>
+            &nbsp;
+            and
+            &nbsp;
+          </div>
+          <a
+            class="link post"
+            href="//support.zillet.io/getting-started/how-to-create-a-wallet"
+            target="_blank">
+            How to Create a Wallet
+          </a>
+        </div>
+        <div class="mt-6">
           <span class="text-gray-800">
             This password <span class="font-semibold">encrypts</span> your
             private key. This does not act as a seed to generate your keys.
@@ -133,7 +162,10 @@ export default {
     },
     async create() {
       this.isKeyDownloaded = false;
-      if (!this.passphrase || this.passphrase.length < 8) {
+      if (
+        (!this.passphrase || this.passphrase.length < 8) &&
+        this.walletType === 'json'
+      ) {
         return this.$notify({
           message: `Password should be atleast 8 chracter long`,
           type: 'danger'

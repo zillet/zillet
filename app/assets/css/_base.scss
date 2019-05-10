@@ -14,7 +14,19 @@ html {
         font-size: 14px;
     }
 }
-
+:root {
+  --primary-color: #4dc0b5;
+  --header-height: 62px;
+  --primary-bg: #f3f7f9;
+  --secondary-bg: #0d2538;
+  --primary-link-color: #4dc0b5;
+  --border-color: #e1eaef;
+  --success-bg: #5bb19640;
+  --space: 20px;
+  --space-x2: 40px;
+  --code-color: #f2f4f5;
+  --code-color-block: #f2f4f5;
+}
 * {
     outline: none !important;
 }
@@ -95,4 +107,26 @@ transform: scale(1);
     -ms-animation: rotating 2s linear infinite;
     -o-animation: rotating 2s linear infinite;
     animation: rotating 2s linear infinite;
+  }
+  a.link {
+    color: rgba(0,0,0,1);
+    text-decoration: none;
+    transition: color .3s, opacity .3s, background .3s;
+    display: inline-block;
+    position: relative;
+    font-weight: 500;
+    border-radius: 99px;
+
+    &:not(.button) {
+      background: linear-gradient(180deg, transparent 60%, var(--success-bg)  60%, var(--success-bg)  87%, transparent 0,);
+    }
+
+    &:not(.button):hover {
+      background: linear-gradient(180deg, transparent 0%, var(--success-bg)  60%, var(--success-bg)  87%, transparent 0,);
+    }
+
+  }
+
+  a.link:hover:not(.active) {
+    opacity: 1;
   }
