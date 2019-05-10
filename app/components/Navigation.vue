@@ -2,7 +2,7 @@
   <div class="w-full">
     <nav class="navigation">
       <div class="navigation__logo">
-        <nuxt-link :to="{name: 'index'}">
+        <nuxt-link :to="{name: getAccount.address ? 'send' : 'index'}">
           <img src="@/assets/images/logo.png">
         </nuxt-link>
       </div>
