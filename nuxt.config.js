@@ -83,6 +83,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     'nuxt-purgecss',
+    '@nuxtjs/style-resources',
     [
       '@nuxtjs/google-analytics',
       {
@@ -91,6 +92,9 @@ export default {
     ]
   ],
   loading: { color: '#3B8070' },
+  styleResources: {
+    scss: ['~/assets/css/_variables.scss', '~/assets/css/_mixins.scss']
+  },
   build: {
     postcss: {
       plugins: {

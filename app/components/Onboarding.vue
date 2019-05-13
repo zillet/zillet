@@ -38,8 +38,8 @@
               </z-button>
               <z-button
                 rounded
-                class="w-full mt-12 mb-0 flex"
-                style="min-width:190px;"
+                class="w-full mt-12 mb-0 flex next-btn"
+
                 @click="nextStep">
                 {{ nextBtnText }}  <i class="ml-2 eva eva-arrow-forward-outline font-bold" />
               </z-button>
@@ -215,19 +215,32 @@ export default {
 </script>
 <style lang="scss" scoped>
 .onboarding {
+  .card {
+    overflow: auto;
+    max-height: calc(100vh - 4rem);
+  }
   &__title {
     @apply font-bold text-3xl mb-8 text-gray-800;
     letter-spacing: 0.01rem;
   }
   &__step {
     @apply flex py-8;
+    @include mobile {
+      @apply flex-col;
+    }
   }
   &__illustration {
     @apply w-1/2 px-12 flex items-center;
     max-width: 350px;
+    @include mobile {
+      @apply w-full;
+    }
   }
   &__guide {
     @apply w-1/2 px-12 flex items-start flex-col justify-center text-left flex-1;
+    @include mobile {
+      @apply w-full mt-8 text-center items-center px-2;
+    }
   }
 }
 .fade-enter-active {
@@ -244,5 +257,11 @@ export default {
   opacity: 0;
   position: relative;
   top: 20px;
+}
+.next-btn {
+  min-width: 190px;
+  @include mobile {
+    min-width: 100px;
+  }
 }
 </style>

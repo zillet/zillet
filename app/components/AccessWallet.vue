@@ -35,12 +35,12 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-center mb-6">
+    <div class="helpful-articles">
       <h3 class="font-semibold mr-4">
         Helpful articles:
       </h3>
       <a
-        class="link post"
+        class="text-teal-600"
         href="//support.zillet.io/security/avoid-phishing-and-scams"
         target="_blank">
         15 Simple tips to avoid Phishing and Scams
@@ -49,7 +49,7 @@
       and
       &nbsp;
       <a
-        class="link post"
+        class="text-teal-600"
         href="//support.zillet.io/getting-started/how-to-access-your-wallet"
         target="_blank">
         How to access your Wallet
@@ -96,8 +96,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '@/assets/css/_variables.scss';
-@import '@/assets/css/_mixins.scss';
 .access-wallet {
   max-width: 700px;
   margin: auto;
@@ -153,6 +151,12 @@ export default {
   }
   &__button {
     min-width: 13rem;
+  }
+}
+.helpful-articles {
+  @apply flex justify-center mb-6 text-sm;
+  @include mobile {
+    @apply flex-col;
   }
 }
 </style>

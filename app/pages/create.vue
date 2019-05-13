@@ -40,7 +40,7 @@
           </div>
         </div>
       </div>
-      <div class="create-wallet__body">
+      <div class="create-wallet__body px-4">
         <z-input
           v-model="passphrase"
           :valid="passphrase.length > 7"
@@ -65,13 +65,13 @@
           @click="create">
           Create New Wallet
         </z-button>
-        <div class="flex justify-center">
+        <div class="helpful-articles">
           <h3 class="font-semibold mr-3">
             Helpful articles:
           </h3>
           <div v-if="walletType==='mnemonic'">
             <a
-              class="link post"
+              class="text-teal-600"
               href="//support.zillet.io/security/mnemonic-phrase-password"
               target="_blank">
               Should I include password in Mnemonic phrase
@@ -81,7 +81,7 @@
             &nbsp;
           </div>
           <a
-            class="link post"
+            class="text-teal-600"
             href="//support.zillet.io/getting-started/how-to-create-a-wallet"
             target="_blank">
             How to Create a Wallet
@@ -288,6 +288,12 @@ export default {
   &__body {
     @apply max-w-2xl;
     margin: auto;
+  }
+}
+.helpful-articles {
+  @apply flex justify-center mb-6 text-sm;
+  @include mobile {
+    @apply flex-col;
   }
 }
 </style>

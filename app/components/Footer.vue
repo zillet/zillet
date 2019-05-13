@@ -124,7 +124,7 @@ export default {
 .footer {
   @apply w-full mt-2 flex items-center;
   &__links {
-    @apply flex flex-row justify-between w-full;
+    @apply flex flex-row justify-between w-full mb-2;
     a {
       @apply tracking-wide text-gray-500 cursor-pointer;
       display: flex;
