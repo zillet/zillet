@@ -38,7 +38,7 @@
           </z-button>
         </div>
       </div>
-      <div class="flex justify-center">
+      <div class="flex justify-center helpful-articles">
         <h3 class="font-semibold mr-4">
           Helpful articles:
         </h3>
@@ -88,3 +88,11 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.helpful-articles {
+  @apply flex justify-center mb-6 text-sm;
+  @include mobile {
+    @apply flex-col;
+  }
+}
+</style>
