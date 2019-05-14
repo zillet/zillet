@@ -5,49 +5,47 @@
     class="onboarding"
     custom-class="max-w-4xl"
     @close="$emit('close')">
-    <div class="card">
-      <transition
-        name="fade"
-        mode="out-in">
-        <div
-          :key="currentIndex"
-          class="onboarding__step">
-          <div class="onboarding__illustration">
-            <img :src="image">
-          </div>
-          <div class="onboarding__guide">
-            <h3 class="onboarding__title">
-              {{ steps[currentIndex].heading }}
-            </h3>
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <p v-html="steps[currentIndex].text" />
-            <z-alert
-              v-if="steps[currentIndex].warning"
-              type="danger"
-              class="mt-8">
-              {{ steps[currentIndex].warning }}
-            </z-alert>
-            <div class="flex justify-between w-full">
-              <z-button
-                v-if="isBack"
-                rounded
-                type="default"
-                class="w-full mt-12 mb-0 flex mr-4"
-                @click="privStep">
-                <i class="mr-2 eva eva-arrow-back-outline font-bold" />  Back
-              </z-button>
-              <z-button
-                rounded
-                class="w-full mt-12 mb-0 flex next-btn"
+    <transition
+      name="fade"
+      mode="out-in">
+      <div
+        :key="currentIndex"
+        class="onboarding__step">
+        <div class="onboarding__illustration">
+          <img :src="image">
+        </div>
+        <div class="onboarding__guide">
+          <h3 class="onboarding__title">
+            {{ steps[currentIndex].heading }}
+          </h3>
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <p v-html="steps[currentIndex].text" />
+          <z-alert
+            v-if="steps[currentIndex].warning"
+            type="danger"
+            class="mt-8">
+            {{ steps[currentIndex].warning }}
+          </z-alert>
+          <div class="flex justify-between w-full">
+            <z-button
+              v-if="isBack"
+              rounded
+              type="default"
+              class="w-full mt-12 mb-0 flex mr-4"
+              @click="privStep">
+              <i class="mr-2 eva eva-arrow-back-outline font-bold" />  Back
+            </z-button>
+            <z-button
+              rounded
+              class="w-full mt-12 mb-0 flex next-btn"
 
-                @click="nextStep">
-                {{ nextBtnText }}  <i class="ml-2 eva eva-arrow-forward-outline font-bold" />
-              </z-button>
-            </div>
+              @click="nextStep">
+              {{ nextBtnText }}  <i class="ml-2 eva eva-arrow-forward-outline font-bold" />
+            </z-button>
           </div>
         </div>
-      </transition>
-    </div>
+      </div>
+    </transition>
   </z-modal>
 </template>
 <script>

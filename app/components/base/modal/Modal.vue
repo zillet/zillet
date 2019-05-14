@@ -31,9 +31,9 @@
       <div
         v-if="showContent"
         style="max-height: calc(100vh - 2rem);"
-        class="relative max-w-2xl w-full h-auto overflow-hidden lg:py-4">
+        class="relative h-auto overflow-hidden py-4">
         <div
-          class="card p-4"
+          class="card p-4 max-w-2xl w-full"
           :class="customClass"
           style="max-height: calc(100vh - 4rem);overflow:auto">
           <slot />
