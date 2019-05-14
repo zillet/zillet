@@ -113,7 +113,7 @@
 import { mapActions, mapState } from 'vuex';
 import config from '@/config';
 export default {
-  name: 'ZDropdown',
+  name: 'NodeDropdown',
   data() {
     return {
       showDropDown: false,
@@ -161,7 +161,7 @@ export default {
           type: 'danger'
         });
         this.connectionStatusClass = 'bg-red-500';
-        return true;
+        return false;
       }
     }
   }

@@ -2,6 +2,6 @@
 @import 'variables';
 @import 'mixins';
 @import 'base';
-@import 'layout';
-@import './components/button';
-@import './components/notification';
+@import 'layouts';
+@import 'animations';
+@import 'components/index';

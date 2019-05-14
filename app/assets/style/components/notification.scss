@@ -52,7 +52,8 @@
         }
 
         &[data-notify="container"] {
-            @apply w-72 pt-3 pr-3 pb-3 pl-5 rounded;
+            @apply pt-3 pr-3 pb-3 pl-5 rounded;
+            width: 18rem;
         }
     }
 

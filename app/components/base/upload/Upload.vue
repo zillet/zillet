@@ -3,7 +3,7 @@
     <button
       :class="{
         'bg-primary hover:bg-teal-500 text-white ': !name,
-        'border-gray-400-dark text-gray-800 border': name,
+        'border-gray-400 text-gray-800 border': name,
         'rounded': rounded
       }"
       class="w-full hover:shadow-md

@@ -1,0 +1,47 @@
+html {
+    font-family: 'Source Sans Pro', sans-serif;
+    background: $background;
+    -webkit-font-smoothing: antialiased;
+    @apply text-gray-800;
+    font-size: 15px;
+
+    @include mobile {
+        font-size: 14px;
+    }
+}
+
+* {
+    outline: none !important;
+}
+
+code {
+    background-color: rgba(27, 31, 35, .05);
+    border-radius: 3px;
+    font-size: 85%;
+    margin: 0;
+    padding: .2em .4em;
+}
+
+a {
+    &.link {
+        transition: color .3s, opacity .3s, background .3s, text-decoration .5s;
+        position: relative;
+        text-decoration: underline;
+        @apply text-teal-600;
+        text-decoration-color: $borderColor;
+
+        &:hover {
+            @apply text-gray-800;
+            text-decoration-color: $grey-darkest;
+        }
+
+        svg+& {
+            margin-left: .5rem;
+        }
+    }
+
+}
+
+a:hover:not(.active) {
+    opacity: 1;
+}

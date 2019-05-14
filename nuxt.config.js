@@ -59,7 +59,7 @@ export default {
   },
   css: [
     {
-      src: '@/assets/css/main.scss',
+      src: '@/assets/style/index.scss',
       lang: 'scss'
     },
     'balloon-css/balloon.min.css',
@@ -67,7 +67,7 @@ export default {
   ],
   plugins: [
     '@/plugins/qrcode',
-    '@/plugins/zilliqaComponenets',
+    '@/plugins/global',
     '@/plugins/axios',
     '@/plugins/notify',
     '@/plugins/zilliqa',
@@ -93,7 +93,7 @@ export default {
   ],
   loading: { color: '#3B8070' },
   styleResources: {
-    scss: ['~/assets/css/_variables.scss', '~/assets/css/_mixins.scss']
+    scss: ['~/assets/style/variables.scss', '~/assets/style/mixins.scss']
   },
   build: {
     postcss: {

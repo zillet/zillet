@@ -1,46 +1,46 @@
 <template>
-  <div class="create-wallet">
-    <div class="card">
-      <div class="create-wallet__header">
-        <h3 class="mb-6">
-          Generate your own Zilliqa wallet instantly!
-        </h3>
-        <div class="flex flex-row justify-center">
-          <div
-            aria-flowto="aria5"
-            class="flex flex-row px-4 items-center">
-            <input
-              id="json"
-              v-model="walletType"
-              type="radio"
-              aria-label="Import JSON Keystore"
-              value="json"
-              name="json">
-            <label
-              class="block text-grey-darkest ml-2"
-              for="json">
-              By Keystore/JSON File
-            </label>
-          </div>
-          <div
-            aria-flowto="aria5"
-            class="flex flex-row px-4 items-center">
-            <input
-              id="mnemonic"
-              v-model="walletType"
-              type="radio"
-              aria-label="Private Key"
-              value="mnemonic"
-              name="mnemonic">
-            <label
-              class="block text-grey-darkest ml-2"
-              for="mnemonic">
-              By Mnemonic Phrase
-            </label>
-          </div>
+  <div>
+    <MainContainer>
+      <template v-slot:title>
+        Generate your own Zilliqa wallet instantly!
+      </template>
+      <!-- //header -->
+      <div class="flex flex-row mobile:flex-col justify-center mb-8">
+        <div
+          aria-flowto="aria5"
+          class="flex flex-row px-4 items-center">
+          <input
+            id="json"
+            v-model="walletType"
+            type="radio"
+            aria-label="Import JSON Keystore"
+            value="json"
+            name="json">
+          <label
+            class="block cursor-pointer text-grey-darkest ml-2"
+            for="json">
+            By Keystore/JSON File
+          </label>
+        </div>
+        <div
+          aria-flowto="aria5"
+          class="flex flex-row px-4 items-center">
+          <input
+            id="mnemonic"
+            v-model="walletType"
+            type="radio"
+            aria-label="Private Key"
+            value="mnemonic"
+            name="mnemonic">
+          <label
+            class="block cursor-pointer text-grey-darkest ml-2"
+            for="mnemonic">
+            By Mnemonic Phrase
+          </label>
         </div>
       </div>
-      <div class="create-wallet__body px-4">
+      <!-- // body -->
+      <div class="flex justify-start flex-col w-full items-start">
         <z-input
           v-model="passphrase"
           :valid="passphrase.length > 7"
@@ -57,61 +57,54 @@
           class="text-gray-700 -mt-1 text-left text-sm italic text-left">
           This password field is optional for Mnemonic Phrase.
         </p>
-        <z-button
-          :loading="loading"
-          :disabled="loading"
-          class="mt-6 w-full"
-          rounded
-          @click="create">
-          Create New Wallet
-        </z-button>
-        <div class="helpful-articles">
-          <h3 class="font-semibold mr-3">
-            Helpful articles:
-          </h3>
-          <div v-if="walletType==='mnemonic'">
-            <a
-              class="text-teal-600"
-              href="//support.zillet.io/security/mnemonic-phrase-password"
-              target="_blank">
-              Should I include password in Mnemonic phrase
-            </a>
-            &nbsp;
-            and
-            &nbsp;
-          </div>
-          <a
-            class="text-teal-600"
-            href="//support.zillet.io/getting-started/how-to-create-a-wallet"
-            target="_blank">
-            How to Create a Wallet
-          </a>
-        </div>
-        <div class="mt-6">
-          <span class="text-gray-800">
-            This password <span class="font-semibold">encrypts</span> your
-            private key. This does not act as a seed to generate your keys.
-            You will need this
-            <span
-              v-if="walletType==='json'"
-              class="font-semibold">Password + Keystore File </span>
-            <span
-              v-if="walletType==='mnemonic'"
-              class="font-semibold">Password + Mnemonic Phrase </span>
-            to unlock your wallet.
-          </span>
-          <br>
-        </div>
-        <p class="text-gray-700 mt-8">
-          Already have a wallet?
-          <nuxt-link
-            :to="{ name: 'index' }"
-            class="text-teal-500 font-semibold">
-            Access now
-          </nuxt-link>
-        </p>
       </div>
-    </div>
+      <z-button
+        :loading="loading"
+        :disabled="loading"
+        class="mt-6 w-full"
+        rounded
+        @click="create">
+        Create New Wallet
+      </z-button>
+      <template v-slot:articles>
+        <ZLink
+          v-if="walletType==='mnemonic'"
+          to="/security/mnemonic-phrase-password"
+          external>
+          Should I include password in Mnemonic phrase
+        </ZLink>
+        <span v-if="walletType==='mnemonic'">
+          and
+        </span>
+        <ZLink
+          to="/getting-started/how-to-create-a-wallet"
+          external>
+          How to Create a Wallet
+        </ZLink>
+      </template>
+      <template v-slot:warning>
+        <p>
+          This password <span class="font-semibold">encrypts</span> your
+          private key. This does not act as a seed to generate your keys.
+          You will need this
+          <span
+            v-if="walletType==='json'"
+            class="font-semibold">Password + Keystore File </span>
+          <span
+            v-if="walletType==='mnemonic'"
+            class="font-semibold">Password + Mnemonic Phrase </span>
+          to unlock your wallet.
+        </p>
+      </template>
+      <template v-slot:footer>
+        Already have a wallet?
+        <nuxt-link
+          :to="{ name: 'index' }"
+          class="link font-semibold">
+          Access now
+        </nuxt-link>
+      </template>
+    </MainContainer>
     <DownloadKeystoreFile
       :visible="downloadKeystoreModal"
       :pk="privateKey"
@@ -132,8 +125,8 @@
 </template>
 <script>
 import { printKeystore, printMnemonic } from '@/utils/print';
-import DownloadKeystoreFile from '@/components/DownloadKeystoreFile';
-import DownloadMnemonicPhrase from '@/components/DownloadMnemonicPhrase';
+import DownloadKeystoreFile from '@/components/create/DownloadKeystoreFile';
+import DownloadMnemonicPhrase from '@/components/create/DownloadMnemonicPhrase';
 // cube village gate curious enforce blur yard equal weekend bronze voice name
 const bip39 = require('bip39');
 export default {
@@ -273,27 +266,3 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.create-wallet {
-  @apply w-full;
-  &__header {
-    @apply mb-8;
-    h3 {
-      @apply font-bold text-2xl mt-4 text-gray-800;
-    }
-    p {
-      @apply text-base;
-    }
-  }
-  &__body {
-    @apply max-w-2xl;
-    margin: auto;
-  }
-}
-.helpful-articles {
-  @apply flex justify-center mb-6 text-sm;
-  @include mobile {
-    @apply flex-col;
-  }
-}
-</style>

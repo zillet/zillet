@@ -1,17 +1,12 @@
 <template>
-  <div class="card">
-    <h3 class="font-semibold text-2xl mb-8 text-gray-700 text-center w-full">
+  <div>
+    <h3 class="font-semibold text-2xl mb-8 text-center w-full">
       Transactions
     </h3>
     <div class="flex w-full">
+      <Loader v-if="loading" />
       <div
-        v-if="!transactions.length && loading"
-        class="spinner">
-        <div class="double-bounce1" />
-        <div class="double-bounce2" />
-      </div>
-      <div
-        v-else-if="!transactions.length"
+        v-else-if="!loading && !transactions.length"
         style="min-height:16rem"
         class="w-full flex flex-col justify-center items-center">
         No transaction found.
@@ -60,13 +55,15 @@
                   class="zil">
                   <span v-if="txn.direction=='in'">+</span>
                   <span v-else>-</span>
-                  {{ txn.direction=='self'? '--' :txn.value* Math.pow(10, -12) | currency('', 4) }}
+                  <!-- TODO: Use zilliqa unit function -->
+                  {{ txn.direction=='self'? '--' :amountInZil(txn.value)| currency('', 4) }}
                 </span>
                 &nbsp; ZIL
                 <span
                   v-if="txn.direction!='self'"
                   class="usd">
-                  &nbsp; &asymp; &nbsp; {{ (txn.value*Math.pow(10, -12) )* getPrices.USD | currency('$', 2) }}
+                  <!-- TODO: Use zilliqa unit function -->
+                  &nbsp; &asymp; &nbsp; {{ amountInUsd(txn.value)| currency('$', 2) }}
                 </span>
               </div>
               <div class="transaction__address">
@@ -115,7 +112,8 @@
                   Fee
                 </div>
                 <span>
-                  {{ txn.fee* Math.pow(10, -12) }} ZIL
+                  <!-- TODO: Use zilliqa unit function -->
+                  {{ amountInZil(txn.fee) }} ZIL
                 </span>
               </div>
             </div>
@@ -137,6 +135,7 @@ export default {
   middleware: 'ifKeyExists',
   data() {
     return {
+      loading: false,
       requestParams: {
         address: '',
         type: '',
@@ -147,43 +146,39 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getAccount', 'getPrices']),
+    ...mapGetters(['Account', 'Prices']),
     ...mapState({
       viewTxns: state => state.viewblockAccount.txs,
       selectedNode: state => state.selectedNode,
-      localTxns: state => state.localTxns,
-      loading: state => state.loading
+      localTxns: state => state.localTxns
     }),
     transactions() {
-      const address = this.getAccount.address;
+      const address = this.Account.address;
       let txn = this.localTxns.filter(function(obj) {
         return obj.from == address || obj.to == address;
       });
       return [...txn, ...this.viewTxns.docs];
     }
   },
-  watch: {
-    selectedNode: {
-      handler(value) {
-        this.getTransactions(this.requestParams);
-      },
-      deep: true
-    }
-  },
-  async beforeMount() {
-    this.requestParams.address = this.getAccount.address;
-    if (this.selectedNode.id == 1001) {
-      this.requestParams.network = 'mainnet';
-      await this.getTransactions(this.requestParams);
-    } else if (this.selectedNode.id == 1002) {
-      this.requestParams.network = 'testnet';
-      await this.getTransactions(this.requestParams);
-    } else {
-      console.error('Can not fetch transaction from unknown network');
-    }
+  beforeMount() {
+    this.fetchTransactions();
   },
   methods: {
     ...mapActions(['getTransactions']),
+    async fetchTransactions() {
+      this.loading = true;
+      this.requestParams.address = this.Account.address;
+      if (this.selectedNode.id == 1001) {
+        this.requestParams.network = 'mainnet';
+      } else if (this.selectedNode.id == 1002) {
+        this.requestParams.network = 'testnet';
+      } else {
+        console.error('Can not fetch transaction from unknown network');
+        return null;
+      }
+      await this.getTransactions(this.requestParams);
+      this.loading = false;
+    },
     txnStatus(dir) {
       if (dir == 'in') {
         return 'Received';
@@ -194,8 +189,29 @@ export default {
       }
     },
     toAddress(address) {
-      return `0x${address && address.substr(0, 4)}...${address &&
-        address.substr(36)}`;
+      const sAdd =
+        address && address.substr(0, 2) === '0x' ? address : `0x${address}`;
+      return `${sAdd && sAdd.substr(0, 4)}...${sAdd && sAdd.substr(36)}`;
+    },
+    explorerLink(id) {
+      const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
+      return this.selectedNode.id === 1002
+        ? `${this.selectedNode.explorer}${hash}?network=testnet`
+        : `${this.selectedNode.explorer}${hash}`;
+    },
+    toggleTxn(hash) {
+      if (hash == this.selectedTxn) {
+        this.selectedTxn = '';
+      } else {
+        this.selectedTxn = hash;
+      }
+    },
+    amountInZil(amount) {
+      const { units, BN } = this.$zil.util;
+      return units.fromQa(new BN(amount), units.Units.Zil);
+    },
+    amountInUsd(amount) {
+      return this.amountInZil(amount) * this.Prices.USD;
     },
     onCopy(e) {
       this.$notify({
@@ -224,73 +240,11 @@ export default {
         message: `Failed to copy address`,
         type: 'danger'
       });
-    },
-    explorerLink(id) {
-      const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
-      return this.selectedNode.id === 1002
-        ? `${this.selectedNode.explorer}${hash}?network=testnet`
-        : `${this.selectedNode.explorer}${hash}`;
-    },
-    toggleTxn(hash) {
-      if (hash == this.selectedTxn) {
-        this.selectedTxn = '';
-      } else {
-        this.selectedTxn = hash;
-      }
     }
   }
 };
 </script>
 <style lang="scss" scoped>
-.spinner {
-  width: 40px;
-  height: 40px;
-
-  position: relative;
-  margin: 100px auto;
-}
-
-.double-bounce1,
-.double-bounce2 {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: #cbd5e0;
-  opacity: 0.6;
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  -webkit-animation: sk-bounce 2s infinite ease-in-out;
-  animation: sk-bounce 2s infinite ease-in-out;
-}
-
-.double-bounce2 {
-  -webkit-animation-delay: -1s;
-  animation-delay: -1s;
-}
-
-@-webkit-keyframes sk-bounce {
-  0%,
-  100% {
-    -webkit-transform: scale(0);
-  }
-  50% {
-    -webkit-transform: scale(1);
-  }
-}
-
-@keyframes sk-bounce {
-  0%,
-  100% {
-    transform: scale(0);
-    -webkit-transform: scale(0);
-  }
-  50% {
-    transform: scale(1);
-    -webkit-transform: scale(1);
-  }
-}
 .transaction {
   @apply flex flex-col border rounded mb-2;
   @apply items-center w-full overflow-hidden cursor-pointer;
@@ -378,23 +332,7 @@ export default {
     @apply flex justify-end text-sm items-center;
   }
 }
-.list-item-enter-active,
-.list-item-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
-  transform-origin: left center;
-}
-.list-item-enter, .list-item-leave-to /* .list-leave-active for <2.1.8 */ {
-  opacity: 0;
-  transform: scale(0.5);
-}
 
-.list-item-leave-active {
-  position: absolute;
-}
-
-.list-item-move {
-  transition: transform 0.4s linear 0.3;
-}
 .divider {
   @apply bg-gray-300 w-full;
   height: 1px;

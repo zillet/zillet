@@ -41,7 +41,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '@/assets/css/_variables.scss';
 i.eva {
   margin-right: 1rem;
   font-size: 1.2rem;

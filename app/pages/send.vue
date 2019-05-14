@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full card">
+  <div>
     <h3 class="font-semibold text-2xl mb-4 text-center w-full">
       Send Zilliqa
     </h3>
@@ -104,15 +104,6 @@
           </span>
         </div>
       </div>
-      <div v-if="!isOnline">
-        <z-input
-          v-model="transaction.nonce"
-          :hide="false"
-          :valid="$validation.isNumber(transaction.nonce)"
-          class="mb-4"
-          label="Nonce"
-          placeholder="Enter nonce here" />
-      </div>
       <z-button
         :loading="loading"
         class="w-full"
@@ -143,38 +134,36 @@
     <z-modal
       :visible="isBroadcast"
       @close="isBroadcast=false">
-      <div class="card">
-        <h3 class="font-bold text-xl mb-8">
-          Transaction Sent
-        </h3>
-        <div class="flex flex-col">
-          <z-icon type="success" />
-          <span class="text-base leading-normal font-semibold">
-            {{ `0x${tranxId}` }}
-          </span>
-          <div class="flex flex-row -mx-2">
-            <div class="w-1/2 px-2">
+      <h3 class="font-bold text-xl mb-8 mt-4">
+        Transaction Sent
+      </h3>
+      <div class="flex flex-col px-8">
+        <z-icon type="success" />
+        <span class="text-base leading-normal font-semibold">
+          {{ `0x${tranxId}` }}
+        </span>
+        <div class="flex flex-row -mx-2">
+          <div class="w-1/2 px-2">
+            <z-button
+              class="w-full mt-8"
+              type="default"
+              rounded
+              @click="isBroadcast=false;">
+              Okay, Got it.
+            </z-button>
+          </div>
+          <div class="w-1/2 px-2">
+            <a
+              :href="explorerLink(`0x${tranxId}`)"
+              target="_blank"
+              rounded
+              class="w-full flex-1">
               <z-button
-                class="w-full mt-8"
-                type="default"
                 rounded
-                @click="isBroadcast=false;">
-                Okay, Got it.
+                class="mt-8 w-full">
+                Check on Explorer
               </z-button>
-            </div>
-            <div class="w-1/2 px-2">
-              <a
-                :href="explorerLink(`0x${tranxId}`)"
-                target="_blank"
-                rounded
-                class="w-full flex-1">
-                <z-button
-                  rounded
-                  class="mt-8 w-full">
-                  Check on Explorer
-                </z-button>
-              </a>
-            </div>
+            </a>
           </div>
         </div>
       </div>
@@ -214,63 +203,55 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getAccount', 'isOnline', 'getPrices']),
+    ...mapGetters(['Account', 'Prices', 'Balance']),
     ...mapState({
       selectedNode: state => state.selectedNode
     }),
     validateCryptoAmount() {
       return (
         this.$validation.isNumber(this.transaction.amount) &&
-        parseFloat(this.transaction.amount) <
-          parseFloat(this.getAccount.balance) * Math.pow(10, -this.multiplier)
+        parseFloat(this.transaction.amount) < this.Balance.zil
       );
     },
     validateFiatAmount() {
       return (
         this.$validation.isNumber(this.usdAmount) &&
-        parseFloat(this.usdAmount) <
-          parseFloat(this.getAccount.balance) *
-            Math.pow(10, -this.multiplier) *
-            this.getPrices.USD
+        parseFloat(this.usdAmount) < this.Balance.usd
       );
     },
     transactionFee() {
-      return +(
+      const { BN, Long, validation, units } = this.$zil.util;
+      const fee =
         this.transaction.gasLimit *
         this.transaction.gasPrice *
-        Math.pow(10, -12)
-      ).toFixed(12);
+        Math.pow(10, -6); // in Li
+      return fee;
     }
   },
   watch: {
-    transaction: {
-      handler() {
-        if (this.isSigned) {
-          this.signedTx = {};
-          this.isSigned = false;
-        }
-      },
-      deep: true
-    },
     usdAmount: {
       handler(value) {
         if (this.isFiatAmountFocus) {
-          this.transaction.amount = (value / this.getPrices.USD).toFixed(4);
+          this.transaction.amount = (value / this.Prices.USD).toFixed(4);
         }
       }
     },
     'transaction.amount': {
       handler(value) {
         if (this.isCryptoAmountFocus) {
-          this.usdAmount = (value * this.getPrices.USD).toFixed(2);
+          this.usdAmount = (value * this.Prices.USD).toFixed(2);
         }
       }
     }
   },
   async beforeMount() {
     try {
+      const { BN, units } = this.$zil.util;
       const minGasPrice = await this.$zilliqa.blockchain.getMinimumGasPrice();
-      this.transaction.gasPrice = minGasPrice.result;
+      this.transaction.gasPrice = units.fromQa(
+        new BN(minGasPrice.result),
+        'li'
+      );
     } catch (error) {
       this.$notify({
         message: `Something went wrong ${error}`,
@@ -284,14 +265,9 @@ export default {
     async createTxn() {
       const { BN, Long, validation, units } = this.$zil.util;
       const VERSION = this.selectedNode.version;
-      const amount = units.toQa(
-        String(this.transaction.amount),
-        units.Units.Zil
-      );
-      const fee = new BN(
-        String(this.transaction.gasLimit * this.transaction.gasPrice)
-      );
-      const balance = new BN(String(this.getAccount.balance));
+      const amount = units.toQa(this.transaction.amount, units.Units.Zil);
+      const fee = units.toQa(this.transactionFee, units.Units.Zil);
+      const balance = new BN(this.Account.balance);
       const total = amount.add(fee);
       if (!validation.isAddress(this.transaction.address)) {
         this.$notify({
@@ -307,21 +283,22 @@ export default {
         this.loading = true;
         // Update nonce and balance
         const balance = await this.$zilliqa.blockchain.getBalance(
-          this.getAccount.address
+          this.Account.address
         );
         this.updateBalance(balance.result);
         // transaction object
+        const gasPrice = units.toQa(this.transaction.gasPrice, units.Units.Li); // in QA
         const tx = {
           version: VERSION,
           nonce: this.transaction.nonce
             ? this.transaction.nonce
-            : this.getAccount.nonce + 1,
-          pubKey: this.getAccount.publicKey,
+            : this.Account.nonce + 1,
+          pubKey: this.Account.publicKey,
           toAddr: this.$zil.crypto
             .toChecksumAddress(this.transaction.address)
             .slice(2),
           amount: new BN(amount),
-          gasPrice: new BN(this.transaction.gasPrice),
+          gasPrice: new BN(gasPrice),
           gasLimit: Long.fromNumber(this.transaction.gasLimit)
         };
         // encoding transaction
@@ -329,8 +306,8 @@ export default {
         // signing transasction
         const signature = await this.$zil.crypto.sign(
           msg,
-          this.getAccount.privateKey,
-          this.getAccount.publicKey
+          this.Account.privateKey,
+          this.Account.publicKey
         );
         // signed transaction object
         this.signedTx = {
@@ -389,13 +366,10 @@ export default {
     },
     fullAmount() {
       const { units } = this.$zil.util;
-      this.transaction.amount =
-        this.getAccount.balance * Math.pow(10, -this.multiplier);
-      this.usdAmount = (
-        this.getAccount.balance *
-        Math.pow(10, -this.multiplier) *
-        this.getPrices.USD
-      ).toFixed(2);
+      const amount = this.Balance.zil;
+      const fee = this.transactionFee;
+      this.transaction.amount = parseFloat((amount - fee).toPrecision(12));
+      this.usdAmount = (this.transaction.amount * this.Prices.USD).toFixed(2);
     },
     cryptoAmountFocus(test) {
       this.isCryptoAmountFocus = true;
@@ -409,8 +383,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import './../assets/css/_variables';
-@import './../assets/css/_mixins';
 .amount-wrapper {
   @apply flex flex-col w-full;
   .label {
