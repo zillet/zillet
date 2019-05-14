@@ -1,6 +1,12 @@
 module.exports = {
   important: true,
   theme: {
+    screens: {
+      mobile: { max: '767px' },
+      tablet: { min: '768px', max: '1023px' },
+      'small-desktop': { min: '1023px', max: '1279px' },
+      desktop: { min: '1280px' }
+    },
     extend: {
       colors: {
         transparent: 'transparent',
@@ -8,34 +14,8 @@ module.exports = {
         white: '#ffffff',
         primary: '#4dc0b5'
       },
-      width: {
-        '72': '20rem'
-      },
-      screens: {
-        sm: '576px',
-        md: '768px',
-        lg: '992px',
-        xl: '1200px'
-      },
       backgroundColors: {
         modal: 'rgba(0, 0, 0, 0.5)'
-      },
-      maxWidth: {
-        xs: '20rem',
-        msm: '25rem',
-        full: '100%'
-      },
-      margin: {
-        '96': '24rem',
-        '128': '32rem'
-      },
-      shadows: {
-        md: '0 4px 8px 0 rgba(0,0,0,0.12), 0 2px 4px 0 rgba(0,0,0,0.08)',
-        lg: '0 15px 30px 0 rgba(0,0,0,0.11), 0 5px 15px 0 rgba(0,0,0,0.08)',
-        none: 'none'
-      },
-      zIndex: {
-        '1000': 1000
       }
     }
   }

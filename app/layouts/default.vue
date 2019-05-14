@@ -2,15 +2,19 @@
   <div class="container">
     <Notifications />
     <Navigation />
-    <Nuxt />
+    <div class="w-full">
+      <div class="card">
+        <Nuxt />
+      </div>
+    </div>
     <Footer />
     <Onboarding />
   </div>
 </template>
 <script>
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
-import Onboarding from '@/components/Onboarding';
+import Navigation from './partials/navigation';
+import Footer from './partials/Footer';
+import Onboarding from './partials/Onboarding';
 
 export default {
   name: 'Default',

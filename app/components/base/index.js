@@ -7,6 +7,8 @@ import QrCocde from './qr-code';
 import RadioButton from './radio-button';
 import Textarea from './textarea';
 import Upload from './upload';
+import Link from './link';
+import Loader from './loader';
 
 export {
   Alert,
@@ -17,5 +19,7 @@ export {
   QrCocde,
   RadioButton,
   Textarea,
-  Upload
+  Upload,
+  Link,
+  Loader
 };

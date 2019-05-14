@@ -2,15 +2,12 @@
     @apply justify-start items-center text-center mx-auto flex flex-col px-4;
 }
 
-.header {
-    @apply text-gray-800 text-xl align-middle;
-}
 
 .card {
     @apply rounded overflow-hidden shadow p-8 w-full bg-white;
 
     @include mobile {
-        @apply p-4;
+        @apply p-6;
     }
 }
 

@@ -1,7 +1,7 @@
 export default {
   VIEWBLOCK_URL: 'https://api.viewblock.io/zilliqa/addresses/',
   MULTIPLIER: 12,
-  MINIMUM_GAS_PRICE: 1000000000,
+  MINIMUM_GAS_PRICE: 1000, // in Li
   NODES: [
     {
       name: 'Zilliqa Mainnet',
