@@ -10,11 +10,25 @@
       class="mnemonic-textarea"
       label="Mnemonic Phrase"
     />
-    <z-input
-      v-model="passphrase"
-      placeholder="Type your password (Optional)"
-      label="Type your password (Optional)"
-    />
+    <p
+      v-if="!expandPasswordOption"
+      class="text-left text-teal-600 cursor-pointer
+      -mt-2 text-sm italic font-semibold"
+      @click="expandPasswordOption=!expandPasswordOption">
+      {{ expandPasswordOption ? 'Add password -' :'Add password + (Optional)' }}
+    </p>
+    <div v-if="expandPasswordOption">
+      <z-input
+        v-model="passphrase"
+        placeholder="Type your password (Optional)"
+        label="Type your password (Optional)"
+      />
+      <z-alert
+        type="warning"
+        class="my-2">
+        This is not the password you set in the Moonlet or ZilPay wallet
+      </z-alert>
+    </div>
     <z-button
       id="private-key"
       rounded
@@ -36,7 +50,8 @@ export default {
       loading: false,
       mnemonicPhrase: '',
       passphrase: '',
-      index: 0
+      index: 0,
+      expandPasswordOption: false
     };
   },
   methods: {
