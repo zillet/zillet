@@ -29,14 +29,14 @@
         size="small"
         class="rounded w-full mb-2"
         type="default"
-        @click="showBase20=!showBase20">
-        Reveal Base 20 address (Old address starts with 0x..)
+        @click="showBase16=!showBase16">
+        Reveal Base 16 address (Old Ethereum style address starts with 0x..)
       </z-button>
       <div
-        v-if="showBase20"
+        v-if="showBase16"
         class="mt-2">
         <div class="tracking-wide  text-sm font-semibold mb-2">
-          Base 20 Address
+          Base 16 Address
         </div>
         <z-input
           :value="`0x${Account.address}`"
@@ -141,7 +141,7 @@ export default {
   data() {
     return {
       showQr: 'bech32Address',
-      showBase20: false
+      showBase16: false
     };
   },
   computed: {
@@ -151,7 +151,7 @@ export default {
       } else if (this.showQr === 'privateKey') {
         return 'Private Key';
       } else if (this.showQr === 'address') {
-        return 'Base 20 address';
+        return 'Base 16 address';
       } else {
         return 'Public Key';
       }
