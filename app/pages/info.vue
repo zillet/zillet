@@ -5,7 +5,7 @@
         Address
       </div>
       <z-input
-        :value="`0x${Account.address}`"
+        :value="Account.bech32Address"
         :hide="false"
         custom-class="rounded-r-none border-r-0"
         disabled>
@@ -15,21 +15,56 @@
             class="flex items-center leading-normal
                 bg-white rounded rounded-l-none h-12 px-3
                 border border-gray-400 text-gray-500 text-sm"
-            @click="showQr='address'">
+            @click="showQr='bech32Address'">
             <div class="qr-code-btn">
               <i
-                :class="{'selected':showQr==='address'}"
+                :class="{'selected':showQr==='bech32Address'}"
                 class="eva eva-grid-outline"
               />
             </div>
           </button>
         </div>
       </z-input>
-      <z-alert
-        type="danger"
-        class="mb-6 mt-2">
-        Do not send ERC-20 ZILfunds to this address.
-      </z-alert>
+      <z-button
+        size="small"
+        class="rounded w-full mb-2"
+        type="default"
+        @click="showBase20=!showBase20">
+        Reveal Base 20 address (Old address starts with 0x..)
+      </z-button>
+      <div
+        v-if="showBase20"
+        class="mt-2">
+        <div class="tracking-wide  text-sm font-semibold mb-2">
+          Base 20 Address
+        </div>
+        <z-input
+          :value="`0x${Account.address}`"
+          :hide="false"
+          custom-class="rounded-r-none border-r-0"
+          disabled>
+          <div
+            class="flex -mr-px">
+            <button
+              class="flex items-center leading-normal
+                bg-white rounded rounded-l-none h-12 px-3
+                border border-gray-400 text-gray-500 text-sm"
+              @click="showQr='address'">
+              <div class="qr-code-btn">
+                <i
+                  :class="{'selected':showQr==='address'}"
+                  class="eva eva-grid-outline"
+                />
+              </div>
+            </button>
+          </div>
+        </z-input>
+        <z-alert
+          type="danger"
+          class="mb-6 mt-2">
+          Do not send ERC-20 ZILfunds to this address.
+        </z-alert>
+      </div>
       <div class="tracking-wide text-sm font-semibold mb-2">
         Public Key
       </div>
@@ -105,16 +140,21 @@ export default {
   middleware: 'ifKeyExists',
   data() {
     return {
-      showQr: 'address'
+      showQr: 'bech32Address',
+      showBase20: false
     };
   },
   computed: {
     key() {
-      return this.showQr === 'address'
-        ? 'Address'
-        : this.showQr === 'privateKey'
-          ? 'Private Key'
-          : 'Public Key';
+      if (this.showQr === 'bech32Address') {
+        return 'Address';
+      } else if (this.showQr === 'privateKey') {
+        return 'Private Key';
+      } else if (this.showQr === 'address') {
+        return 'Base 20 address';
+      } else {
+        return 'Public Key';
+      }
     },
     ...mapGetters(['Account'])
   },

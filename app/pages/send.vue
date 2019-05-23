@@ -10,7 +10,6 @@
       <z-input
         v-model="transaction.address"
         :hide="false"
-        :valid="$zil.util.validation.isAddress(transaction.address)"
         class="mb-2"
         placeholder="Enter Zilliqa Mainnet address here" />
       <z-alert
@@ -262,65 +261,86 @@ export default {
   methods: {
     ...mapActions(['sendTransaction']),
     ...mapMutations(['updateBalance']),
+    normaliseAddress(address) {
+      const { isBech32 } = this.$zil.util.validation;
+      const {
+        fromBech32Address,
+        isValidChecksumAddress,
+        toChecksumAddress
+      } = this.$zil.crypto;
+      if (isBech32(address)) {
+        this.transaction.address = fromBech32Address(address);
+        return true;
+      }
+      if (isValidChecksumAddress(address)) {
+        return true;
+      }
+      return false;
+    },
     async createTxn() {
-      const { BN, Long, validation, units } = this.$zil.util;
-      const VERSION = this.selectedNode.version;
-      const amount = units.toQa(this.transaction.amount, units.Units.Zil);
-      const fee = units.toQa(this.transactionFee, units.Units.Zil);
-      const balance = new BN(this.Account.balance);
-      const total = amount.add(fee);
-      if (!validation.isAddress(this.transaction.address)) {
-        this.$notify({
-          message: `Reciever's address is invalid`,
-          type: 'danger'
-        });
-      } else if (total.gt(balance)) {
-        this.$notify({
-          message: `Amount+Fee can not be greater than your balance`,
-          type: 'danger'
-        });
+      if (this.normaliseAddress(this.transaction.address)) {
+        const { BN, Long, validation, units } = this.$zil.util;
+        const VERSION = this.selectedNode.version;
+        const amount = units.toQa(this.transaction.amount, units.Units.Zil);
+        const fee = units.toQa(this.transactionFee, units.Units.Zil);
+        const balance = new BN(this.Account.balance);
+        const total = amount.add(fee);
+        if (total.gt(balance)) {
+          this.$notify({
+            message: `Amount+Fee can not be greater than your balance`,
+            type: 'danger'
+          });
+        } else {
+          this.loading = true;
+          // Update nonce and balance
+          const balance = await this.$zilliqa.blockchain.getBalance(
+            this.Account.address
+          );
+          this.updateBalance(balance.result);
+          // transaction object
+          const gasPrice = units.toQa(
+            this.transaction.gasPrice,
+            units.Units.Li
+          ); // in QA
+          const tx = {
+            version: VERSION,
+            nonce: this.transaction.nonce
+              ? this.transaction.nonce
+              : this.Account.nonce + 1,
+            pubKey: this.Account.publicKey,
+            toAddr: this.$zil.crypto
+              .toChecksumAddress(this.transaction.address)
+              .slice(2),
+            amount: new BN(amount),
+            gasPrice: new BN(gasPrice),
+            gasLimit: Long.fromNumber(this.transaction.gasLimit)
+          };
+          // encoding transaction
+          const msg = await this.$zil.account.util.encodeTransactionProto(tx);
+          // signing transasction
+          const signature = await this.$zil.crypto.sign(
+            msg,
+            this.Account.privateKey,
+            this.Account.publicKey
+          );
+          // signed transaction object
+          this.signedTx = {
+            ...tx,
+            amount: tx.amount.toString(),
+            gasPrice: tx.gasPrice.toString(),
+            gasLimit: tx.gasLimit.toString(),
+            data: '',
+            code: '',
+            signature
+          };
+          this.loading = false;
+          this.sendTxn();
+        }
       } else {
-        this.loading = true;
-        // Update nonce and balance
-        const balance = await this.$zilliqa.blockchain.getBalance(
-          this.Account.address
-        );
-        this.updateBalance(balance.result);
-        // transaction object
-        const gasPrice = units.toQa(this.transaction.gasPrice, units.Units.Li); // in QA
-        const tx = {
-          version: VERSION,
-          nonce: this.transaction.nonce
-            ? this.transaction.nonce
-            : this.Account.nonce + 1,
-          pubKey: this.Account.publicKey,
-          toAddr: this.$zil.crypto
-            .toChecksumAddress(this.transaction.address)
-            .slice(2),
-          amount: new BN(amount),
-          gasPrice: new BN(gasPrice),
-          gasLimit: Long.fromNumber(this.transaction.gasLimit)
-        };
-        // encoding transaction
-        const msg = await this.$zil.account.util.encodeTransactionProto(tx);
-        // signing transasction
-        const signature = await this.$zil.crypto.sign(
-          msg,
-          this.Account.privateKey,
-          this.Account.publicKey
-        );
-        // signed transaction object
-        this.signedTx = {
-          ...tx,
-          amount: tx.amount.toString(),
-          gasPrice: tx.gasPrice.toString(),
-          gasLimit: tx.gasLimit.toString(),
-          data: '',
-          code: '',
-          signature
-        };
-        this.loading = false;
-        this.sendTxn();
+        this.$notify({
+          message: `Address format is invalid`,
+          type: 'danger'
+        });
       }
     },
     async sendTxn() {

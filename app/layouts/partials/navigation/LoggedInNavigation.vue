@@ -12,10 +12,10 @@
               :address="Account.address"
               class="mt-1 mr-2" />
             <h3>
-              {{ `0x${Account.address}` }}
+              {{ `${Account.bech32Address}` }}
             </h3>
             <i
-              v-clipboard:copy="`0x${Account.address}`"
+              v-clipboard:copy="`${Account.bech32Address}`"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
               class="eva eva-copy-outline" />
@@ -60,10 +60,10 @@
       <div class="flex justify-center items-center flex-col">
         <div class="qr-code">
           <z-qrcode
-            :value="`0x${Account.address}`"
+            :value="Account.bech32Address"
             :options="{ width: 250, color:{ dark: '#303133'}}" />
         </div>
-        <span class="mb-4 font-semibold">{{ `0x${Account.address}` }}</span>
+        <span class="mb-4 font-semibold">{{ Account.bech32Address }}</span>
         <p class="text-gray-700 text-xs italic font-semibold">
           Scan QR code to import Address
         </p>
