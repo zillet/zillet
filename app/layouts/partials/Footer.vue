@@ -12,6 +12,12 @@
       </div>
       <div class="right">
         <a
+          href="//t.me/burgersingh"
+          target="_blank"
+          rel="noopener noreferrer">
+          Report Issue
+        </a>
+        <a
           href="//support.zillet.io"
           target="_blank"
           rel="noopener noreferrer">

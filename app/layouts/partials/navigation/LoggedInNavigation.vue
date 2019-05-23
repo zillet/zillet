@@ -13,15 +13,30 @@
               class="mt-1 mr-2" />
             <h3>
               {{ `${Account.bech32Address}` }}
+              <span
+                data-balloon="This is the new bech32 address which derives from the old address and supported by all the exchanges and wallets. You can check your old 20 bytes, base 16 address in Wallet Info page. kindly use this new address to receive funds. Note that your funds are not affected in any way."
+                data-balloon-length="xlarge"
+                data-balloon-pos="right">
+                <i
+                  class="eva eva-question-mark-circle-outline relative ml-1 text-gray-700"
+                  style="top:3px;" />
+              </span>
             </h3>
-            <i
+            <span
               v-clipboard:copy="`${Account.bech32Address}`"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              class="eva eva-copy-outline" />
-            <i
-              class="eva eva-grid-outline"
-              @click="showQr=true" />
+              class="circle-button">
+              <i class="eva eva-copy-outline" />
+              Copy
+            </span>
+            <span
+              class="circle-button"
+              @click="showQr=true">
+              <i
+                class="eva eva-grid-outline" />
+              Show QR
+            </span>
           </div>
         </div>
         <div class="account-info__balance mobile:mr-6">
@@ -147,7 +162,7 @@ export default {
   &__main {
     @apply flex flex-1 flex-col items-start justify-center;
     white-space: nowrap;
-    overflow: hidden;
+    // overflow: hidden;
     text-overflow: ellipsis;
   }
   &__label {
@@ -164,14 +179,8 @@ export default {
     h3 {
       @apply leading-normal font-bold text-lg;
       white-space: nowrap;
-      overflow: hidden;
+      // overflow: hidden;
       text-overflow: ellipsis;
-    }
-    i {
-      @apply ml-2 text-gray-800 p-1 text-base border rounded-full cursor-pointer;
-      &:hover {
-        @apply shadow-md;
-      }
     }
   }
   &__balance {
@@ -198,5 +207,19 @@ export default {
 .divider {
   @apply bg-gray-300 w-full;
   height: 1px;
+}
+.circle-button {
+  @apply ml-2 text-gray-800 p-1 text-xs font-semibold border rounded-full cursor-pointer;
+  @apply flex items-center justify-center px-2 border-gray-400;
+  line-height: 1rem;
+  @include no-select;
+  @include transition;
+  &:hover {
+    @apply shadow-md;
+    @include transition;
+  }
+  i {
+    @apply text-sm mr-1;
+  }
 }
 </style>

@@ -68,7 +68,7 @@
               </div>
               <div class="transaction__address">
                 <span
-                  v-clipboard:copy="`0x${txn.direction=='in' ? txn.from:txn.to}`"
+                  v-clipboard:copy="`${txn.direction=='in' ? toBech32(txn.from):toBech32(txn.to)}`"
                   v-clipboard:success="onCopy"
                   v-clipboard:error="onError">
                   <jazzicon
@@ -188,10 +188,19 @@ export default {
         return 'Sent';
       }
     },
+    toBech32(address) {
+      const { isBech32 } = this.$zil.util.validation;
+      const { toBech32Address } = this.$zil.crypto;
+      if (!isBech32(address)) {
+        return toBech32Address(address);
+      } else {
+        return address;
+      }
+    },
     toAddress(address) {
-      const sAdd =
-        address && address.substr(0, 2) === '0x' ? address : `0x${address}`;
-      return `${sAdd && sAdd.substr(0, 4)}...${sAdd && sAdd.substr(36)}`;
+      address = this.toBech32(address);
+      return `${address && address.substr(0, 4)}...${address &&
+        address.substr(36)}`;
     },
     explorerLink(id) {
       const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
