@@ -1,10 +1,11 @@
 import * as util from '@zilliqa-js/util';
-import { toBech32Address } from '@zilliqa-js/crypto';
+import { toBech32Address, toChecksumAddress } from '@zilliqa-js/crypto';
 const { units, BN } = util;
 export const Account = state => {
   let wallet = state.wallet;
   if (state.wallet.address) {
     wallet.bech32Address = toBech32Address(state.wallet.address);
+    wallet.checksummedAddress = toChecksumAddress(state.wallet.address);
   }
   return wallet;
 };

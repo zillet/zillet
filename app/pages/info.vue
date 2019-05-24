@@ -39,7 +39,7 @@
           Base 16 Address
         </div>
         <z-input
-          :value="`0x${Account.address}`"
+          :value="`${Account.checksummedAddress}`"
           :hide="false"
           custom-class="rounded-r-none border-r-0"
           disabled>
@@ -119,7 +119,7 @@
     <div class="flex  mx-8 justify-center items-center flex-col">
       <div class="qr-code">
         <z-qrcode
-          :value="`0x${Account[showQr]}`"
+          :value="showQr==='address' ? Account.checksummedAddress : `0x${Account[showQr]}`"
           :options="{ width: 200, color:{ dark: '#303133'}}" />
       </div>
       <label

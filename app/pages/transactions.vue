@@ -130,9 +130,11 @@
 </template>
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import Vue2Filters from 'vue2-filters';
 export default {
   name: 'Home',
   middleware: 'ifKeyExists',
+  mixins: [Vue2Filters.mixin],
   data() {
     return {
       loading: false,
@@ -157,7 +159,8 @@ export default {
       let txn = this.localTxns.filter(function(obj) {
         return obj.from == address || obj.to == address;
       });
-      return [...txn, ...this.viewTxns.docs];
+      const tx = [...txn, ...this.viewTxns.docs];
+      return this.orderBy(tx, 'timestamp', -1);
     }
   },
   beforeMount() {
