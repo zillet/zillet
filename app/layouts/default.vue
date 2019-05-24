@@ -3,6 +3,7 @@
     <Notifications />
     <div
       v-if="showNoti"
+      style="font-size:0.9rem"
       class="bg-teal-600 rounded w-full p-2 text-white
       flex items-center justify-between mt-4">
       <div class="px-6">
