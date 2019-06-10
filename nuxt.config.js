@@ -84,6 +84,7 @@ export default {
     '@nuxtjs/pwa',
     'nuxt-purgecss',
     '@nuxtjs/style-resources',
+    '@nuxtjs/proxy',
     [
       '@nuxtjs/google-analytics',
       {
@@ -94,6 +95,9 @@ export default {
   loading: { color: '#3B8070' },
   styleResources: {
     scss: ['~/assets/style/variables.scss', '~/assets/style/mixins.scss']
+  },
+  proxy: {
+    '/zilliqa': 'https://api.viewblock.io/'
   },
   build: {
     postcss: {

@@ -40,6 +40,7 @@ export const FETCHED_PRICE = (state, prices) => {
 };
 export const SAVE_TRANSACTIONS = (state, data) => {
   state.viewblockAccount = data;
+  console.log(data);
   for (let index = 0; index < state.viewblockAccount.txs.docs.length; index++) {
     const hash = state.viewblockAccount.txs.docs[index].hash;
     state.localTxns = state.localTxns.filter(function(obj) {

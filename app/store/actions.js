@@ -55,11 +55,17 @@ export function getTransactions({ commit }, data) {
     var type = data.type || 'all';
     commit('LOADING');
     this.$axios
-      .$get(`${config.VIEWBLOCK_URL}0x${address}`, {
+      .$get(`https://zillet.io/zilliqa/addresses/0x${address}`, {
         params: {
           network: network,
           page: page,
           type: type
+        },
+        headers: {
+          'X-APIKEY':
+            '74da2e513cb0ce63ad6733f0d09a074b614ca9752a9e8201ab28678814fbc39a',
+          'X-APISECRET':
+            'afa302563e6dc8f94962fa33b4914bd0755657d0aa954c297fa1198f1ad13226'
         }
       })
       .then(resData => {
