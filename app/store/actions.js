@@ -60,6 +60,10 @@ export function getTransactions({ commit }, data) {
           network: network,
           page: page,
           type: type
+        },
+        headers: {
+          'X-APIKEY':
+            '74da2e513cb0ce63ad6733f0d09a074b614ca9752a9e8201ab28678814fbc39a'
         }
       })
       .then(resData => {
