@@ -1,7 +1,3 @@
-import * as util from '@zilliqa-js/util';
-import * as crypto from '@zilliqa-js/crypto';
-import * as account from '@zilliqa-js/account';
-import validation from '@/utils/validation';
 const { Zilliqa } = require('@zilliqa-js/zilliqa');
 
 Zilliqa.prototype.setProvider = function(provider) {
@@ -13,12 +9,6 @@ Zilliqa.prototype.setProvider = function(provider) {
   this.contracts.provider = provider;
 };
 export default ({}, inject) => {
-  inject('zil', {
-    util,
-    crypto,
-    account
-  });
-  inject('validation', validation);
   let zilliqa = new Zilliqa('https://dev-api.zilliqa.com');
-  inject('zilliqa', zilliqa);
+  inject('zillet', zilliqa);
 };

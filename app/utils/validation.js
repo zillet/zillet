@@ -7,7 +7,7 @@ const bip39 = require('bip39');
  * @param {string} value
  * @returns {Boolean}
  */
-function isNumber(value) {
+export function isNumber(value) {
   if (typeof Number(value) != 'number' || isNaN(Number(value))) {
     return false;
   }
@@ -21,7 +21,7 @@ function isNumber(value) {
  * @param {string} value
  * @returns {Boolean}
  */
-function isMnemonicValid(mnemonic) {
+export function isMnemonicValid(mnemonic) {
   if (mnemonic.trim().split(/\s+/g).length < 12) {
     return false;
   }

@@ -5,7 +5,7 @@
     </template>
     <z-textarea
       v-model="mnemonicPhrase"
-      :valid="$validation.isMnemonicValid(mnemonicPhrase)"
+      :valid="isMnemonicValid(mnemonicPhrase)"
       placeholder="Enter your Mnemonic phrase here"
       class="mnemonic-textarea"
       label="Mnemonic Phrase"
@@ -42,9 +42,15 @@
 import { mapActions, mapMutations } from 'vuex';
 const bip39 = require('bip39');
 const hdkey = require('hdkey');
-
+import { isMnemonicValid } from '@/utils/validation';
 export default {
   name: 'PrivateKey',
+  props: {
+    uid: {
+      type: [Number, String],
+      required: true
+    }
+  },
   data() {
     return {
       loading: false,
@@ -55,9 +61,10 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['importAccount']),
+    ...mapMutations(['importAccount', 'saveAccessType']),
+    isMnemonicValid: isMnemonicValid,
     async loadWallet() {
-      if (!this.$validation.isMnemonicValid(this.mnemonicPhrase)) {
+      if (!this.isMnemonicValid(this.mnemonicPhrase)) {
         return this.$notify({
           message: `Invalid Mnemonic Phrase`,
           type: 'danger'
@@ -71,8 +78,9 @@ export default {
           const hdKey = hdkey.fromMasterSeed(seed);
           const childKey = hdKey.derive(`m/44'/313'/0'/0/${this.index}`);
           const privateKey = childKey.privateKey.toString('hex');
-          this.$zilliqa.wallet.addByPrivateKey(privateKey);
-          this.importAccount(this.$zilliqa.wallet.defaultAccount);
+          this.$zillet.wallet.addByPrivateKey(privateKey);
+          this.importAccount(this.$zillet.wallet.defaultAccount);
+          this.saveAccessType(this.uid);
           this.$router.push({
             name: this.$route.query.redirect || 'send'
           });
@@ -81,8 +89,9 @@ export default {
             type: 'success'
           });
         }
-        this.$zilliqa.wallet.addByMnemonic(this.mnemonicPhrase, this.index);
-        this.importAccount(this.$zilliqa.wallet.defaultAccount);
+        this.$zillet.wallet.addByMnemonic(this.mnemonicPhrase, this.index);
+        this.importAccount(this.$zillet.wallet.defaultAccount);
+        this.saveAccessType(this.uid);
         this.$router.push({
           name: this.$route.query.redirect || 'send'
         });

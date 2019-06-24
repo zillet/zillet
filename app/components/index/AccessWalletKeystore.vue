@@ -26,8 +26,15 @@
 </template>
 <script>
 import { mapActions, mapMutations } from 'vuex';
+import { decryptPrivateKey } from '@zilliqa-js/crypto';
 export default {
   name: 'Keystore',
+  props: {
+    uid: {
+      type: [Number, String],
+      required: true
+    }
+  },
   data() {
     return {
       isFile: false,
@@ -38,7 +45,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['importAccount']),
+    ...mapMutations(['importAccount', 'saveAccessType']),
     checkEncryptedWallet(file) {
       if (file == null) return false;
       try {
@@ -80,15 +87,13 @@ export default {
       this.loading = true;
       let keystore = JSON.parse(this.encryptedWallet);
       try {
-        const pk = await this.$zil.crypto.decryptPrivateKey(
-          this.passphrase,
-          keystore
-        );
-        this.$zilliqa.wallet.addByPrivateKey(pk);
-        this.importAccount(this.$zilliqa.wallet.defaultAccount);
+        const pk = await decryptPrivateKey(this.passphrase, keystore);
+        this.$zillet.wallet.addByPrivateKey(pk);
+        this.importAccount(this.$zillet.wallet.defaultAccount);
         this.$router.push({
           name: this.$route.query.redirect || 'send'
         });
+        this.saveAccessType(this.uid);
         return this.$notify({
           message: `Wallet loaded successfully.`,
           type: 'success'

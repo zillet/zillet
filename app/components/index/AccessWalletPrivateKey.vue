@@ -5,7 +5,7 @@
     </template>
     <z-input
       v-model="privateKey"
-      :valid="$zil.util.validation.isPrivateKey(privateKey)"
+      :valid="isPrivateKey(privateKey)"
       placeholder="Enter your private key here"
       label="Private Key"
     />
@@ -20,8 +20,15 @@
 </template>
 <script>
 import { mapActions, mapMutations } from 'vuex';
+import { validation } from '@zilliqa-js/util';
 export default {
   name: 'PrivateKey',
+  props: {
+    uid: {
+      type: [Number, String],
+      required: true
+    }
+  },
   data() {
     return {
       loading: false,
@@ -29,16 +36,18 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['importAccount']),
+    ...mapMutations(['importAccount', 'saveAccessType']),
+    isPrivateKey: validation.isPrivateKey,
     validateKey() {
-      if (!this.$zil.util.validation.isPrivateKey(this.privateKey)) {
+      if (!this.isPrivateKey(this.privateKey)) {
         return this.$notify({
           message: `Invalid private key`,
           type: 'danger'
         });
       } else {
-        this.$zilliqa.wallet.addByPrivateKey(this.privateKey);
-        this.importAccount(this.$zilliqa.wallet.defaultAccount);
+        this.$zillet.wallet.addByPrivateKey(this.privateKey);
+        this.importAccount(this.$zillet.wallet.defaultAccount);
+        this.saveAccessType(this.uid);
         this.$router.push({
           name: this.$route.query.redirect || 'send'
         });

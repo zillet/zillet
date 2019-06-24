@@ -64,7 +64,7 @@
           <z-input
             v-model="transaction.gasLimit"
             :hide="false"
-            :valid="$validation.isNumber(transaction.gasLimit) && transaction.gasLimit > 0"
+            :valid="isNumber(transaction.gasLimit) && transaction.gasLimit > 0"
             number
             placeholder="10" />
         </div>
@@ -75,7 +75,7 @@
           </div>
           <z-input
             v-model="transaction.gasPrice"
-            :valid="$validation.isNumber(transaction.gasPrice) && transaction.gasPrice > 0"
+            :valid="isNumber(transaction.gasPrice) && transaction.gasPrice > 0"
             :hide="false"
             number
             placeholder="1" />
@@ -171,6 +171,15 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
+import { BN, Long, validation, units } from '@zilliqa-js/util';
+import {
+  fromBech32Address,
+  isValidChecksumAddress,
+  toChecksumAddress,
+  sign
+} from '@zilliqa-js/crypto';
+import { util } from '@zilliqa-js/account';
+import { isNumber } from '@/utils/validation';
 import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
@@ -204,22 +213,22 @@ export default {
   computed: {
     ...mapGetters(['Account', 'Prices', 'Balance']),
     ...mapState({
-      selectedNode: state => state.selectedNode
+      selectedNode: state => state.selectedNode,
+      accessType: state => state.accessType
     }),
     validateCryptoAmount() {
       return (
-        this.$validation.isNumber(this.transaction.amount) &&
+        this.isNumber(this.transaction.amount) &&
         parseFloat(this.transaction.amount) < this.Balance.zil
       );
     },
     validateFiatAmount() {
       return (
-        this.$validation.isNumber(this.usdAmount) &&
+        this.isNumber(this.usdAmount) &&
         parseFloat(this.usdAmount) < this.Balance.usd
       );
     },
     transactionFee() {
-      const { BN, Long, validation, units } = this.$zil.util;
       const fee =
         this.transaction.gasLimit *
         this.transaction.gasPrice *
@@ -245,8 +254,7 @@ export default {
   },
   async beforeMount() {
     try {
-      const { BN, units } = this.$zil.util;
-      const minGasPrice = await this.$zilliqa.blockchain.getMinimumGasPrice();
+      const minGasPrice = await this.$zillet.blockchain.getMinimumGasPrice();
       this.transaction.gasPrice = units.fromQa(
         new BN(minGasPrice.result),
         'li'
@@ -260,16 +268,11 @@ export default {
   },
   methods: {
     ...mapActions(['sendTransaction']),
-    ...mapMutations(['updateBalance']),
+    ...mapMutations(['updateBalance', 'saveTxn']),
+    isNumber: isNumber,
     normaliseAddress(address) {
-      const { isBech32 } = this.$zil.util.validation;
-      const {
-        fromBech32Address,
-        isValidChecksumAddress,
-        toChecksumAddress
-      } = this.$zil.crypto;
-      if (isBech32(address)) {
-        this.transaction.address = fromBech32Address(address);
+      if (validation.isBech32(address)) {
+        this.transaction.base16address = fromBech32Address(address);
         return true;
       }
       if (isValidChecksumAddress(address)) {
@@ -279,7 +282,6 @@ export default {
     },
     async createTxn() {
       if (this.normaliseAddress(this.transaction.address)) {
-        const { BN, Long, validation, units } = this.$zil.util;
         const VERSION = this.selectedNode.version;
         const amount = units.toQa(this.transaction.amount, units.Units.Zil);
         const fee = units.toQa(this.transactionFee, units.Units.Zil);
@@ -293,7 +295,7 @@ export default {
         } else {
           this.loading = true;
           // Update nonce and balance
-          const balance = await this.$zilliqa.blockchain.getBalance(
+          const balance = await this.$zillet.blockchain.getBalance(
             this.Account.address
           );
           this.updateBalance(balance.result);
@@ -302,39 +304,58 @@ export default {
             this.transaction.gasPrice,
             units.Units.Li
           ); // in QA
-          const tx = {
-            version: VERSION,
-            nonce: this.transaction.nonce
-              ? this.transaction.nonce
-              : this.Account.nonce + 1,
-            pubKey: this.Account.publicKey,
-            toAddr: this.$zil.crypto
-              .toChecksumAddress(this.transaction.address)
-              .slice(2),
-            amount: new BN(amount),
-            gasPrice: new BN(gasPrice),
-            gasLimit: Long.fromNumber(this.transaction.gasLimit)
-          };
-          // encoding transaction
-          const msg = await this.$zil.account.util.encodeTransactionProto(tx);
-          // signing transasction
-          const signature = await this.$zil.crypto.sign(
-            msg,
-            this.Account.privateKey,
-            this.Account.publicKey
+          console.log(
+            toChecksumAddress(this.transaction.base16address).slice(2)
           );
-          // signed transaction object
-          this.signedTx = {
-            ...tx,
-            amount: tx.amount.toString(),
-            gasPrice: tx.gasPrice.toString(),
-            gasLimit: tx.gasLimit.toString(),
-            data: '',
-            code: '',
-            signature
-          };
-          this.loading = false;
-          this.sendTxn();
+          if (this.accessType === 1004) {
+            const zilliqa = new Zilliqa();
+            const tx = await zilliqa.blockchain.createTransaction(
+              zilliqa.transactions.new({
+                toAddr: this.transaction.base16address,
+                amount: new BN(amount),
+                gasPrice: new BN(gasPrice),
+                gasLimit: Long.fromNumber(this.transaction.gasLimit)
+              })
+            );
+            this.txnDone(tx);
+            tx.type = 'zilpay';
+            console.log(tx);
+            this.saveTxn(tx);
+          } else {
+            const tx = {
+              version: VERSION,
+              nonce: this.transaction.nonce
+                ? this.transaction.nonce
+                : this.Account.nonce + 1,
+              pubKey: this.Account.publicKey,
+              toAddr: toChecksumAddress(this.transaction.base16address).slice(
+                2
+              ),
+              amount: new BN(amount),
+              gasPrice: new BN(gasPrice),
+              gasLimit: Long.fromNumber(this.transaction.gasLimit)
+            };
+            // encoding transaction
+            const msg = await util.encodeTransactionProto(tx);
+            // signing transasction
+            const signature = await sign(
+              msg,
+              this.Account.privateKey,
+              this.Account.publicKey
+            );
+            // signed transaction object
+            this.signedTx = {
+              ...tx,
+              amount: tx.amount.toString(),
+              gasPrice: tx.gasPrice.toString(),
+              gasLimit: tx.gasLimit.toString(),
+              data: '',
+              code: '',
+              signature
+            };
+            this.loading = false;
+            this.sendTxn();
+          }
         }
       } else {
         this.$notify({
@@ -347,35 +368,38 @@ export default {
       try {
         this.loading = true;
         const { result } = await this.sendTransaction(this.signedTx);
-        this.transaction = {
-          ...this.transaction,
-          ...{
-            address: '',
-            amount: '',
-            nonce: ''
-          }
-        };
-        this.loading = false;
-        if ('Error' in result) {
-          return this.$notify({
-            message: result.Error,
-            type: 'danger'
-          });
-        } else {
-          this.isSigned = false;
-          this.signedTx = {};
-          this.isBroadcast = true;
-          this.tranxId = result.TranID;
-          return this.$notify({
-            message: result.Info,
-            type: 'success'
-          });
-        }
+        this.txnDone(result);
       } catch (error) {
         this.loading = false;
         return this.$notify({
           message: `Something went wrong${JSON.stringify(error)}`,
           type: 'danger'
+        });
+      }
+    },
+    txnDone(result) {
+      this.loading = false;
+      this.transaction = {
+        ...this.transaction,
+        ...{
+          address: '',
+          amount: '',
+          nonce: ''
+        }
+      };
+      if ('Error' in result) {
+        return this.$notify({
+          message: result.Error,
+          type: 'danger'
+        });
+      } else {
+        this.isSigned = false;
+        this.signedTx = {};
+        this.isBroadcast = true;
+        this.tranxId = result.TranID;
+        return this.$notify({
+          message: result.Info,
+          type: 'success'
         });
       }
     },
@@ -385,7 +409,6 @@ export default {
         : `${this.selectedNode.explorer}${tx}`;
     },
     fullAmount() {
-      const { units } = this.$zil.util;
       const amount = this.Balance.zil;
       const fee = this.transactionFee;
       this.transaction.amount = parseFloat((amount - fee).toPrecision(12));

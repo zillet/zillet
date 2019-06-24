@@ -12,12 +12,19 @@
       mode="out-in">
       <PrivateKey
         v-if="accessMethodId===1001"
+        :uid="1001"
         @exit="accessMethodId=0" />
       <Keystore
         v-else-if="accessMethodId===1002"
+        :uid="1002"
         @exit="accessMethodId=0" />
       <Mnemonic
         v-else-if="accessMethodId===1003"
+        :uid="1003"
+        @exit="accessMethodId=0" />
+      <Zilpay
+        v-else-if="accessMethodId===1004"
+        :uid="1004"
         @exit="accessMethodId=0" />
     </transition>
   </div>
@@ -27,6 +34,7 @@ import AccessWallet from '@/components/index/AccessWallet';
 import PrivateKey from '@/components/index/AccessWalletPrivateKey';
 import Keystore from '@/components/index/AccessWalletKeystore';
 import Mnemonic from '@/components/index/AccessWalletMnemonic';
+import Zilpay from '@/components/index/AccessWalletZilpay';
 
 export default {
   name: 'Index',
@@ -34,7 +42,8 @@ export default {
     AccessWallet,
     PrivateKey,
     Keystore,
-    Mnemonic
+    Mnemonic,
+    Zilpay
   },
   data() {
     return {

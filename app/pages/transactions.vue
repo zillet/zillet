@@ -73,7 +73,7 @@
                   v-clipboard:error="onError">
                   <jazzicon
                     :diameter="18"
-                    :address="txn.direction=='in' ? txn.from:txn.to"
+                    :address="txn.direction=='in' ? toBase16(txn.from):toBase16(txn.to)"
                     class="mt-1 mr-2" />
                   {{ txn.direction=='in' ? toAddress(txn.from):toAddress(txn.to) }}
                 </span>
@@ -131,6 +131,8 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Vue2Filters from 'vue2-filters';
+import { units, BN, validation, isHex } from '@zilliqa-js/util';
+import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
 export default {
   name: 'Home',
   middleware: 'ifKeyExists',
@@ -192,10 +194,15 @@ export default {
       }
     },
     toBech32(address) {
-      const { isBech32 } = this.$zil.util.validation;
-      const { toBech32Address } = this.$zil.crypto;
-      if (!isBech32(address)) {
+      if (!validation.isBech32(address)) {
         return toBech32Address(address);
+      } else {
+        return address;
+      }
+    },
+    toBase16(address) {
+      if (!validation.isAddress(address)) {
+        return fromBech32Address(address);
       } else {
         return address;
       }
@@ -219,7 +226,6 @@ export default {
       }
     },
     amountInZil(amount) {
-      const { units, BN } = this.$zil.util;
       return units.fromQa(new BN(amount), units.Units.Zil);
     },
     amountInUsd(amount) {

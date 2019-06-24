@@ -40,7 +40,6 @@ export const FETCHED_PRICE = (state, prices) => {
 };
 export const SAVE_TRANSACTIONS = (state, data) => {
   state.viewblockAccount = data;
-  console.log(data);
   for (let index = 0; index < state.viewblockAccount.txs.docs.length; index++) {
     const hash = state.viewblockAccount.txs.docs[index].hash;
     state.localTxns = state.localTxns.filter(function(obj) {
@@ -49,20 +48,38 @@ export const SAVE_TRANSACTIONS = (state, data) => {
   }
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
-export const SAVE_TXN = (state, data) => {
-  let txn = {
-    direction: data.toAddr == state.wallet.address ? 'self' : 'out',
-    timestamp: new Date(),
-    hash: '0x' + (data.res && data.res.result && data.res.result.TranID),
-    from: state.wallet.address,
-    to: data.toAddr,
-    value: data.amount,
-    fee: data.gasLimit * data.gasPrice,
-    extra: {},
-    status: 'pending',
-    type: 'transfer',
-    version: state.selectedNode.version
-  };
+export const saveTxn = (state, data) => {
+  var txn;
+  if (data.type === 'zillet') {
+    txn = {
+      direction: data.toAddr == state.wallet.address ? 'self' : 'out',
+      timestamp: new Date(),
+      hash: '0x' + (data.res && data.res.result && data.res.result.TranID),
+      from: state.wallet.address,
+      to: data.toAddr,
+      value: data.amount,
+      fee: data.gasLimit * data.gasPrice,
+      extra: {},
+      status: 'pending',
+      type: 'transfer',
+      version: state.selectedNode.version
+    };
+  } else if (data.type === 'zilpay') {
+    txn = {
+      direction: data.toAddr == state.wallet.address ? 'self' : 'out',
+      timestamp: new Date(),
+      hash: '0x' + data.TranID,
+      from: state.wallet.address,
+      to: data.toAddr,
+      value: data.amount,
+      fee: data.gasLimit * data.gasPrice,
+      extra: {},
+      status: 'pending',
+      type: 'transfer',
+      version: data.version
+    };
+  }
+  console.log(txn);
   state.localTxns.push(txn);
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
@@ -81,4 +98,7 @@ export const SAVE_ENCRYPTED_WALLET = (state, wallet) => {
     '_encrypted_wallets',
     JSON.stringify(state.encryptedWallets)
   );
+};
+export const saveAccessType = (state, id) => {
+  state.accessType = id;
 };

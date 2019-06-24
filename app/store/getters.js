@@ -9,7 +9,7 @@ export const Account = state => {
   }
   return wallet;
 };
-export const LoggedIn = state => !!state.wallet.privateKey;
+export const LoggedIn = state => !!state.wallet.address;
 export const Online = () => window.navigator.onLine;
 export const Prices = state => state.prices;
 export const Balance = (state, getters) => {

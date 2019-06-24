@@ -15,7 +15,6 @@ export async function nuxtClientInit({ commit, dispatch }, app) {
     const node = JSON.parse(localStorage.getItem('_selected_node'));
     const localTxn = JSON.parse(localStorage.getItem('_local_txn'));
     if (node && node.url) {
-      console.log(node);
       commit('SELECT_NODE', node);
     }
     if (localTxn) {
@@ -25,7 +24,7 @@ export async function nuxtClientInit({ commit, dispatch }, app) {
   } catch (error) {}
 }
 export function selectNode({ commit }, node) {
-  this.$zilliqa.setProvider(new HTTPProvider(node.url));
+  this.$zillet.setProvider(new HTTPProvider(node.url));
   commit('SELECT_NODE', node);
 }
 export function getPrice({ commit }, { url, token }) {
@@ -100,7 +99,8 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
       .then(res => {
         commit('SUCCESS');
         tx.res = res;
-        commit('SAVE_TXN', tx);
+        tx.type = 'zillet';
+        commit('saveTxn', tx);
         resolve(res);
       })
       .catch(err => {

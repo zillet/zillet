@@ -26,7 +26,8 @@ const createStore = () =>
           docs: []
         }
       },
-      localTxns: []
+      localTxns: [],
+      accessType: ''
     },
     actions,
     mutations,

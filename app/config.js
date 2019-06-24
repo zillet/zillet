@@ -42,6 +42,22 @@ export default {
       body: 'Access your wallet using 12-word mnemonic Phrase',
       allowed: true,
       buttonText: 'Access'
+    },
+    {
+      id: 1004,
+      img: 'zilpay.svg',
+      title: 'ZilPay',
+      body: 'Access your wallet using ZilPay Extension',
+      allowed: true,
+      buttonText: 'Connect (Beta)'
+    },
+    {
+      id: 1005,
+      img: 'mnemonic.svg',
+      title: 'Moonlet',
+      body: 'Access your wallet using Moonlet Extension (Beta)',
+      allowed: false,
+      buttonText: 'Coming Soon'
     }
   ]
 };

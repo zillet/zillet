@@ -116,12 +116,13 @@ export default {
     async fetchBalance() {
       try {
         this.$nuxt.$loading.start();
-        const balance = await this.$zilliqa.blockchain.getBalance(
+        const balance = await this.$zillet.blockchain.getBalance(
           this.Account.address
         );
         this.updateBalance(balance.result);
         this.$nuxt.$loading.finish();
       } catch (error) {
+        console.log(error);
         this.$notify({
           icon: 'eva eva-close-circle-outline',
           message: `Something went wrong ${error}`,

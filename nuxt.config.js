@@ -70,7 +70,7 @@ export default {
     '@/plugins/global',
     '@/plugins/axios',
     '@/plugins/notify',
-    '@/plugins/zilliqa',
+    '@/plugins/zillet',
     '@/plugins/nuxtClientInit',
     '@/plugins/clipboard',
     '@/plugins/jazzicon',

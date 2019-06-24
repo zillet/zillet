@@ -65,56 +65,60 @@
           Do not send ERC-20 ZILfunds to this address.
         </z-alert>
       </div>
-      <div class="tracking-wide text-sm font-semibold mb-2">
-        Public Key
-      </div>
-      <z-input
-        :value="`0x${Account.publicKey}`"
-        :hide="false"
-        custom-class="rounded-r-none border-r-0"
-        disabled>
-        <div
-          class="flex -mr-px">
-          <button
-            class="flex items-center leading-normal
+      <div v-if="Account.publicKey">
+        <div class="tracking-wide text-sm font-semibold mb-2">
+          Public Key
+        </div>
+        <z-input
+          :value="`0x${Account.publicKey}`"
+          :hide="false"
+          custom-class="rounded-r-none border-r-0"
+          disabled>
+          <div
+            class="flex -mr-px">
+            <button
+              class="flex items-center leading-normal
                 bg-white rounded rounded-l-none h-12 px-3
                 border border-gray-400 text-gray-500 text-sm"
-            @click="showQr='publicKey'">
-            <div class="qr-code-btn">
-              <i
-                :class="{'selected':showQr==='publicKey'}"
-                class="eva eva-grid-outline"
-              />
-            </div>
-          </button>
-        </div>
-      </z-input>
-      <div class="tracking-wide  text-sm font-semibold mb-2">
-        Private Key
+              @click="showQr='publicKey'">
+              <div class="qr-code-btn">
+                <i
+                  :class="{'selected':showQr==='publicKey'}"
+                  class="eva eva-grid-outline"
+                />
+              </div>
+            </button>
+          </div>
+        </z-input>
       </div>
-      <z-input
-        :hide="true"
-        :value="`0x${Account.privateKey}`"
-        disabled>
-        <div
-          class="flex -mr-px">
-          <button
-            class="flex items-center leading-normal
+      <div v-if="Account.publicKey">
+        <div class="tracking-wide  text-sm font-semibold mb-2">
+          Private Key
+        </div>
+        <z-input
+          :hide="true"
+          :value="`0x${Account.privateKey}`"
+          disabled>
+          <div
+            class="flex -mr-px">
+            <button
+              class="flex items-center leading-normal
                 bg-white rounded rounded-l-none h-12 px-3
                 border border-gray-400 text-gray-500 text-sm"
-            @click="doCopy">
-            <div class="qr-code-btn">
-              <i
-                :class="{'selected':showQr==='privateKey'}"
-                class="eva eva-clipboard-outline"
-              />
-            </div>
-          </button>
-        </div>
-      </z-input>
-      <p class=" text-sm italic font-semibold">
-        Save your private key somewhere safe. else your funds will be lost forever
-      </p>
+              @click="doCopy">
+              <div class="qr-code-btn">
+                <i
+                  :class="{'selected':showQr==='privateKey'}"
+                  class="eva eva-clipboard-outline"
+                />
+              </div>
+            </button>
+          </div>
+        </z-input>
+        <p class=" text-sm italic font-semibold">
+          Save your private key somewhere safe. else your funds will be lost forever
+        </p>
+      </div>
     </div>
     <div class="flex  mx-8 justify-center items-center flex-col">
       <div class="qr-code">

@@ -87,7 +87,7 @@ export default {
 .access-wallet {
   &__method-btn {
     @apply rounded overflow-hidden bg-white cursor-pointer mx-3 mb-8;
-    width: 300px;
+    width: 260px;
     min-height: 100px;
     @include transition;
     &:not(&--disabled) {

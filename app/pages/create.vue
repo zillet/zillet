@@ -129,6 +129,12 @@ import DownloadKeystoreFile from '@/components/create/DownloadKeystoreFile';
 import DownloadMnemonicPhrase from '@/components/create/DownloadMnemonicPhrase';
 // cube village gate curious enforce blur yard equal weekend bronze voice name
 const bip39 = require('bip39');
+import {
+  getAddressFromPrivateKey,
+  encryptPrivateKey,
+  schnorr
+} from '@zilliqa-js/crypto';
+
 export default {
   name: 'NewWallet',
   components: {
@@ -178,10 +184,10 @@ export default {
       }
     },
     async generatePk() {
-      this.privateKey = this.$zil.crypto.schnorr.generatePrivateKey();
-      this.address = this.$zil.crypto.getAddressFromPrivateKey(this.privateKey);
+      this.privateKey = schnorr.generatePrivateKey();
+      this.address = getAddressFromPrivateKey(this.privateKey);
       try {
-        this.encryptedWallet = await this.$zil.crypto.encryptPrivateKey(
+        this.encryptedWallet = await encryptPrivateKey(
           'scrypt',
           this.privateKey,
           this.passphrase
