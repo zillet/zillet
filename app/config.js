@@ -53,7 +53,7 @@ export default {
     },
     {
       id: 1005,
-      img: 'mnemonic.svg',
+      img: 'moonlet.svg',
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension (Beta)',
       allowed: false,
