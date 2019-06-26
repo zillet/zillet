@@ -1,6 +1,6 @@
 require('dotenv').config();
-import path from 'path';
-export default {
+const path = require('path');
+module.exports = {
   mode: 'spa',
   srcDir: 'app/',
   head: {
