@@ -10,17 +10,13 @@
       <slot name="title" />
     </div>
     <div class="max-w-2xl m-auto">
-      <p class="mb-8">
+      <p
+        v-if="!hideTop"
+        class="mb-8">
         If you must, please double-check the URL. It should say
         <code>https://zillet.io</code> in your URL bar.
       </p>
       <slot />
-      <z-alert
-        type="danger"
-        class="my-2">
-        This is Zilliqa wallet. Do not send any
-        ERC-20 ZIL tokens to this wallet.
-      </z-alert>
     </div>
     <div class="flex flex-row mt-8 mb-2 justify-center">
       <i
@@ -32,6 +28,12 @@
 </template>
 <script>
 export default {
-  name: 'AccessWalletContainer'
+  name: 'AccessWalletContainer',
+  props: {
+    hideTop: {
+      type: Boolean,
+      default: false
+    }
+  }
 };
 </script>
