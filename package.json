@@ -11,7 +11,8 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test:unit": "vue-cli-service test:unit",
     "now-build": "nuxt build --spa",
-    "serve-https": "node server.js"
+    "https:dev":"node server.js",
+    "https:start": "NODE_ENV=production node server.js"
   },
   "keywords": [
     "vue",

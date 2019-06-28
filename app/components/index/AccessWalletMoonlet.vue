@@ -45,6 +45,7 @@
 <script>
 import { mapActions, mapMutations } from 'vuex';
 import { decryptPrivateKey } from '@zilliqa-js/crypto';
+import { fromBech32Address } from '@zilliqa-js/crypto';
 import { dapp } from 'dapp-wallet-util';
 import config from '@/config';
 export default {
@@ -75,12 +76,31 @@ export default {
       try {
         var moonlet = await dapp.getWalletInstance('moonlet');
         this.loadingInstance = false;
-        console.log(moonlet);
         var account = await moonlet.providers.zilliqa.getAccounts();
-        console.log(account);
+        if (account && account.length) {
+          if (moonlet.providers.zilliqa.currentNetwork === 1) {
+            this.selectNode(config.NODES[0]);
+          } else if (moonlet.providers.zilliqa.currentNetwork === 333) {
+            this.selectNode(config.NODES[1]);
+          } else {
+            this.selectNode(config.NODES[2]);
+          }
+          var base16address = fromBech32Address(account[0]);
+          this.importAccount({
+            address: base16address
+          });
+          this.saveAccessType(this.uid);
+          this.$router.push({
+            name: this.$route.query.redirect || 'send'
+          });
+          return this.$notify({
+            message: `Wallet loaded successfully.`,
+            type: 'success'
+          });
+        }
       } catch (instanceError) {
         this.loadingInstance = false;
-        console.log(instanceError);
+        console.log(loadingInstance);
         switch (instanceError) {
           case 'WALLET_NOT_INSTALLED':
             this.notFound = true;

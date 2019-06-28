@@ -179,7 +179,8 @@ import {
   sign
 } from '@zilliqa-js/crypto';
 import { util } from '@zilliqa-js/account';
-import { isNumber } from '@/utils/validation';
+import { Zilliqa } from '@zilliqa-js/zilliqa';
+import { isNumber, moonletZilliqa } from '@/utils/validation';
 import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
@@ -233,7 +234,7 @@ export default {
         this.transaction.gasLimit *
         this.transaction.gasPrice *
         Math.pow(10, -6); // in Li
-      return fee;
+      return parseFloat(fee.toFixed(4));
     }
   },
   watch: {
@@ -304,9 +305,6 @@ export default {
             this.transaction.gasPrice,
             units.Units.Li
           ); // in QA
-          console.log(
-            toChecksumAddress(this.transaction.base16address).slice(2)
-          );
           if (this.accessType === 1004) {
             const zilliqa = new Zilliqa();
             const tx = await zilliqa.blockchain.createTransaction(
@@ -319,8 +317,35 @@ export default {
             );
             this.txnDone(tx);
             tx.type = 'zilpay';
-            console.log(tx);
             this.saveTxn(tx);
+          } else if (this.accessType === 1005) {
+            const zilliqa = new Zilliqa('', moonlet.providers.zilliqa);
+            // apply a hack to disable internal ZilliqaJS autosigning feature
+            zilliqa.blockchain.signer = zilliqa.contracts.signer = {
+              sign: m => m
+            };
+            if (zilliqa) {
+              try {
+                const tx = await zilliqa.blockchain.createTransaction(
+                  zilliqa.transactions.new({
+                    toAddr: this.transaction.base16address,
+                    amount: new BN(amount),
+                    gasPrice: new BN(gasPrice),
+                    gasLimit: Long.fromNumber(this.transaction.gasLimit)
+                  })
+                );
+                console.log(tx);
+                this.txnDone(tx);
+                tx.type = 'moonlet';
+                this.saveTxn(tx);
+              } catch (err) {
+                this.loading = false;
+                return this.$notify({
+                  message: err.message,
+                  type: 'danger'
+                });
+              }
+            }
           } else {
             const tx = {
               version: VERSION,
@@ -404,7 +429,7 @@ export default {
       }
     },
     explorerLink(tx) {
-      return this.selectedNode.id === 1002
+      return this.selectedNode.id === 333
         ? `${this.selectedNode.explorer}${tx}?network=testnet`
         : `${this.selectedNode.explorer}${tx}`;
     },

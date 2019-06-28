@@ -173,9 +173,9 @@ export default {
     async fetchTransactions() {
       this.loading = true;
       this.requestParams.address = this.Account.address;
-      if (this.selectedNode.id == 1001) {
+      if (this.selectedNode.id == 1) {
         this.requestParams.network = 'mainnet';
-      } else if (this.selectedNode.id == 1002) {
+      } else if (this.selectedNode.id == 333) {
         this.requestParams.network = 'testnet';
       } else {
         console.error('Can not fetch transaction from unknown network');
