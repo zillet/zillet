@@ -8,14 +8,21 @@ export default {
       url: 'https://api.zilliqa.com',
       explorer: 'https://viewblock.io/zilliqa/tx/',
       version: 65537,
-      id: 1001
+      id: 1
     },
     {
       name: 'Zilliqa Testnet',
       url: 'https://dev-api.zilliqa.com',
       explorer: 'https://viewblock.io/zilliqa/tx/',
       version: 21823489,
-      id: 1002
+      id: 333
+    },
+    {
+      name: 'Zilliqa Kaya Server',
+      url: 'http://127.0.0.1:4200/',
+      explorer: '',
+      version: 21823489,
+      id: 2
     }
   ],
   WALLET_METHODS: [

@@ -88,3 +88,5 @@ sw.*
 
 # test coverage
 coverage
+
+*.pem
