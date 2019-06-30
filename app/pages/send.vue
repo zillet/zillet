@@ -321,7 +321,11 @@ export default {
               tx.type = 'zilpay';
               this.saveTxn(tx);
             } catch (error) {
-              console.log(error);
+              this.loading = false;
+              return this.$notify({
+                message: error,
+                type: 'danger'
+              });
             }
           } else if (this.accessType === 1005) {
             const zilliqa = new Zilliqa('', moonlet.providers.zilliqa);
