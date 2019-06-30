@@ -100,7 +100,7 @@ export default {
         }
       } catch (instanceError) {
         this.loadingInstance = false;
-        console.log(loadingInstance);
+        console.log(this.loadingInstance);
         switch (instanceError) {
           case 'WALLET_NOT_INSTALLED':
             this.notFound = true;
