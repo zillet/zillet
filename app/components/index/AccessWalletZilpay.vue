@@ -57,9 +57,9 @@ export default {
     ...mapMutations(['importAccount', 'saveAccessType']),
     async connect() {
       if (window && window.zilPay) {
-        console.log('ZilPay detected');
         try {
-          if (!window.zilPay.isEnable) {
+          const zilPay = window.zilPay;
+          if (!zilPay.isEnable || !zilPay.isConnect) {
             await zilPay.connect();
           }
           const { defaultAccount } = zilPay;
@@ -89,6 +89,7 @@ export default {
             type: 'success'
           });
         } catch (error) {
+          console.log(error);
           this.$notify({
             message: error,
             type: 'danger'

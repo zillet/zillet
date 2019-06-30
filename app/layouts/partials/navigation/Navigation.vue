@@ -60,7 +60,6 @@ export default {
     async logout() {
       await this.clearWallet();
       this.$router.push({ name: 'index' });
-      location.reload();
     }
   }
 };

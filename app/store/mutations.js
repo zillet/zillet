@@ -26,13 +26,15 @@ export const clearWallet = (state, result) => {
 };
 export const SELECT_NODE = (state, node) => {
   state.selectedNode = { ...state.selectedNode, ...node };
-  state.wallet = {
-    address: '',
-    privateKey: '',
-    publicKey: '',
-    balance: '',
-    nonce: ''
-  };
+  if (node.refresh) {
+    state.wallet = {
+      address: '',
+      privateKey: '',
+      publicKey: '',
+      balance: '',
+      nonce: ''
+    };
+  }
 };
 
 export const FETCHED_PRICE = (state, prices) => {

@@ -94,7 +94,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 import NavigationTab from './NavigationTab';
 export default {
   components: {
@@ -106,12 +106,20 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['Balance', 'LoggedIn', 'Account'])
+    ...mapGetters(['Balance', 'LoggedIn', 'Account']),
+    ...mapState({
+      selectedNode: state => state.selectedNode
+    })
   },
   watch: {
     'Account.address': {
       handler(newValue, oldValue) {
         this.fetchBalance(newValue);
+      }
+    },
+    'selectedNode.url': {
+      handler(newValue, oldValue) {
+        this.fetchBalance();
       }
     }
   },
@@ -126,7 +134,11 @@ export default {
         const balance = await this.$zillet.blockchain.getBalance(
           this.Account.address
         );
-        this.updateBalance(balance.result);
+        if (balance.result) {
+          this.updateBalance(balance.result);
+        } else {
+          this.updateBalance({ balance: '0', nonce: 0 });
+        }
         this.$nuxt.$loading.finish();
       } catch (error) {
         console.log(error);

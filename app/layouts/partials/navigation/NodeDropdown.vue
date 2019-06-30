@@ -32,7 +32,7 @@
             :key="n.name"
             :class="{'bg-gray-200':selectedNode.name === n.name}"
             class="flex items-start text-left px-4 py-2 cursor-pointer hover:bg-grey-lightest"
-            @click="changeNode(n)">
+            @click="changeNode(n, false)">
             <div class="text-sm">
               <p class="text-gray-800 leading-none font-semibold mb-1">
                 {{ n.name }}
@@ -100,7 +100,7 @@
           <z-button
             class="w-full mx-3 min-w-32"
             rounded
-            @click="changeNode(node)">
+            @click="changeNode(node, false)">
             Save and Use
           </z-button>
         </div>
@@ -133,16 +133,17 @@ export default {
     })
   },
   async beforeMount() {
-    await this.changeNode(this.selectedNode);
+    await this.changeNode(this.selectedNode, true);
   },
   methods: {
     ...mapActions(['checkNetworkStatus', 'selectNode']),
-    async changeNode(node) {
+    async changeNode(node, refresh) {
       this.connectionStatusClass = 'bg-yellow-400';
       this.showDropDown = false;
       if (await this.checkConnection(node.url)) {
         await localStorage.setItem('_selected_node', JSON.stringify(node));
         this.isNewNode = false;
+        node.refresh = refresh;
         this.selectNode(node);
       }
     },

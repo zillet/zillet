@@ -1,6 +1,6 @@
 {
   "name": "zillet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lightweight UI/UX focused Zilliqa wallet",
   "author": "man15h <manish9461@gmail.com>",
   "private": true,

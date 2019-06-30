@@ -12,7 +12,12 @@ module.exports = {
       {
         hid: 'description',
         name: 'description',
-        content: 'Lightweight UX focused Zilliqa wallet'
+        content:
+          'Send Zilliqa and receive zilliqa easily from a lightweight UI/UX focued secure wallet'
+      },
+      {
+        property: 'og:image',
+        content: `https://zillet.io/icon.png`
       }
     ],
     link: [
@@ -47,15 +52,17 @@ module.exports = {
     ]
   },
   manifest: {
-    name: 'Zilliqa Wallet',
-    short_name: 'Zilliqa',
+    name: 'Zillet | Secure Zilliqa wallet',
+    short_name: 'Zillet.io',
     lang: 'en',
-    description: 'Lightweight UI/UX focused Zilliqa wallet',
+    description:
+      'Send Zilliqa and receive zilliqa easily from a lightweight UI/UX focued secure wallet',
     theme_color: '#00c2b6',
     background_color: '#2a2f39',
     scope: '/',
     start_url: '/',
-    display: 'standalone'
+    display: 'standalone',
+    ogSiteName: 'zillet.io'
   },
   css: [
     {

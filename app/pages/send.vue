@@ -306,18 +306,27 @@ export default {
             units.Units.Li
           ); // in QA
           if (this.accessType === 1004) {
-            const zilliqa = new Zilliqa();
-            const tx = await zilliqa.blockchain.createTransaction(
-              zilliqa.transactions.new({
-                toAddr: this.transaction.base16address,
-                amount: new BN(amount),
-                gasPrice: new BN(gasPrice),
-                gasLimit: Long.fromNumber(this.transaction.gasLimit)
-              })
-            );
-            this.txnDone(tx);
-            tx.type = 'zilpay';
-            this.saveTxn(tx);
+            const Zilliqa = window.Zilliqa;
+            const zilliqa = new window.Zilliqa();
+            try {
+              const tx = await zilliqa.blockchain.createTransaction(
+                zilliqa.transactions.new({
+                  toAddr: this.transaction.base16address,
+                  amount: new BN(amount),
+                  gasPrice: new BN(gasPrice),
+                  gasLimit: Long.fromNumber(this.transaction.gasLimit)
+                })
+              );
+              this.txnDone(tx);
+              tx.type = 'zilpay';
+              this.saveTxn(tx);
+            } catch (error) {
+              this.loading = false;
+              return this.$notify({
+                message: error,
+                type: 'danger'
+              });
+            }
           } else if (this.accessType === 1005) {
             const zilliqa = new Zilliqa('', moonlet.providers.zilliqa);
             // apply a hack to disable internal ZilliqaJS autosigning feature
@@ -334,7 +343,6 @@ export default {
                     gasLimit: Long.fromNumber(this.transaction.gasLimit)
                   })
                 );
-                console.log(tx);
                 this.txnDone(tx);
                 tx.type = 'moonlet';
                 this.saveTxn(tx);
@@ -434,10 +442,20 @@ export default {
         : `${this.selectedNode.explorer}${tx}`;
     },
     fullAmount() {
-      const amount = this.Balance.zil;
+      const balance = this.Balance.zil;
       const fee = this.transactionFee;
-      this.transaction.amount = parseFloat((amount - fee).toPrecision(12));
-      this.usdAmount = (this.transaction.amount * this.Prices.USD).toFixed(2);
+      const amount = parseFloat((balance - fee).toPrecision(12));
+      if (amount > 0) {
+        this.transaction.amount = amount;
+        this.usdAmount = (this.transaction.amount * this.Prices.USD).toFixed(2);
+      } else {
+        this.transaction.amount = 0;
+        this.usdAmount = 0;
+        this.$notify({
+          message: 'Your balance seems low',
+          type: 'danger'
+        });
+      }
     },
     cryptoAmountFocus(test) {
       this.isCryptoAmountFocus = true;
