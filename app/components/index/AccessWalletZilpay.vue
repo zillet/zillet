@@ -28,7 +28,7 @@
   </AccessWalletContainer>
 </template>
 <script>
-import { mapActions, mapMutations } from 'vuex';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { decryptPrivateKey } from '@zilliqa-js/crypto';
 import config from '@/config';
 export default {
@@ -49,6 +49,9 @@ export default {
       notFound: false
     };
   },
+  computed: {
+    ...mapGetters(['Account', 'Prices', 'Balance'])
+  },
   methods: {
     ...mapActions(['selectNode']),
     ...mapMutations(['importAccount', 'saveAccessType']),
@@ -60,6 +63,15 @@ export default {
             await zilPay.connect();
           }
           const { defaultAccount } = zilPay;
+          zilPay.observableAccount().subscribe(account => {
+            if (this.Account.address != account.base16) {
+              this.save(account.base16);
+              this.$notify({
+                message: `New account loaded succesfully`,
+                type: 'success'
+              });
+            }
+          });
           if (zilPay.net === 'mainnet') {
             this.selectNode(config.NODES[0]);
           } else if (zilPay.net === 'testnet') {
@@ -67,9 +79,7 @@ export default {
           } else {
             this.selectNode({ url: zilPay.provider.nodeURL });
           }
-          this.importAccount({
-            address: defaultAccount.base16
-          });
+          this.save(defaultAccount.base16);
           this.saveAccessType(this.uid);
           this.$router.push({
             name: this.$route.query.redirect || 'send'
@@ -92,6 +102,11 @@ export default {
         });
         console.warn('ZilPay not installed');
       }
+    },
+    save(account) {
+      this.importAccount({
+        address: account
+      });
     }
   }
 };

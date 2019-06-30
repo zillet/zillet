@@ -165,6 +165,13 @@ export default {
       return this.orderBy(tx, 'timestamp', -1);
     }
   },
+  watch: {
+    'Account.address': {
+      handler(newValue, oldValue) {
+        this.fetchTransactions();
+      }
+    }
+  },
   beforeMount() {
     this.fetchTransactions();
   },

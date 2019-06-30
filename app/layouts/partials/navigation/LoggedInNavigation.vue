@@ -108,6 +108,13 @@ export default {
   computed: {
     ...mapGetters(['Balance', 'LoggedIn', 'Account'])
   },
+  watch: {
+    'Account.address': {
+      handler(newValue, oldValue) {
+        this.fetchBalance(newValue);
+      }
+    }
+  },
   mounted() {
     this.fetchBalance();
   },
