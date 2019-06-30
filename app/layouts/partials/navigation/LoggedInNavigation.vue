@@ -126,7 +126,11 @@ export default {
         const balance = await this.$zillet.blockchain.getBalance(
           this.Account.address
         );
-        this.updateBalance(balance.result);
+        if (balance.result) {
+          this.updateBalance(balance.result);
+        } else {
+          this.updateBalance({ balance: '0', nonce: 0 });
+        }
         this.$nuxt.$loading.finish();
       } catch (error) {
         console.log(error);
