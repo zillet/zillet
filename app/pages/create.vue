@@ -132,7 +132,8 @@ const bip39 = require('bip39');
 import {
   getAddressFromPrivateKey,
   encryptPrivateKey,
-  schnorr
+  schnorr,
+  toBech32Address
 } from '@zilliqa-js/crypto';
 
 export default {
@@ -231,11 +232,12 @@ export default {
       }, 500);
     },
     printPk() {
+      const bech32Address = toBech32Address(this.address);
       var addressCanvas = document.createElement('CANVAS');
       var pkCanvas = document.createElement('CANVAS');
       const addressQr = this.$qr.toDataURL(
         addressCanvas,
-        `0x${this.address}`,
+        bech32Address,
         { width: 150 },
         error => {
           if (error) {
@@ -253,7 +255,7 @@ export default {
           }
         }
       );
-      const paperWallet = printKeystore(this.address, this.privateKey);
+      const paperWallet = printKeystore(bech32Address, this.privateKey);
       let paperBody = document.createElement('BODY');
       paperBody.setAttribute('id', 'paper-wallet');
       paperBody.innerHTML = paperWallet;
