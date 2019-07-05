@@ -19,7 +19,7 @@ export const printKeystore = (address, pk) => {
             <p>
                 <strong>Your Address:</strong>
                 <br>
-                <span id="paperwalletadd">0x${address}</span>
+                <span id="paperwalletadd">${address}</span>
             </p>
             <p>
                 <strong>Your Private Key:</strong>
