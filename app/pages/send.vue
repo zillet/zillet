@@ -306,8 +306,7 @@ export default {
             units.Units.Li
           ); // in QA
           if (this.accessType === 1004) {
-            const Zilliqa = window.Zilliqa;
-            const zilliqa = new window.Zilliqa();
+            const zilliqa = window.zilPay;
             try {
               const tx = await zilliqa.blockchain.createTransaction(
                 zilliqa.transactions.new({

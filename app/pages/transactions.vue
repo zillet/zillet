@@ -170,6 +170,11 @@ export default {
       handler(newValue, oldValue) {
         this.fetchTransactions();
       }
+    },
+    'selectedNode.id': {
+      handler(newValue, oldValue) {
+        this.fetchTransactions();
+      }
     }
   },
   beforeMount() {

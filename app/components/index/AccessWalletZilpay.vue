@@ -59,11 +59,11 @@ export default {
       if (window && window.zilPay) {
         try {
           const zilPay = window.zilPay;
-          if (!zilPay.isEnable || !zilPay.isConnect) {
-            await zilPay.connect();
+          if (!zilPay.wallet.isEnable || !zilPay.wallet.isConnect) {
+            const status = await zilPay.wallet.connect();
           }
-          const { defaultAccount } = zilPay;
-          zilPay.observableAccount().subscribe(account => {
+          const { defaultAccount } = zilPay.wallet;
+          zilPay.wallet.observableAccount().subscribe(account => {
             if (this.Account.address != account.base16) {
               this.save(account.base16);
               this.$notify({
@@ -72,13 +72,18 @@ export default {
               });
             }
           });
-          if (zilPay.net === 'mainnet') {
-            this.selectNode(config.NODES[0]);
-          } else if (zilPay.net === 'testnet') {
-            this.selectNode(config.NODES[1]);
-          } else {
-            this.selectNode({ url: zilPay.provider.nodeURL });
+          var t = this;
+          function selectNet(net) {
+            if (net === 'mainnet') {
+              t.selectNode(config.NODES[0]);
+            } else if (net === 'testnet') {
+              t.selectNode(config.NODES[1]);
+            } else {
+              t.selectNode(config.NODES[2]);
+            }
           }
+          zilPay.wallet.observableNetwork().subscribe(net => selectNet(net));
+          selectNet(zilPay.wallet.net);
           this.save(defaultAccount.base16);
           this.saveAccessType(this.uid);
           this.$router.push({
