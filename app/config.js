@@ -64,7 +64,7 @@ export default {
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension',
       allowed: true,
-      buttonText: 'Coming Soon'
+      buttonText: 'Connect (Alpha)'
     }
   ]
 };
