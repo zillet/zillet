@@ -178,7 +178,7 @@ import {
   toChecksumAddress,
   sign
 } from '@zilliqa-js/crypto';
-import { util } from '@zilliqa-js/account';
+import { util, Transaction } from '@zilliqa-js/account';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
 import { isNumber, moonletZilliqa } from '@/utils/validation';
 import config from '@/config';
@@ -327,7 +327,7 @@ export default {
               });
             }
           } else if (this.accessType === 1005) {
-            const zilliqa = new Zilliqa('', moonlet.providers.zilliqa);
+            const zilliqa = new Zilliqa('', window.moonlet.providers.zilliqa);
             // apply a hack to disable internal ZilliqaJS autosigning feature
             zilliqa.blockchain.signer = zilliqa.contracts.signer = {
               sign: m => m
@@ -335,17 +335,22 @@ export default {
             if (zilliqa) {
               try {
                 const tx = await zilliqa.blockchain.createTransaction(
-                  zilliqa.transactions.new({
-                    toAddr: this.transaction.base16address,
-                    amount: new BN(amount),
-                    gasPrice: new BN(gasPrice),
-                    gasLimit: Long.fromNumber(this.transaction.gasLimit)
-                  })
+                  new Transaction(
+                    {
+                      toAddr: this.transaction.base16address,
+                      amount: new BN(amount),
+                      gasPrice: new BN(gasPrice),
+                      gasLimit: Long.fromNumber(this.transaction.gasLimit)
+                    },
+                    moonlet.providers.zilliqa
+                  )
                 );
+                console.log(tx);
                 this.txnDone(tx);
                 tx.type = 'moonlet';
                 this.saveTxn(tx);
               } catch (err) {
+                console.log(err);
                 this.loading = false;
                 return this.$notify({
                   message: err.message,
@@ -410,6 +415,7 @@ export default {
       }
     },
     txnDone(result) {
+      console.log(result);
       this.loading = false;
       this.transaction = {
         ...this.transaction,

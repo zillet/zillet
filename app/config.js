@@ -63,7 +63,7 @@ export default {
       img: 'moonlet.svg',
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension',
-      allowed: false,
+      allowed: true,
       buttonText: 'Coming Soon'
     }
   ]
