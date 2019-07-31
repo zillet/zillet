@@ -56,7 +56,7 @@ export default {
       title: 'ZilPay',
       body: 'Access your wallet using ZilPay Extension',
       allowed: true,
-      buttonText: 'Connect (Beta)'
+      buttonText: 'Connect'
     },
     {
       id: 1005,
@@ -64,7 +64,7 @@ export default {
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension',
       allowed: true,
-      buttonText: 'Connect (Alpha)'
+      buttonText: 'Connect (Beta)'
     }
   ]
 };

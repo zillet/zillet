@@ -345,7 +345,10 @@ export default {
                     moonlet.providers.zilliqa
                   )
                 );
-                console.log(tx);
+                tx.TranID = tx.id;
+                tx.amount = tx.amount.toString(10);
+                tx.gasLimit = tx.gasLimit.toString(10);
+                tx.gasPrice = tx.gasPrice.toString(10);
                 this.txnDone(tx);
                 tx.type = 'moonlet';
                 this.saveTxn(tx);
@@ -415,7 +418,6 @@ export default {
       }
     },
     txnDone(result) {
-      console.log(result);
       this.loading = false;
       this.transaction = {
         ...this.transaction,
