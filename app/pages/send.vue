@@ -12,11 +12,11 @@
         :hide="false"
         class="mb-2"
         placeholder="Enter Zilliqa Mainnet address here" />
-      <z-alert
+      <!-- <z-alert
         type="danger"
         class="mb-6">
         Do not send funds to ERC-20 ZIL address.
-      </z-alert>
+      </z-alert> -->
       <div class="amount-wrapper">
         <div class="label">
           <div class="tracking-wide text-sm font-semibold mb-2">
@@ -343,8 +343,12 @@ export default {
                       gasLimit: Long.fromNumber(this.transaction.gasLimit)
                     },
                     moonlet.providers.zilliqa
-                  )
+                  ),
+                  -1,
+                  -1,
+                  false
                 );
+                console.log(tx);
                 tx.TranID = tx.id;
                 tx.amount = tx.amount.toString(10);
                 tx.gasLimit = tx.gasLimit.toString(10);
