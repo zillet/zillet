@@ -58,8 +58,9 @@ export default {
   methods: {
     ...mapMutations(['clearWallet']),
     async logout() {
-      await this.clearWallet();
       this.$router.push({ name: 'index' });
+      await this.clearWallet();
+      location.reload();
     }
   }
 };
