@@ -75,7 +75,14 @@ export default class Zilliqa {
   }
 
   signTxn(keyIndex, txnParams) {
-    // https://github.com/Zilliqa/Zilliqa-JavaScript-Library/tree/dev/packages/zilliqa-js-account#interfaces
+    ['version', 'nonce', 'toAddr', 'amount', 'gasPrice', 'gasLimit'].forEach(
+      key => {
+        if (!Object.keys(txnParams).includes(key)) {
+          throw new Error(`txParams ${key} is required!`);
+        }
+      }
+    );
+
     const P1 = 0x00;
     const P2 = 0x00;
 
@@ -95,73 +102,15 @@ export default class Zilliqa {
       txnParams.gasLimit = Long.fromNumber(txnParams.gasLimit);
     }
 
-    var txnBytes = txnEncoder(txnParams);
-    const message = JSON.stringify(
-      { 'Encoded transaction': txnBytes.toString('hex') },
-      null,
-      2
-    );
+    const encodedTxn = txnEncoder(txnParams);
+    let txnSizeBytes = Buffer.alloc(4);
+    txnSizeBytes.writeInt32LE(encodedTxn.length);
+    const payload = Buffer.concat([indexBytes, txnSizeBytes, encodedTxn]);
 
-    const STREAM_LEN = 32; // Stream in batches of STREAM_LEN bytes each.
-    var txn1Bytes;
-    if (txnBytes.length > STREAM_LEN) {
-      txn1Bytes = txnBytes.slice(0, STREAM_LEN);
-      txnBytes = txnBytes.slice(STREAM_LEN, undefined);
-    } else {
-      txn1Bytes = txnBytes;
-      txnBytes = Buffer.alloc(0);
-    }
-
-    var txn1SizeBytes = Buffer.alloc(4);
-    txn1SizeBytes.writeInt32LE(txn1Bytes.length);
-    var hostBytesLeftBytes = Buffer.alloc(4);
-    hostBytesLeftBytes.writeInt32LE(txnBytes.length);
-    // See signTxn.c:handleSignTxn() for sequence details of payload.
-    // 1. 4 bytes for indexBytes.
-    // 2. 4 bytes for hostBytesLeftBytes.
-    // 3. 4 bytes for txn1SizeBytes (number of bytes being sent now).
-    // 4. txn1Bytes of actual data.
-    const payload = Buffer.concat([
-      indexBytes,
-      hostBytesLeftBytes,
-      txn1SizeBytes,
-      txn1Bytes
-    ]);
-
-    let transport = this.transport;
-    return transport
+    return this.transport
       .send(CLA, INS.signTxn, P1, P2, payload)
-      .then(function cb(response) {
-        // Keep streaming data into the device till we run out of it.
-        // See signTxn.c:istream_callback() for how this is used.
-        // Each time the bytes sent consists of:
-        //  1. 4-bytes of hostBytesLeftBytes.
-        //  2. 4-bytes of txnNSizeBytes (number of bytes being sent now).
-        //  3. txnNBytes of actual data.
-        if (txnBytes.length > 0) {
-          var txnNBytes;
-          if (txnBytes.length > STREAM_LEN) {
-            txnNBytes = txnBytes.slice(0, STREAM_LEN);
-            txnBytes = txnBytes.slice(STREAM_LEN, undefined);
-          } else {
-            txnNBytes = txnBytes;
-            txnBytes = Buffer.alloc(0);
-          }
-
-          var txnNSizeBytes = Buffer.alloc(4);
-          txnNSizeBytes.writeInt32LE(txnNBytes.length);
-          hostBytesLeftBytes.writeInt32LE(txnBytes.length);
-          const payload = Buffer.concat([
-            hostBytesLeftBytes,
-            txnNSizeBytes,
-            txnNBytes
-          ]);
-          return transport.exchange(payload).then(cb);
-        }
-        return response;
-      })
-      .then(result => {
-        return { sig: result.toString('hex').slice(0, SigByteLen * 2) };
+      .then(response => {
+        return response.toString('hex').slice(0, SigByteLen * 2);
       });
   }
 }

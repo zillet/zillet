@@ -76,7 +76,8 @@ export default {
         const base16Address = fromBech32Address(data.pubAddr);
         this.save({
           address: base16Address,
-          publicKey: data.publicKey
+          publicKey: data.publicKey,
+          index: this.hwIndex
         });
         this.saveAccessType(this.uid);
         this.$router.push({

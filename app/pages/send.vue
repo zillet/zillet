@@ -180,6 +180,7 @@ import {
 } from '@zilliqa-js/crypto';
 import { util } from '@zilliqa-js/account';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import ZilliqaHW from '@/plugins/ledger';
 import { isNumber, moonletZilliqa } from '@/utils/validation';
 import config from '@/config';
 const lookupMap = new Map([
@@ -282,7 +283,6 @@ export default {
       return false;
     },
     async createTxn() {
-      console.log(this.accessType);
       if (this.normaliseAddress(this.transaction.address)) {
         const VERSION = this.selectedNode.version;
         const amount = units.toQa(this.transaction.amount, units.Units.Zil);
@@ -355,14 +355,32 @@ export default {
               }
             }
           } else if (this.accessType === 1006) {
-            const pyaload = {
+            const transport = await ZilliqaHW.create();
+            const ledgerZil = new ZilliqaHW(transport);
+            const hwIndex = this.Account.index;
+            const type = 'CreateTransaction';
+            const txParams = {
+              version: VERSION,
+              nonce: this.Account.nonce + 1,
+              pubKey: this.Account.publicKey,
               toAddr: this.transaction.base16address,
               amount: new BN(amount),
               gasPrice: new BN(gasPrice),
-              gasLimit: Long.fromNumber(this.transaction.gasLimit)
+              gasLimit: Long.fromNumber(this.transaction.gasLimit),
+              data: '',
+              code: ''
             };
-            console.log(pyaload);
-            return null;
+            const signature = await ledgerZil.signTxn(hwIndex, txParams);
+            const signedTx = {
+              ...txParams,
+              signature
+            };
+            const { payload } = this.$zillet.transactions.new(signedTx);
+
+            payload.version = VERSION;
+            this.signedTx = payload;
+            this.loading = false;
+            this.sendTxn();
           } else {
             const tx = {
               version: VERSION,
