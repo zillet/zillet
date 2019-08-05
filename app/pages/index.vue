@@ -26,6 +26,10 @@
         v-else-if="accessMethodId===1004"
         :uid="1004"
         @exit="accessMethodId=0" />
+      <Ledger
+        v-else-if="accessMethodId===1006"
+        :uid="1006"
+        @exit="accessMethodId=0" />
       <!-- <Moonlet
         v-else-if="accessMethodId===1005"
         :uid="1005"
@@ -39,6 +43,7 @@ import PrivateKey from '@/components/index/AccessWalletPrivateKey';
 import Keystore from '@/components/index/AccessWalletKeystore';
 import Mnemonic from '@/components/index/AccessWalletMnemonic';
 import Zilpay from '@/components/index/AccessWalletZilpay';
+import Ledger from '@/components/index/AccessWalletLedger';
 // import Moonlet from '@/components/index/AccessWalletMoonlet';
 
 export default {
@@ -48,7 +53,8 @@ export default {
     PrivateKey,
     Keystore,
     Mnemonic,
-    Zilpay
+    Zilpay,
+    Ledger
   },
   data() {
     return {

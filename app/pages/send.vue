@@ -282,6 +282,7 @@ export default {
       return false;
     },
     async createTxn() {
+      console.log(this.accessType);
       if (this.normaliseAddress(this.transaction.address)) {
         const VERSION = this.selectedNode.version;
         const amount = units.toQa(this.transaction.amount, units.Units.Zil);
@@ -353,6 +354,15 @@ export default {
                 });
               }
             }
+          } else if (this.accessType === 1006) {
+            const pyaload = {
+              toAddr: this.transaction.base16address,
+              amount: new BN(amount),
+              gasPrice: new BN(gasPrice),
+              gasLimit: Long.fromNumber(this.transaction.gasLimit)
+            };
+            console.log(pyaload);
+            return null;
           } else {
             const tx = {
               version: VERSION,

@@ -65,6 +65,14 @@ export default {
       body: 'Access your wallet using Moonlet Extension',
       allowed: false,
       buttonText: 'Coming Soon'
+    },
+    {
+      id: 1006,
+      img: 'zilpay.svg',
+      title: 'Ledger',
+      body: 'Access your wallet using Ledger wallet',
+      allowed: true,
+      buttonText: 'Connect (Beta)'
     }
   ]
 };

@@ -15,8 +15,8 @@ if (!isProd) {
 
 // HTTPS Server
 const options = {
-  key: fs.readFileSync('./keys/key.pem'),
-  cert: fs.readFileSync('./keys/cert.pem')
+  key: fs.readFileSync('./keys/key.pem').toString(),
+  cert: fs.readFileSync('./keys/cert.pem').toString()
 };
 
 // Create the server
