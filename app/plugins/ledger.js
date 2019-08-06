@@ -8,7 +8,7 @@ const INS = {
   getVersion: 0x01,
   getPublickKey: 0x02,
   getPublicAddress: 0x02,
-  signTxn: 0x04
+  signTxn: 0x08
 };
 
 const PubKeyByteLen = 33;

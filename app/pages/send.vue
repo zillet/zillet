@@ -371,14 +371,16 @@ export default {
               code: ''
             };
             const signature = await ledgerZil.signTxn(hwIndex, txParams);
-            const signedTx = {
+
+            this.signedTx = {
               ...txParams,
+              amount: txParams.amount.toString(),
+              gasPrice: txParams.gasPrice.toString(),
+              gasLimit: txParams.gasLimit.toString(),
+              data: '',
+              code: '',
               signature
             };
-            const { payload } = this.$zillet.transactions.new(signedTx);
-
-            payload.version = VERSION;
-            this.signedTx = payload;
             this.loading = false;
             this.sendTxn();
           } else {
