@@ -59,10 +59,14 @@ export default {
       if (window && window.zilPay) {
         try {
           const zilPay = window.zilPay;
-          if (!zilPay.wallet.isEnable || !zilPay.wallet.isConnect) {
-            const status = await zilPay.wallet.connect();
-          }
+          const status = await zilPay.wallet.connect();
           const { defaultAccount } = zilPay.wallet;
+          if (!defaultAccount) {
+            return this.$notify({
+              message: `Kindly unlock your account ZilPay account first`,
+              type: 'danger'
+            });
+          }
           zilPay.wallet.observableAccount().subscribe(account => {
             if (this.Account.address != account.base16) {
               this.save(account.base16);
