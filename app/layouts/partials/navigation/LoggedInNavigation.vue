@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="flex flex-col items-start justify-center w-full card mb-4 p-0">
-      <div class="flex flex-row w-full p-4 ">
+    <div class="flex flex-col items-start justify-center w-full card mb-4 p-0 mobile:mb-4">
+      <div class="flex flex-row w-full p-4 mobile:flex-col">
         <div class="account-info__main">
           <div class="block tracking-wide text-gray-700 text-sm font-semibold">
             Address
@@ -11,7 +11,7 @@
               :diameter="22"
               :address="Account.address"
               class="mt-1 mr-2" />
-            <h3>
+            <h3 class="truncate">
               {{ `${Account.bech32Address}` }}
               <span
                 data-balloon="This is the new bech32 address which derives from the old address and supported by all the exchanges and wallets. You can check your old 20 bytes, base 16 address in Wallet Info page. kindly use this new address to receive funds. Note that your funds are not affected in any way."
@@ -39,7 +39,7 @@
             </span>
           </div>
         </div>
-        <div class="account-info__balance mobile:mr-6">
+        <div class="account-info__balance ">
           <div class="block tracking-wide text-gray-700 text-sm font-semibold">
             Balance
           </div>
@@ -205,9 +205,10 @@ export default {
   }
   &__balance {
     @apply flex flex-col items-start justify-center pl-4;
-    flex: 0 0 15rem; /* do not grow, do not shrink, start at 13rem */
+    flex: 0 0 20rem; /* do not grow, do not shrink, start at 13rem */
     @include mobile {
-      @apply flex-1  pl-0 pt-2;
+      @apply flex-1 pl-0 pt-2;
+      flex: 0;
     }
   }
   &__amount {
