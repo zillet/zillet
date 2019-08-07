@@ -32,7 +32,8 @@ export default {
       title: 'Private Key',
       body: 'Access your wallet using 64 character hex string',
       allowed: true,
-      buttonText: 'Access'
+      buttonText: 'Access',
+      securityLevel: 1
     },
     {
       id: 1002,
@@ -40,7 +41,8 @@ export default {
       title: 'Keystore file',
       body: 'Access your wallet using Keystore(JSON) file',
       allowed: true,
-      buttonText: 'Import File'
+      buttonText: 'Import File',
+      securityLevel: 2
     },
     {
       id: 1003,
@@ -48,7 +50,8 @@ export default {
       title: 'Mnemonic phrase',
       body: 'Access your wallet using 12-word mnemonic Phrase',
       allowed: true,
-      buttonText: 'Access'
+      buttonText: 'Access',
+      securityLevel: 2
     },
     {
       id: 1004,
@@ -56,7 +59,8 @@ export default {
       title: 'ZilPay',
       body: 'Access your wallet using ZilPay Extension',
       allowed: true,
-      buttonText: 'Connect'
+      buttonText: 'Connect (Beta)',
+      securityLevel: 3
     },
     {
       id: 1005,
@@ -64,7 +68,8 @@ export default {
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension',
       allowed: true,
-      buttonText: 'Connect (Beta)'
+      buttonText: 'Connect (Beta)',
+      securityLevel: 3
     }
   ]
 };

@@ -70,7 +70,7 @@
           Public Key
         </div>
         <z-input
-          :value="`0x${Account.publicKey}`"
+          :value="`${Account.publicKey}`"
           :hide="false"
           custom-class="rounded-r-none border-r-0"
           disabled>
@@ -97,7 +97,7 @@
         </div>
         <z-input
           :hide="true"
-          :value="`0x${Account.privateKey}`"
+          :value="`${Account.privateKey}`"
           disabled>
           <div
             class="flex -mr-px">
@@ -123,7 +123,7 @@
     <div class="flex  mx-8 justify-center items-center flex-col">
       <div class="qr-code">
         <z-qrcode
-          :value="showQr==='address' ? Account.checksummedAddress : `0x${Account[showQr]}`"
+          :value="showQr==='address' ? Account.bech32Address : `0x${Account[showQr]}`"
           :options="{ width: 200, color:{ dark: '#303133'}}" />
       </div>
       <label

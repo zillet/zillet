@@ -45,6 +45,10 @@ export default {
           type: 'danger'
         });
       } else {
+        if (this.privateKey && this.privateKey.substring(0, 2) === '0x') {
+          console.log('hey');
+          this.privateKey = this.privateKey.substring(2);
+        }
         this.$zillet.wallet.addByPrivateKey(this.privateKey);
         this.importAccount(this.$zillet.wallet.defaultAccount);
         this.saveAccessType(this.uid);

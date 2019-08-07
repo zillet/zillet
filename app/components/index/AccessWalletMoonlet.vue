@@ -5,6 +5,11 @@
     <template v-slot:title>
       Connect to Moonlet
     </template>
+    <z-alert
+      type="info"
+      class="mb-6">
+      You need Moonlet version 0.33.0 and later to have a smooth experience.
+    </z-alert>
     <z-button
       v-if="!permissionNotGranted"
       class="w-full mb-8"
