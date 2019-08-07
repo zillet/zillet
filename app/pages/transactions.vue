@@ -56,7 +56,7 @@
                   <span v-if="txn.direction=='in'">+</span>
                   <span v-else>-</span>
                   <!-- TODO: Use zilliqa unit function -->
-                  {{ txn.direction=='self'? '--' :amountInZil(txn.value)| currency('', 4) }}
+                  {{ txn.direction=='self'? '--' :amountInZil(txn.value)| currency('', 2) }}
                 </span>
                 &nbsp; ZIL
                 <span
@@ -309,7 +309,7 @@ export default {
   }
   &__status {
     flex: 1;
-    max-width: 25%;
+    max-width: 20%;
     min-width: 7rem;
     @apply flex items-center;
     span {
@@ -331,7 +331,7 @@ export default {
   }
   &__amount {
     flex: 1;
-    min-width: 10rem;
+    min-width: 15rem;
     @apply flex flex-row my-1 items-center;
     .zil {
       @apply leading-normal text-gray-900 font-semibold;

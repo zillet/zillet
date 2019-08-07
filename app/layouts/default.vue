@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <Notifications />
-    <div
+    <!-- <div
       v-if="showNoti"
       style="font-size:0.9rem"
       class="bg-teal-600 rounded w-full p-2 text-white
@@ -19,7 +19,7 @@
       <i
         class="eva eva-close-circle-outline text-xl pr-2 cursor-pointer"
         @click="hideNoti" />
-    </div>
+    </div> -->
     <Navigation />
     <div class="w-full">
       <div class="card">

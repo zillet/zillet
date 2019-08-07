@@ -110,7 +110,7 @@
         @click="createTxn">
         {{ 'Send Transaction' }}
       </z-button>
-      <!-- <div
+      <div
         v-show="isSigned && isAdvance"
         class="mt-4">
         <div class="tracking-wide text-sm font-semibold mb-2">
@@ -121,14 +121,13 @@
           :value="stringifySignedTx"
           readonly
           rows="5"
-          class="mb-2"/>
+          class="mb-2" />
         <z-button
           class="w-full"
-          rounded
-          @click="send">
+          rounded>
           Send Transaction
         </z-button>
-      </div> -->
+      </div>
     </div>
     <z-modal
       :visible="isBroadcast"
@@ -178,7 +177,7 @@ import {
   toChecksumAddress,
   sign
 } from '@zilliqa-js/crypto';
-import { util } from '@zilliqa-js/account';
+import { util, Transaction } from '@zilliqa-js/account';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
 import ZilliqaHW from '@/plugins/ledger';
 import { isNumber, moonletZilliqa } from '@/utils/validation';
@@ -236,6 +235,9 @@ export default {
         this.transaction.gasPrice *
         Math.pow(10, -6); // in Li
       return parseFloat(fee.toFixed(4));
+    },
+    stringifySignedTx() {
+      return JSON.stringify(this.signedTx);
     }
   },
   watch: {
@@ -328,24 +330,38 @@ export default {
               });
             }
           } else if (this.accessType === 1005) {
-            const zilliqa = new Zilliqa('', moonlet.providers.zilliqa);
+            /// Moonlet me
+            const zilliqa = new Zilliqa('', window.moonlet.providers.zilliqa);
             // apply a hack to disable internal ZilliqaJS autosigning feature
             zilliqa.blockchain.signer = zilliqa.contracts.signer = {
               sign: m => m
             };
             if (zilliqa) {
               try {
-                const tx = await zilliqa.blockchain.createTransaction(
-                  zilliqa.transactions.new({
+                const tx = new Transaction(
+                  {
                     toAddr: this.transaction.base16address,
                     amount: new BN(amount),
                     gasPrice: new BN(gasPrice),
                     gasLimit: Long.fromNumber(this.transaction.gasLimit)
-                  })
+                  },
+                  moonlet.providers.zilliqa
                 );
-                this.txnDone(tx);
-                tx.type = 'moonlet';
-                this.saveTxn(tx);
+                tx.observed().on('track', trackInfo => {
+                  if (trackInfo.attempt === 0) {
+                    tx.type = 'moonlet';
+                    tx.TranID = trackInfo.txHash;
+                    tx.amount = tx.amount.toString(10);
+                    tx.gasLimit = tx.gasLimit.toString(10);
+                    tx.gasPrice = tx.gasPrice.toString(10);
+                    tx.Info = 'Transaction broadcasted';
+                    this.txnDone(tx);
+                    this.saveTxn(tx);
+                  }
+                });
+                const broadcastedTx = await zilliqa.blockchain.createTransaction(
+                  tx
+                );
               } catch (err) {
                 this.loading = false;
                 return this.$notify({
