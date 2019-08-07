@@ -72,7 +72,7 @@ export default {
       try {
         const transport = await this.transportInit();
         const ledgerZil = new ZilliqaHW(transport);
-        const data = await ledgerZil.getPublicKey(this.hwIndex);
+        const data = await ledgerZil.getPublicKey(this.hwIndex); // Wating user access "loading...".
         const base16Address = fromBech32Address(data.pubAddr);
         this.save({
           address: base16Address,
@@ -84,6 +84,7 @@ export default {
           name: this.$route.query.redirect || 'send'
         });
       } catch (err) {
+        // If user denied to access.
         this.$notify({
           message: err.message,
           type: 'success'
