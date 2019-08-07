@@ -17,7 +17,7 @@
       <div class="px-12 text-gray-800 pb-4 text-sm">
         <span>{{ method.body }}</span>
       </div>
-      <div class="px-2 text-gray-700 pb-4">
+      <div class="px-2 text-gray-700">
         <z-button
           :disabled="!method.allowed"
           :type="method.allowed ? 'primary': 'default'"
@@ -27,6 +27,14 @@
           @click="selectMethod(method)">
           {{ method.buttonText }}
         </z-button>
+      </div>
+      <div class="flex items-center justify-center text-xs my-2 font-semibold text-gray-600">
+        Security:&nbsp;&nbsp;<div
+          v-for="i in 3"
+          :key="i"
+          class="mx-1 rounded"
+          :class="securityClasses(i, method.securityLevel)"
+          style="height:0.25rem; width:1.3rem;" />
       </div>
     </div>
     <template v-slot:articles>
@@ -78,6 +86,18 @@ export default {
     selectMethod(method) {
       if (method.allowed) {
         this.$emit('wallet', method.id);
+      }
+    },
+    securityClasses(i, level) {
+      if (i <= level) {
+        if (level <= 1) {
+          return 'bg-red-400';
+        } else if (level <= 2) {
+          return 'bg-yellow-400';
+        }
+        return 'bg-green-400';
+      } else {
+        return 'bg-gray-300';
       }
     }
   }

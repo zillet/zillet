@@ -5,6 +5,11 @@
     <template v-slot:title>
       Connect to Moonlet
     </template>
+    <z-alert
+      type="info"
+      class="mb-6">
+      You need Moonlet version 0.33.0 and later to have a smooth experience.
+    </z-alert>
     <z-button
       v-if="!permissionNotGranted"
       class="w-full mb-8"
@@ -77,15 +82,19 @@ export default {
         var moonlet = await dapp.getWalletInstance('moonlet');
         this.loadingInstance = false;
         var account = await moonlet.providers.zilliqa.getAccounts();
+        var network = moonlet.providers.zilliqa.currentNetwork;
         if (account && account.length) {
-          if (moonlet.providers.zilliqa.currentNetwork === 1) {
+          if (moonlet.providers.zilliqa.currentNetwork.chainId === 1) {
             this.selectNode(config.NODES[0]);
-          } else if (moonlet.providers.zilliqa.currentNetwork === 333) {
+          } else if (moonlet.providers.zilliqa.currentNetwork.chainId === 333) {
             this.selectNode(config.NODES[1]);
           } else {
-            this.selectNode(config.NODES[2]);
+            var node = config.NODES[2];
+            node.url = network.url;
+            node.name = network.name;
+            this.selectNode(node);
           }
-          var base16address = fromBech32Address(account[0]);
+          var base16address = fromBech32Address(account[0].address);
           this.importAccount({
             address: base16address
           });
@@ -99,13 +108,14 @@ export default {
           });
         }
       } catch (instanceError) {
+        console.log(instanceError);
         this.loadingInstance = false;
-        console.log(this.loadingInstance);
         switch (instanceError) {
           case 'WALLET_NOT_INSTALLED':
             this.notFound = true;
           case 'USER_DID_NOT_GRANT_PERMISSION':
             this.permissionNotGranted = true;
+            console.log(this.permissionNotGranted);
           default:
             this.$notify({
               message: `There was an error while loading moonlet wallet instance.`,

@@ -4,10 +4,10 @@
       'button--loading': loading || $attrs.disabled,
       'button--rounded': rounded,
     }, `button--${type}`, `button--${size}`]"
-    v-bind="$attrs"
     :disabled="loading"
     class="button"
     type="button"
+    v-bind="$attrs"
     v-on="$listeners">
     <i
       v-if="loading"

@@ -3,6 +3,11 @@
     <template v-slot:title>
       Connect to ZilPay
     </template>
+    <z-alert
+      type="info"
+      class="mb-6">
+      You need ZilPay version v0.2.5 and later to have a smooth experience.
+    </z-alert>
     <z-button
       class="w-full mb-8"
       rounded
