@@ -73,6 +73,7 @@ export default {
         const transport = await this.transportInit();
         const ledgerZil = new ZilliqaHW(transport);
         const data = await ledgerZil.getPublicKey(this.hwIndex); // Wating user access "loading...".
+        console.log(data);
         const base16Address = fromBech32Address(data.pubAddr);
         this.save({
           address: base16Address,

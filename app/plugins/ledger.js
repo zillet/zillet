@@ -8,13 +8,12 @@ const INS = {
   getVersion: 0x01,
   getPublickKey: 0x02,
   getPublicAddress: 0x02,
-  signTxn: 0x04
+  signHash: 0x04,
+  signTxn: 0x08
 };
 
 const PubKeyByteLen = 33;
-const AddrByteLen = 20;
 const SigByteLen = 64;
-const HashByteLen = 32;
 // https://github.com/Zilliqa/Zilliqa/wiki/Address-Standard#specification
 const Bech32AddrLen = 'zil'.length + 1 + 32 + 6;
 

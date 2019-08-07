@@ -384,6 +384,7 @@ export default {
               };
               this.sendTxn();
             } catch (err) {
+              console.log(err);
               // Add will some notify about user denied transaction.
             }
             this.loading = false;
