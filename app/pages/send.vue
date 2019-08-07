@@ -370,19 +370,23 @@ export default {
               data: '',
               code: ''
             };
-            const signature = await ledgerZil.signTxn(hwIndex, txParams);
+            try {
+              const signature = await ledgerZil.signTxn(hwIndex, txParams);
 
-            this.signedTx = {
-              ...txParams,
-              amount: txParams.amount.toString(),
-              gasPrice: txParams.gasPrice.toString(),
-              gasLimit: txParams.gasLimit.toString(),
-              data: '',
-              code: '',
-              signature
-            };
+              this.signedTx = {
+                ...txParams,
+                amount: txParams.amount.toString(),
+                gasPrice: txParams.gasPrice.toString(),
+                gasLimit: txParams.gasLimit.toString(),
+                data: '',
+                code: '',
+                signature
+              };
+              this.sendTxn();
+            } catch (err) {
+              // Add will some notify about user denied transaction.
+            }
             this.loading = false;
-            this.sendTxn();
           } else {
             const tx = {
               version: VERSION,
