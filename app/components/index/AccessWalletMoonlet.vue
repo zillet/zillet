@@ -41,7 +41,8 @@
       You have to let Moonlet Wallet to access this page in order to continue.
       <z-button
         class="w-full my-4"
-        rounded>
+        rounded 
+        @click="connect()">
         Grant permission
       </z-button>
     </p>
