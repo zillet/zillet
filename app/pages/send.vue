@@ -103,6 +103,12 @@
           </span>
         </div>
       </div>
+      <z-alert
+        v-if="accessType===1006"
+        type="info"
+        class="my-4">
+        You will be prompted to confirm and Sign the tranasction in Ledger.
+      </z-alert>
       <z-button
         :loading="loading"
         class="w-full"
@@ -122,6 +128,7 @@
           readonly
           rows="5"
           class="mb-2" />
+
         <z-button
           class="w-full"
           rounded>
@@ -398,9 +405,15 @@ export default {
                 code: '',
                 signature
               };
+              // console.log(this.signedTx);
               this.sendTxn();
             } catch (err) {
               console.log(err);
+
+              this.$notify({
+                message: err.message,
+                type: 'danger'
+              });
               // Add will some notify about user denied transaction.
             }
             this.loading = false;

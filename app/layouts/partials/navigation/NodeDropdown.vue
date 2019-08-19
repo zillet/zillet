@@ -56,7 +56,7 @@
       :autoclose="false"
       @close="isNewNode=false">
       <div class="card w-xl pb-4">
-        <h3 class="font-semibold text-2xl mb-4 text-gray-700">
+        <h3 class="font-semibold text-2xl mb-4 text-gray-800">
           Add Custom Node
         </h3>
         <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">

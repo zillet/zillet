@@ -73,9 +73,9 @@ export default {
     },
     {
       id: 1006,
-      img: 'zilpay.svg',
+      img: 'ledger.svg',
       title: 'Ledger',
-      body: 'Access your wallet using Ledger wallet',
+      body: 'Access your wallet using Ledger Hardware wallet',
       allowed: true,
       buttonText: 'Connect (Beta)',
       securityLevel: 3
