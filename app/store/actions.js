@@ -27,6 +27,10 @@ export function selectNode({ commit }, node) {
   this.$zillet.setProvider(new HTTPProvider(node.url));
   commit('SELECT_NODE', node);
 }
+export function clearWallet({ commit }) {
+  this.$zillet.clearAccount();
+  commit('CLEAR_WALLET');
+}
 export function getPrice({ commit }, { url, token }) {
   return new Promise((resolve, reject) => {
     this.$axios

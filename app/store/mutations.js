@@ -15,7 +15,7 @@ export const importAccount = (state, result) => {
 export const updateBalance = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
 };
-export const clearWallet = (state, result) => {
+export const CLEAR_WALLET = (state, result) => {
   state.wallet = {
     address: '',
     privateKey: '',

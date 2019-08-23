@@ -4,7 +4,7 @@
       <div class="items-center text-white flex-none">
         <nuxt-link :to="{name: LoggedIn ? 'send' : 'index'}">
           <img
-            src="@/assets/images/logo.png"
+            src="@/assets/images/icon.png"
             style="max-height:3.66rem">
         </nuxt-link>
       </div>
@@ -40,7 +40,7 @@
 <script>
 import LoggedInNavigation from './LoggedInNavigation';
 import NodeDropdown from './NodeDropdown';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'Navigation',
   components: {
@@ -56,11 +56,10 @@ export default {
     ...mapGetters(['LoggedIn'])
   },
   methods: {
-    ...mapMutations(['clearWallet']),
+    ...mapActions(['clearWallet']),
     async logout() {
       this.$router.push({ name: 'index' });
       await this.clearWallet();
-      location.reload();
     }
   }
 };
