@@ -70,6 +70,15 @@ export default {
       allowed: true,
       buttonText: 'Connect (Beta)',
       securityLevel: 3
+    },
+    {
+      id: 1006,
+      img: 'ledger.svg',
+      title: 'Ledger',
+      body: 'Access your wallet using Ledger Hardware wallet',
+      allowed: true,
+      buttonText: 'Connect (Beta)',
+      securityLevel: 3
     }
   ]
 };

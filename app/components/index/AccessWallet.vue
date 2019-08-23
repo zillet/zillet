@@ -28,13 +28,13 @@
           {{ method.buttonText }}
         </z-button>
       </div>
-      <div class="flex items-center justify-center text-xs my-2 font-semibold text-gray-600">
-        Security:&nbsp;&nbsp;<div
+      <div class="flex items-center justify-center text-xs my-2 font-semibold text-gray-700">
+        Secure:&nbsp;&nbsp;<div
           v-for="i in 3"
           :key="i"
-          class="mx-1 rounded"
+          class="mx-1 rounded relative"
           :class="securityClasses(i, method.securityLevel)"
-          style="height:0.25rem; width:1.3rem;" />
+          style="height:0.25rem; width:1.3rem;top:1px" />
       </div>
     </div>
     <template v-slot:articles>
@@ -91,11 +91,11 @@ export default {
     securityClasses(i, level) {
       if (i <= level) {
         if (level <= 1) {
-          return 'bg-red-400';
+          return 'bg-red-500';
         } else if (level <= 2) {
-          return 'bg-yellow-400';
+          return 'bg-yellow-500';
         }
-        return 'bg-green-400';
+        return 'bg-green-500';
       } else {
         return 'bg-gray-300';
       }

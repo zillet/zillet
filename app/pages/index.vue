@@ -30,6 +30,10 @@
         v-else-if="accessMethodId===1005"
         :uid="1005"
         @exit="accessMethodId=0" />
+      <Ledger
+        v-else-if="accessMethodId===1006"
+        :uid="1006"
+        @exit="accessMethodId=0" />
     </transition>
   </div>
 </template>
@@ -40,6 +44,7 @@ import Keystore from '@/components/index/AccessWalletKeystore';
 import Mnemonic from '@/components/index/AccessWalletMnemonic';
 import Zilpay from '@/components/index/AccessWalletZilpay';
 import Moonlet from '@/components/index/AccessWalletMoonlet';
+import Ledger from '@/components/index/AccessWalletLedger';
 
 export default {
   name: 'Index',
@@ -49,7 +54,8 @@ export default {
     Keystore,
     Mnemonic,
     Zilpay,
-    Moonlet
+    Moonlet,
+    Ledger
   },
   data() {
     return {

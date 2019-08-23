@@ -97,6 +97,7 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
     this.$axios
       .$post('', data)
       .then(res => {
+        console.log(res);
         commit('SUCCESS');
         tx.res = res;
         tx.type = 'zillet';
@@ -104,6 +105,7 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
         resolve(res);
       })
       .catch(err => {
+        console.log(err);
         commit('ERROR');
         reject(err);
       });

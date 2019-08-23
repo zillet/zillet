@@ -103,6 +103,12 @@
           </span>
         </div>
       </div>
+      <z-alert
+        v-if="accessType===1006"
+        type="info"
+        class="my-4">
+        You will be prompted to confirm and Sign the tranasction in Ledger.
+      </z-alert>
       <z-button
         :loading="loading"
         class="w-full"
@@ -122,6 +128,7 @@
           readonly
           rows="5"
           class="mb-2" />
+
         <z-button
           class="w-full"
           rounded>
@@ -179,6 +186,7 @@ import {
 } from '@zilliqa-js/crypto';
 import { util, Transaction } from '@zilliqa-js/account';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
+import ZilliqaHW from '@/plugins/ledger';
 import { isNumber, moonletZilliqa } from '@/utils/validation';
 import config from '@/config';
 const lookupMap = new Map([
@@ -369,6 +377,46 @@ export default {
                 });
               }
             }
+          } else if (this.accessType === 1006) {
+            const transport = await ZilliqaHW.create();
+            const ledgerZil = new ZilliqaHW(transport);
+            const hwIndex = this.Account.index;
+            const type = 'CreateTransaction';
+            const txParams = {
+              version: VERSION,
+              nonce: this.Account.nonce + 1,
+              pubKey: this.Account.publicKey,
+              toAddr: this.transaction.base16address,
+              amount: new BN(amount),
+              gasPrice: new BN(gasPrice),
+              gasLimit: Long.fromNumber(this.transaction.gasLimit),
+              data: '',
+              code: ''
+            };
+            try {
+              const signature = await ledgerZil.signTxn(hwIndex, txParams);
+
+              this.signedTx = {
+                ...txParams,
+                amount: txParams.amount.toString(),
+                gasPrice: txParams.gasPrice.toString(),
+                gasLimit: txParams.gasLimit.toString(),
+                data: '',
+                code: '',
+                signature
+              };
+              // console.log(this.signedTx);
+              this.sendTxn();
+            } catch (err) {
+              console.log(err);
+
+              this.$notify({
+                message: err.message,
+                type: 'danger'
+              });
+              // Add will some notify about user denied transaction.
+            }
+            this.loading = false;
           } else {
             const tx = {
               version: VERSION,
