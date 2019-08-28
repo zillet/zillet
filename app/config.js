@@ -59,7 +59,7 @@ export default {
       title: 'ZilPay',
       body: 'Access your wallet using ZilPay Extension',
       allowed: true,
-      buttonText: 'Connect (Beta)',
+      buttonText: 'Connect',
       securityLevel: 3
     },
     {
@@ -68,7 +68,7 @@ export default {
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension',
       allowed: true,
-      buttonText: 'Connect (Beta)',
+      buttonText: 'Connect',
       securityLevel: 3
     },
     {
@@ -77,7 +77,7 @@ export default {
       title: 'Ledger',
       body: 'Access your wallet using Ledger Hardware wallet',
       allowed: true,
-      buttonText: 'Connect (Beta)',
+      buttonText: 'Connect',
       securityLevel: 3
     }
   ]
