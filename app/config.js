@@ -68,7 +68,7 @@ export default {
       title: 'Moonlet',
       body: 'Access your wallet using Moonlet Extension',
       allowed: true,
-      buttonText: 'Connect',
+      buttonText: 'Connect (Beta)',
       securityLevel: 3
     },
     {
@@ -76,8 +76,8 @@ export default {
       img: 'ledger.svg',
       title: 'Ledger',
       body: 'Access your wallet using Ledger Hardware wallet',
-      allowed: true,
-      buttonText: 'Connect',
+      allowed: false,
+      buttonText: 'Connect (Beta)',
       securityLevel: 3
     }
   ]
