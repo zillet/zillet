@@ -405,11 +405,9 @@ export default {
                 code: '',
                 signature
               };
-              // console.log(this.signedTx);
+
               this.sendTxn();
             } catch (err) {
-              console.log(err);
-
               this.$notify({
                 message: err.message,
                 type: 'danger'

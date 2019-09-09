@@ -1,4 +1,5 @@
 const TransportU2F = require('@ledgerhq/hw-transport-u2f').default;
+const TransportWebAuthn = require('@ledgerhq/hw-transport-webauthn').default;
 const txnEncoder = require('@zilliqa-js/account/dist/util')
   .encodeTransactionProto;
 const { BN, Long } = require('@zilliqa-js/util');
@@ -8,13 +9,11 @@ const INS = {
   getVersion: 0x01,
   getPublickKey: 0x02,
   getPublicAddress: 0x02,
-  signHash: 0x04,
-  signTxn: 0x08
+  signTxn: 0x04
 };
 
 const PubKeyByteLen = 33;
 const SigByteLen = 64;
-// https://github.com/Zilliqa/Zilliqa/wiki/Address-Standard#specification
 const Bech32AddrLen = 'zil'.length + 1 + 32 + 6;
 
 /**
@@ -26,6 +25,12 @@ const Bech32AddrLen = 'zil'.length + 1 + 32 + 6;
  */
 export default class Zilliqa {
   static async create() {
+    const isWebAuthn = await TransportWebAuthn.isSupported();
+
+    if (isWebAuthn) {
+      return await TransportWebAuthn.create();
+    }
+
     return await TransportU2F.create();
   }
 
@@ -66,22 +71,31 @@ export default class Zilliqa {
       .then(response => {
         // The first PubKeyByteLen bytes are the public address.
         const publicKey = response.toString('hex').slice(0, PubKeyByteLen * 2);
+        return { publicKey };
+      });
+  }
+
+  getPublicAddress(index) {
+    const P1 = 0x00;
+    const P2 = 0x01;
+
+    let payload = Buffer.alloc(4);
+    payload.writeInt32LE(index);
+
+    return this.transport
+      .send(CLA, INS.getPublicAddress, P1, P2, payload)
+      .then(response => {
+        // After the first PubKeyByteLen bytes, the remaining is the bech32 address string.
         const pubAddr = response
           .slice(PubKeyByteLen, PubKeyByteLen + Bech32AddrLen)
           .toString('utf-8');
-        return { publicKey, pubAddr };
+        const publicKey = response.toString('hex').slice(0, PubKeyByteLen * 2);
+        return { pubAddr, publicKey };
       });
   }
 
   signTxn(keyIndex, txnParams) {
-    ['version', 'nonce', 'toAddr', 'amount', 'gasPrice', 'gasLimit'].forEach(
-      key => {
-        if (!Object.keys(txnParams).includes(key)) {
-          throw new Error(`txParams ${key} is required!`);
-        }
-      }
-    );
-
+    // https://github.com/Zilliqa/Zilliqa-JavaScript-Library/tree/dev/packages/zilliqa-js-account#interfaces
     const P1 = 0x00;
     const P2 = 0x00;
 
@@ -101,15 +115,68 @@ export default class Zilliqa {
       txnParams.gasLimit = Long.fromNumber(txnParams.gasLimit);
     }
 
-    const encodedTxn = txnEncoder(txnParams);
-    let txnSizeBytes = Buffer.alloc(4);
-    txnSizeBytes.writeInt32LE(encodedTxn.length);
-    const payload = Buffer.concat([indexBytes, txnSizeBytes, encodedTxn]);
+    var txnBytes = txnEncoder(txnParams);
 
-    return this.transport
+    const STREAM_LEN = 128; // Stream in batches of STREAM_LEN bytes each.
+    var txn1Bytes;
+    if (txnBytes.length > STREAM_LEN) {
+      txn1Bytes = txnBytes.slice(0, STREAM_LEN);
+      txnBytes = txnBytes.slice(STREAM_LEN, undefined);
+    } else {
+      txn1Bytes = txnBytes;
+      txnBytes = Buffer.alloc(0);
+    }
+
+    var txn1SizeBytes = Buffer.alloc(4);
+    txn1SizeBytes.writeInt32LE(txn1Bytes.length);
+    var hostBytesLeftBytes = Buffer.alloc(4);
+    hostBytesLeftBytes.writeInt32LE(txnBytes.length);
+    // See signTxn.c:handleSignTxn() for sequence details of payload.
+    // 1. 4 bytes for indexBytes.
+    // 2. 4 bytes for hostBytesLeftBytes.
+    // 3. 4 bytes for txn1SizeBytes (number of bytes being sent now).
+    // 4. txn1Bytes of actual data.
+    const payload = Buffer.concat([
+      indexBytes,
+      hostBytesLeftBytes,
+      txn1SizeBytes,
+      txn1Bytes
+    ]);
+
+    let transport = this.transport;
+    return transport
       .send(CLA, INS.signTxn, P1, P2, payload)
-      .then(response => {
-        return response.toString('hex').slice(0, SigByteLen * 2);
+      .then(function cb(response) {
+        // Keep streaming data into the device till we run out of it.
+        // See signTxn.c:istream_callback() for how this is used.
+        // Each time the bytes sent consists of:
+        //  1. 4-bytes of hostBytesLeftBytes.
+        //  2. 4-bytes of txnNSizeBytes (number of bytes being sent now).
+        //  3. txnNBytes of actual data.
+        if (txnBytes.length > 0) {
+          var txnNBytes;
+          if (txnBytes.length > STREAM_LEN) {
+            txnNBytes = txnBytes.slice(0, STREAM_LEN);
+            txnBytes = txnBytes.slice(STREAM_LEN, undefined);
+          } else {
+            txnNBytes = txnBytes;
+            txnBytes = Buffer.alloc(0);
+          }
+
+          var txnNSizeBytes = Buffer.alloc(4);
+          txnNSizeBytes.writeInt32LE(txnNBytes.length);
+          hostBytesLeftBytes.writeInt32LE(txnBytes.length);
+          const payload = Buffer.concat([
+            hostBytesLeftBytes,
+            txnNSizeBytes,
+            txnNBytes
+          ]);
+          return transport.send(CLA, INS.signTxn, P1, P2, payload).then(cb);
+        }
+        return response;
+      })
+      .then(result => {
+        return result.toString('hex').slice(0, SigByteLen * 2);
       });
   }
 }
