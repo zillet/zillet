@@ -500,8 +500,8 @@ export default {
     },
     explorerLink(tx) {
       return this.selectedNode.id === 333
-        ? `${this.selectedNode.explorer}${tx}?network=testnet`
-        : `${this.selectedNode.explorer}${tx}`;
+        ? `${this.selectedNode.explorer}tx/${tx}?network=testnet`
+        : `${this.selectedNode.explorer}tx/${tx}`;
     },
     fullAmount() {
       const balance = this.Balance.zil;
