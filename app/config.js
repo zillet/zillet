@@ -76,7 +76,7 @@ export default {
       img: 'ledger.svg',
       title: 'Ledger',
       body: 'Access your wallet using Ledger Hardware wallet',
-      allowed: false,
+      allowed: true,
       buttonText: 'Connect (Beta)',
       securityLevel: 3
     }
