@@ -61,7 +61,7 @@
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { fromBech32Address } from '@zilliqa-js/crypto';
 import config from '@/config';
-import ZilliqaHW from '@/plugins/ledger';
+import ZilliqaHW from '@/utils/ledger';
 export default {
   name: 'Keystore',
   props: {

@@ -9,10 +9,17 @@
           <i class="eva eva-github mr-1" />
           Github
         </a>
+        <a
+          href="https://twitter.com/zilletio"
+          target="_blank"
+          rel="noopener noreferrer">
+          <i class="eva eva-twitter mr-1 text-lg" />
+          Twitter
+        </a>
       </div>
       <div class="right">
         <a
-          href="//t.me/burgersingh"
+          href="mailto:support@zillet.io"
           target="_blank"
           rel="noopener noreferrer">
           Report Issue
@@ -29,6 +36,15 @@
         </a>
       </div>
     </div>
+    <z-modal
+      :visible="isReporting"
+      title="Disclaimer"
+      custom-class="p-8"
+      @close="isReporting=false">
+      <h3 class="font-semibold text-xl mb-8 text-gray-700">
+        Report Issue
+      </h3>
+    </z-modal>
     <z-modal
       :visible="showDisclaimer"
       title="Disclaimer"
@@ -82,7 +98,8 @@ export default {
   data() {
     return {
       showDisclaimer: false,
-      hasConsent: false
+      hasConsent: false,
+      isReporting: false
     };
   },
   watch: {
@@ -134,10 +151,11 @@ export default {
       align-items: center;
       font-size: 0.92rem;
       &:hover {
-        @apply text-gray-500;
+        @apply text-gray-300;
       }
     }
-    .right {
+    .right,
+    .left {
       @apply flex flex-row;
       a {
         @apply px-2;

@@ -186,7 +186,7 @@ import {
 } from '@zilliqa-js/crypto';
 import { util, Transaction } from '@zilliqa-js/account';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
-import ZilliqaHW from '@/plugins/ledger';
+import ZilliqaHW from '@/utils/ledger';
 import { isNumber, moonletZilliqa } from '@/utils/validation';
 import config from '@/config';
 const lookupMap = new Map([
