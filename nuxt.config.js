@@ -13,7 +13,7 @@ module.exports = {
         hid: 'description',
         name: 'description',
         content:
-          'Send Zilliqa and receive zilliqa easily from a lightweight UI/UX focued secure wallet'
+          'Zillet is an open-source, client-side, tool for interacting with the Zilliqa blockchain'
       },
       {
         property: 'og:image',
