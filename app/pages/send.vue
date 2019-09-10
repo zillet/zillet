@@ -103,12 +103,6 @@
           </span>
         </div>
       </div>
-      <z-alert
-        v-if="accessType===1006"
-        type="info"
-        class="my-4">
-        You will be prompted to confirm and Sign the tranasction in Ledger.
-      </z-alert>
       <z-button
         :loading="loading"
         class="w-full"
@@ -116,6 +110,13 @@
         @click="createTxn">
         {{ 'Send Transaction' }}
       </z-button>
+      <p
+        v-if="accessType===1006 && loading"
+        type="info"
+        class="flex items-center justify-center font-semibold text-gray-800">
+        <i class="eva eva-loader-outline rotating font-bold mr-2" />
+        Confirm transaction on hardware wallet
+      </p>
       <div
         v-show="isSigned && isAdvance"
         class="mt-4">

@@ -6,14 +6,14 @@ export default {
     {
       name: 'Zilliqa Mainnet',
       url: 'https://api.zilliqa.com',
-      explorer: 'https://viewblock.io/zilliqa/tx/',
+      explorer: 'https://viewblock.io/zilliqa/',
       version: 65537,
       id: 1
     },
     {
       name: 'Zilliqa Testnet',
       url: 'https://dev-api.zilliqa.com',
-      explorer: 'https://viewblock.io/zilliqa/tx/',
+      explorer: 'https://viewblock.io/zilliqa/',
       version: 21823489,
       id: 333
     },

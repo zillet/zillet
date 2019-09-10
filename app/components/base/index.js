@@ -9,6 +9,7 @@ import Textarea from './textarea';
 import Upload from './upload';
 import Link from './link';
 import Loader from './loader';
+import { Table, TableColumn } from './table';
 
 export {
   Alert,
@@ -21,5 +22,7 @@ export {
   Textarea,
   Upload,
   Link,
-  Loader
+  Loader,
+  Table,
+  TableColumn
 };

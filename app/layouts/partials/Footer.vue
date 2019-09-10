@@ -16,6 +16,13 @@
           <i class="eva eva-twitter mr-1 text-lg" />
           Twitter
         </a>
+        <a
+          href="mailto:support@zillet.io"
+          target="_blank"
+          rel="noopener noreferrer">
+          <i class="eva eva-email-outline mr-1 text-lg" />
+          Email Support
+        </a>
       </div>
       <div class="right">
         <a

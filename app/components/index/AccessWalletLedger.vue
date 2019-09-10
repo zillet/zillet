@@ -1,69 +1,56 @@
 <template>
-  <AccessWalletContainer @exit="$emit('exit')">
+  <AccessWalletContainer
+    hide-top
+    @exit="$emit('exit')">
     <template v-slot:title>
       Connect to Ledger
       <br>
     </template>
-    <div
-      class="flex justify-center mb-6 mobile:flex-col">
-      <span class="mx-2 mobile:mb-2">
-        <strong>IMPORTANT</strong> Follow this guide
-        <i
-          class="eva eva-arrow-forward-outline relative"
-          style="top:3px" />
-      </span>
-      <ZLink
-        to="/getting-started/how-to-use-ledger-with-zillet"
-        class="font-semibold"
-        external>
-        How to use your Ledger hardware wallet with Zillet
-      </ZLink>
-    </div>
-    <div class="flex flex-1 flex-col max-w-xs m-auto">
-      <div
-        class="tracking-wide text-gray-700 text-sm
-        font-bold mb-2 uppercase text-left">
-        Index
-      </div>
-      <z-input
-        v-model="hwIndex"
-        :hide="false"
-        size="mini"
-        type="number"
-        class="flex-1"
-        placeholder="0 (Default)" />
-    </div>
+    <p class="text-sm text-gray-700">
+      Make sure your Ledger is <strong>unlocked</strong>, you've selected the <strong>Zilliqa</strong> app
+      on the device, and browser support is <strong>enabled</strong>.
+    </p>
     <z-button
       class="w-full mb-8"
       rounded
       :loading="loading"
       @click="connect()">
-      Connect and Use Account #{{ hwIndex }}
+      {{ indexModal ? 'Connecting...' : 'Connect to Ledger wallet' }}
     </z-button>
-    <div
-      class="flex justify-center mb-6 text-base mobile:flex-col">
-      <span class="mx-2 mobile:mb-2">
-        Helpful article
-        <i
-          class="eva eva-arrow-forward-outline relative"
-          style="top:3px" />
-      </span>
+    <template v-slot:articles>
       <ZLink
         to="/troubleshooting/troubleshooting-ledger-issues"
-        class="font-semibold"
         external>
         Troubleshooting Ledger Issues
       </ZLink>
-    </div>
+      and
+      <ZLink
+        to="/getting-started/how-to-use-ledger-with-zillet"
+        external>
+        How to use your Ledger hardware wallet with Zillet
+      </ZLink>
+    </template>
+    <AccountIndex
+      :visible="indexModal"
+      :accounts="accounts"
+      @close="indexModal=false"
+      @access="access"
+      @addAccount="addAccount" />
   </AccessWalletContainer>
 </template>
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { fromBech32Address } from '@zilliqa-js/crypto';
 import config from '@/config';
+import * as util from '@zilliqa-js/util';
 import ZilliqaHW from '@/utils/ledger';
+import AccountIndex from '@/components/ledger/AccountIndex';
+const { units, BN } = util;
 export default {
   name: 'Keystore',
+  components: {
+    AccountIndex
+  },
   props: {
     uid: {
       type: [Number, String],
@@ -74,7 +61,9 @@ export default {
     return {
       loading: false,
       hwIndex: 0,
-      indexModal: false
+      indexModal: false,
+      ledgerZil: {},
+      accounts: []
     };
   },
   computed: {
@@ -89,17 +78,45 @@ export default {
       return transport;
     },
     async connect() {
+      this.loading = true;
+      try {
+        const transport = await this.transportInit();
+        this.ledgerZil = new ZilliqaHW(transport);
+        await this.getAccounts();
+      } catch (err) {
+        this.$notify({
+          message: err.message,
+          type: 'danger'
+        });
+      }
+      this.loading = false;
+    },
+    async getAccounts() {
+      // for (let index = this.hwIndex; index < this.hwIndex + ; index++) {
+      const data = await this.ledgerZil.getPublicAddress(this.hwIndex); // Wating user access "loading...".
+      const res = await this.$zillet.blockchain.getBalance(data.pubAddr);
+      const balance = res && res.result ? res.result.balance : 0;
+      this.accounts.push({
+        index: this.hwIndex,
+        pubAddr: data.pubAddr,
+        publicKey: data.publicKey,
+        base16Address: fromBech32Address(data.pubAddr),
+        balance: units.fromQa(new BN(balance), units.Units.Zil)
+      });
+      // }
+      this.indexModal = true;
+    },
+    addAccount() {
+      this.hwIndex += 1;
+      this.getAccounts();
+    },
+    async access(account) {
       try {
         this.loading = true;
-        const transport = await this.transportInit();
-        const ledgerZil = new ZilliqaHW(transport);
-        const data = await ledgerZil.getPublicAddress(this.hwIndex); // Wating user access "loading...".
-
-        const base16Address = fromBech32Address(data.pubAddr);
         this.save({
-          address: base16Address,
-          publicKey: data.publicKey,
-          index: this.hwIndex
+          address: account.base16Address,
+          publicKey: account.publicKey,
+          index: account.index
         });
         this.loading = false;
         this.saveAccessType(this.uid);

@@ -227,8 +227,8 @@ export default {
     explorerLink(id) {
       const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
       return this.selectedNode.id === 1002
-        ? `${this.selectedNode.explorer}${hash}?network=testnet`
-        : `${this.selectedNode.explorer}${hash}`;
+        ? `${this.selectedNode.explorer}tx/${hash}?network=testnet`
+        : `${this.selectedNode.explorer}tx/${hash}`;
     },
     toggleTxn(hash) {
       if (hash == this.selectedTxn) {

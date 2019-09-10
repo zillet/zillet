@@ -17,10 +17,21 @@
         <code>https://zillet.io</code> in your URL bar.
       </p>
       <slot />
+      <div
+        v-if="$slots.articles"
+        class="flex justify-center mb-6 text-sm mobile:flex-col">
+        <span class="font-semibold mx-2 mobile:mb-2">
+          Helpful articles
+          <i
+            class="eva eva-arrow-forward-outline relative"
+            style="top:3px" />
+        </span>
+        <slot name="articles" />
+      </div>
     </div>
-    <div class="flex flex-row mt-8 mb-2 justify-center">
+    <div class="flex flex-row mt-8 mb-2 justify-center text-base text-gray-700">
       <i
-        class="eva eva-shield text-xl mr-2 relative text-gray-700"
+        class="eva eva-shield text-base mr-2 relative "
         style="top:2px;" />
       We do not store your private key on our servers or transmit it over the network at any time.
     </div>
