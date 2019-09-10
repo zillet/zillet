@@ -57,7 +57,7 @@
       <z-button
         rounded
         type="default"
-        size="small"
+        size="medium"
         class="w-full mt-12 mb-0 flex next-btn"
         @click="$emit('addAccount')">
         Next Account <i class="ml-2 eva eva-arrow-forward-outline font-bold" />
@@ -65,7 +65,7 @@
       <div style="width:50px;" />
       <z-button
         rounded
-        size="small"
+        size="medium"
         class="w-full mt-12 mb-0 flex next-btn"
         @click="$emit('access', accounts[0])">
         Use Default (#0 Index)

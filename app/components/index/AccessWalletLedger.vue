@@ -6,9 +6,9 @@
       Connect to Ledger
       <br>
     </template>
-    <p class="text-sm text-gray-700">
-      Make sure your Ledger is <strong>unlocked</strong>, you've selected the <strong>Zilliqa</strong> app
-      on the device, and browser support is <strong>enabled</strong>.
+    <p class="text-base text-gray-700">
+      Make sure your Ledger is <span class="font-semibold">unlocked</span>, you've selected the <span class="font-semibold">Zilliqa</span> app
+      on the device, and browser support is <span class="font-semibold">enabled</span>.
     </p>
     <z-button
       class="w-full mb-8"

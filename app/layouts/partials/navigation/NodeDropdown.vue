@@ -55,7 +55,7 @@
       :visible="isNewNode"
       :autoclose="false"
       @close="isNewNode=false">
-      <div class="card w-xl pb-4">
+      <div class="px-4 ">
         <h3 class="font-semibold text-2xl mb-4 text-gray-800">
           Add Custom Node
         </h3>
@@ -67,38 +67,24 @@
           :hide="false"
           class="mb-4"
           placeholder="My Zilliqa Node" />
-        <div class="flex items-center justify-between -mx-3">
-          <div class="flex flex-1 flex-col mx-3">
-            <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
-              Node Url
-            </div>
-            <z-input
-              v-model="node.url"
-              :hide="false"
-              class="mb-4 flex-1"
-              placeholder="http://127.0.0.1:4200" />
-          </div>
-          <div class="flex flex-1 flex-col mx-3">
-            <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
-              Network ID
-            </div>
-            <z-input
-              v-model="node.networkId"
-              :hide="false"
-              class="mb-4 flex-1"
-              placeholder="1759155 (Optional)" />
-          </div>
+        <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
+          Node Url
         </div>
+        <z-input
+          v-model="node.url"
+          :hide="false"
+          class="mb-4 flex-1"
+          placeholder="http://127.0.0.1:4200" />
         <div class="flex items-center mt-4 justify-between -mx-3">
           <z-button
-            class="w-full mx-3"
+            class="mx-3"
             type="default"
             rounded
             @click="isNewNode=false">
             Cancel
           </z-button>
           <z-button
-            class="w-full mx-3 min-w-32"
+            class="mx-3 min-w-32"
             rounded
             @click="changeNode(node, false)">
             Save and Use
@@ -111,6 +97,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { bytes } from '@zilliqa-js/util';
+
 import config from '@/config';
 export default {
   name: 'NodeDropdown',
@@ -129,8 +117,14 @@ export default {
   computed: {
     ...mapState({
       selectedNode: state => state.selectedNode,
-      nodes: state => state.nodes
-    })
+      defaultNodes: state => state.nodes
+    }),
+    nodes() {
+      const selectedUrl = this.selectedNode.url;
+      const found = this.defaultNodes.some(el => el.url === selectedUrl);
+      if (!found) return [...this.defaultNodes, this.selectedNode];
+      return this.defaultNodes;
+    }
   },
   async beforeMount() {
     await this.changeNode(this.selectedNode, true);
@@ -140,7 +134,11 @@ export default {
     async changeNode(node, refresh) {
       this.connectionStatusClass = 'bg-yellow-400';
       this.showDropDown = false;
-      if (await this.checkConnection(node.url)) {
+      const network = await this.checkConnection(node.url);
+      if (network) {
+        node.id = network; // chainId of the developer testnet
+        const msgVersion = 1; // current msgVersion
+        node.version = bytes.pack(node.id, msgVersion);
         await localStorage.setItem('_selected_node', JSON.stringify(node));
         this.isNewNode = false;
         node.refresh = refresh;
@@ -155,7 +153,7 @@ export default {
           type: 'success'
         });
         this.connectionStatusClass = 'bg-green-500';
-        return true;
+        return result;
       } catch (error) {
         this.$notify({
           message: `Unable to connect at ${url}`,

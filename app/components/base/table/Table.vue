@@ -281,7 +281,7 @@ export default {
 <style scoped lang="scss">
 .table-header {
   @apply py-2 px-4  font-medium;
-  @apply text-xs font-semibold border-b border-gray-300;
+  @apply text-sm font-semibold border-b border-gray-300;
 }
 .checkbox-header {
   @apply pr-0;

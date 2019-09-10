@@ -151,6 +151,9 @@ export default {
   @apply w-full mt-2 flex items-center;
   &__links {
     @apply flex flex-row justify-between w-full mb-2;
+    @include mobile {
+      @apply flex-col items-center;
+    }
     a {
       @apply tracking-wide text-gray-500 cursor-pointer;
       display: flex;
@@ -164,6 +167,9 @@ export default {
     .right,
     .left {
       @apply flex flex-row;
+      @include mobile {
+        @apply mb-4;
+      }
       a {
         @apply px-2;
       }

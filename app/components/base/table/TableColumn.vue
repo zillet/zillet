@@ -62,6 +62,6 @@ export default {
 </script>
 <style scoped lang="scss">
 .column {
-  @apply py-2 px-4 border-b border-gray-300 text-sm text-gray-800;
+  @apply py-2 px-4 border-b border-gray-300 text-base text-gray-800;
 }
 </style>
