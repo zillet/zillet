@@ -56,7 +56,7 @@ module.exports = {
     short_name: 'Zillet.io',
     lang: 'en',
     description:
-      'Send Zilliqa and receive zilliqa easily from a lightweight UI/UX focued secure wallet',
+      'Zillet is an open-source, client-side, tool for interacting with the Zilliqa blockchain. Send Zilliqa and receive Zilliqa securely.',
     theme_color: '#00c2b6',
     background_color: '#2a2f39',
     scope: '/',
