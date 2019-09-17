@@ -77,7 +77,7 @@ export default {
       title: 'Ledger',
       body: 'Access your wallet using Ledger Hardware wallet',
       allowed: true,
-      buttonText: 'Connect (Beta)',
+      buttonText: 'Connect',
       securityLevel: 3
     }
   ]
