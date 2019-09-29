@@ -22,9 +22,7 @@ const createStore = () =>
       encryptedWallets: [],
       prices: {},
       viewblockAccount: {
-        txs: {
-          docs: []
-        }
+        txs: []
       },
       localTxns: [],
       accessType: ''

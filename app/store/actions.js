@@ -58,7 +58,7 @@ export function getTransactions({ commit }, data) {
     var type = data.type || 'all';
     commit('LOADING');
     this.$axios
-      .$get(`${config.VIEWBLOCK_URL}${address}`, {
+      .$get(`${config.VIEWBLOCK_URL}${address}/txs`, {
         params: {
           network: network,
           page: page,

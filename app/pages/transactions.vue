@@ -161,7 +161,7 @@ export default {
       let txn = this.localTxns.filter(function(obj) {
         return obj.from == address || obj.to == address;
       });
-      const tx = [...txn, ...this.viewTxns.docs];
+      const tx = [...txn, ...this.viewTxns];
       return this.orderBy(tx, 'timestamp', -1);
     }
   },

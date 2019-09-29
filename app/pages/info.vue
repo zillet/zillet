@@ -123,7 +123,7 @@
     <div class="flex  mx-8 justify-center items-center flex-col">
       <div class="qr-code">
         <z-qrcode
-          :value="showQr==='address' ? Account.bech32Address : `0x${Account[showQr]}`"
+          :value="showQr==='address' ? Account.bech32Address : `${Account[showQr]}`"
           :options="{ width: 200, color:{ dark: '#303133'}}" />
       </div>
       <label

@@ -13,14 +13,14 @@
               class="mt-1 mr-2" />
             <h3 class="truncate">
               {{ `${Account.bech32Address}` }}
-              <span
+              <!-- <span
                 data-balloon="This is the new bech32 address which derives from the old address and supported by all the exchanges and wallets. You can check your old 20 bytes, base 16 address in Wallet Info page. kindly use this new address to receive funds. Note that your funds are not affected in any way."
                 data-balloon-length="xlarge"
                 data-balloon-pos="right">
                 <i
                   class="eva eva-question-mark-circle-outline relative ml-1 text-gray-700"
                   style="top:3px;" />
-              </span>
+              </span> -->
             </h3>
             <span
               v-clipboard:copy="`${Account.bech32Address}`"
@@ -48,7 +48,7 @@
               {{ Balance.zil }} ZIL
             </span>
             <span class="usd">
-              &nbsp; &asymp; &nbsp; {{ Balance.usd | currency('$', 2) }}
+              &nbsp; &asymp; &nbsp; {{ Balance.usd | currency('$', 3) }}
             </span>
             <span
               class="text-xs italic text-left inline-block ml-2
@@ -205,7 +205,7 @@ export default {
   }
   &__balance {
     @apply flex flex-col items-start justify-center pl-4;
-    flex: 0 0 20rem; /* do not grow, do not shrink, start at 13rem */
+    flex: 0 0 22rem; /* do not grow, do not shrink, start at 13rem */
     @include mobile {
       @apply flex-1 pl-0 pt-2;
       flex: 0;
