@@ -103,7 +103,7 @@ export default {
             type: 'success'
           });
         } catch (error) {
-          console.log(error);
+          console.error(error);
           this.$notify({
             message: error,
             type: 'danger'

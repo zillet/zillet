@@ -292,6 +292,21 @@ export default {
       }
       return false;
     },
+    async updateWallet() {
+      let balance = await this.$zillet.blockchain.getBalance(
+        this.Account.address
+      );
+      let localNonce = 0;
+      try {
+        localNonce = parseInt(localStorage.getItem('_local_nonce'));
+      } catch (error) {
+        console.error(error);
+      }
+      if (localNonce > balance.result.nonce) {
+        balance.result.nonce = localNonce;
+      }
+      this.updateBalance(balance.result);
+    },
     async createTxn() {
       if (this.normaliseAddress(this.transaction.address)) {
         const VERSION = this.selectedNode.version;
@@ -307,10 +322,7 @@ export default {
         } else {
           this.loading = true;
           // Update nonce and balance
-          const balance = await this.$zillet.blockchain.getBalance(
-            this.Account.address
-          );
-          this.updateBalance(balance.result);
+          await this.updateWallet();
           // transaction object
           const gasPrice = units.toQa(
             this.transaction.gasPrice,

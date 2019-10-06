@@ -66,6 +66,8 @@ export const saveTxn = (state, data) => {
       type: 'transfer',
       version: state.selectedNode.version
     };
+    state.wallet.nonce = data.nonce;
+    localStorage.setItem('_local_nonce', state.wallet.nonce);
   } else if (data.type === 'zilpay' || data.type === 'moonlet') {
     txn = {
       direction: data.toAddr == state.wallet.address ? 'self' : 'out',

@@ -26,7 +26,7 @@
       </div>
       <div class="right">
         <a
-          href="mailto:support@zillet.io"
+          href="//t.me/burgersingh"
           target="_blank"
           rel="noopener noreferrer">
           Report Issue

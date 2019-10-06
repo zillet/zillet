@@ -176,7 +176,7 @@ export default {
           this.steps[this.currentIndex].image
         }`);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
       }
     },

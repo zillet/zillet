@@ -141,7 +141,7 @@ export default {
         }
         this.$nuxt.$loading.finish();
       } catch (error) {
-        console.log(error);
+        console.error(error);
         this.$notify({
           icon: 'eva eva-close-circle-outline',
           message: `Something went wrong ${error}`,
