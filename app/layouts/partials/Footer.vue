@@ -3,11 +3,11 @@
     <div class="footer__links">
       <div class="left">
         <a
-          href="https://github.com/man15h/zillet"
+          href="https://github.com/zillet/zillet"
           target="_blank"
           rel="noopener noreferrer">
           <i class="eva eva-github mr-1" />
-          Github
+          v0.2.6
         </a>
         <a
           href="https://twitter.com/zilletio"
@@ -41,6 +41,9 @@
           @click="showDisclaimer=!showDisclaimer">
           Disclaimer
         </a>
+        <!-- <a class="border-l border-gray-600">
+          v0.2.6
+        </a> -->
       </div>
     </div>
     <z-modal
