@@ -67,7 +67,14 @@ export const saveTxn = (state, data) => {
       version: state.selectedNode.version
     };
     state.wallet.nonce = data.nonce;
-    localStorage.setItem('_local_nonce', state.wallet.nonce);
+    let localNonces;
+    try {
+      localNonces = JSON.parse(localStorage.getItem('_local_nonces')) || {};
+    } catch (error) {
+      localNonces = {};
+    }
+    localNonces[state.wallet.address] = state.wallet.nonce;
+    localStorage.setItem('_local_nonces', JSON.stringify(localNonces));
   } else if (data.type === 'zilpay' || data.type === 'moonlet') {
     txn = {
       direction: data.toAddr == state.wallet.address ? 'self' : 'out',
@@ -87,7 +94,11 @@ export const saveTxn = (state, data) => {
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
 export const LOAD_LOCAL_TXN = (state, data) => {
-  state.localTxns = data;
+  const fourHour = 4 * 60 * 60 * 1000;
+  state.localTxns = data.filter(function(item) {
+    return new Date() - new Date(item.timestamp) < fourHour;
+  });
+  localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
 export const LOAD_ENCRYPTED_WALLETS = (state, jsonData) => {
   state.encryptedWallets = jsonData;

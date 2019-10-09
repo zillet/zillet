@@ -298,7 +298,8 @@ export default {
       );
       let localNonce = 0;
       try {
-        localNonce = parseInt(localStorage.getItem('_local_nonce'));
+        let localNonces = JSON.parse(localStorage.getItem('_local_nonces'));
+        localNonce = localNonces[this.Account.address];
       } catch (error) {
         console.error(error);
       }
