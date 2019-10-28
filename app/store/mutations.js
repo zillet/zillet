@@ -73,7 +73,10 @@ export const saveTxn = (state, data) => {
     } catch (error) {
       localNonces = {};
     }
-    localNonces[state.wallet.address] = state.wallet.nonce;
+    localNonces[state.wallet.address] = {
+      nonce: state.wallet.nonce,
+      lastUpdated: +new Date()
+    };
     localStorage.setItem('_local_nonces', JSON.stringify(localNonces));
   } else if (data.type === 'zilpay' || data.type === 'moonlet') {
     txn = {

@@ -298,8 +298,17 @@ export default {
       );
       let localNonce = 0;
       try {
-        let localNonces = JSON.parse(localStorage.getItem('_local_nonces'));
-        localNonce = localNonces[this.Account.address];
+        let accountNonce = JSON.parse(localStorage.getItem('_local_nonces'));
+        if (accountNonce[this.Account.address]) {
+          if (
+            (+new Date() - accountNonce[this.Account.address]['lastUpdated']) /
+              (1000 * 60) <
+            10
+          ) {
+            console.log('ehy');
+            localNonce = accountNonce[this.Account.address]['nonce'];
+          }
+        }
       } catch (error) {
         console.error(error);
       }
