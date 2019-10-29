@@ -7,7 +7,7 @@
           target="_blank"
           rel="noopener noreferrer">
           <i class="eva eva-github mr-1" />
-          v0.2.6
+          v0.2.7
         </a>
         <a
           href="https://twitter.com/zilletio"
