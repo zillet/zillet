@@ -21,6 +21,7 @@
 <script>
 import { mapActions, mapMutations } from 'vuex';
 import { validation } from '@zilliqa-js/util';
+const CP = require('@zilliqa-js/crypto');
 export default {
   name: 'PrivateKey',
   props: {
@@ -45,10 +46,8 @@ export default {
           type: 'danger'
         });
       } else {
-        if (this.privateKey && this.privateKey.substring(0, 2) === '0x') {
-          this.privateKey = this.privateKey.substring(2);
-        }
-        this.$zillet.wallet.addByPrivateKey(this.privateKey);
+        const account = CP.getAccountFrom0xPrivateKey(this.privateKey);
+        this.$zillet.wallet.addByPrivateKey(account.changed.prv);
         this.importAccount(this.$zillet.wallet.defaultAccount);
         this.saveAccessType(this.uid);
         this.$router.push({
