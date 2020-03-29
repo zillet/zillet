@@ -26,6 +26,7 @@
         leave-to-class="opacity-0 scale-70">
         <div
           v-if="showDropDown"
+          d
           class="origin-top-right absolute right-0 mt-2 w-64 bg-white rounded border shadow-md z-50 overflow-hidden">
           <div
             v-for="n in nodes"
