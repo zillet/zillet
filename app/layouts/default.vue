@@ -21,11 +21,7 @@
         @click="hideNoti" />
     </div> -->
     <Navigation />
-    <div class="w-full">
-      <div class="card">
-        <Nuxt />
-      </div>
-    </div>
+    <Nuxt />
     <Footer />
     <Onboarding />
   </div>

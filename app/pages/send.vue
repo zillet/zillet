@@ -1,141 +1,208 @@
 <template>
-  <div>
-    <h3 class="font-semibold text-2xl mb-4 text-center w-full">
-      Send Zilliqa
-    </h3>
-    <div class="max-w-2xl m-auto text-left">
-      <div class="tracking-wide text-sm font-semibold mb-2">
-        Recipient Address
-      </div>
-      <z-input
-        v-model="transaction.address"
-        :hide="false"
-        class="mb-2"
-        placeholder="Enter Zilliqa Mainnet address here" />
-      <z-alert
-        type="danger"
-        class="mb-6">
-        Do not send funds to ERC-20 ZIL address.
-      </z-alert>
-      <div class="amount-wrapper">
-        <div class="label">
-          <div class="tracking-wide text-sm font-semibold mb-2">
-            Amount
-          </div>
-          <div
-            class="label__btn"
-            @click="fullAmount">
-            Send All
-          </div>
+  <div class="flex flex-row w-full">
+    <div class="card w-full">
+      <h3 class="font-semibold text-2xl mb-4 text-left">
+        Send Zilliqa and Tokens
+      </h3>
+      <div class="max-w-2xl m-auto text-left">
+        <div class="tracking-wide text-sm font-semibold mb-2">
+          Recipient Address
         </div>
-        <div class="amount-form">
-          <div class="amount__crypto">
-            <z-input
-              v-model.number="transaction.amount"
-              :hide="false"
-              :valid="validateCryptoAmount"
-              number
-              placeholder="Enter amount here"
-              @focus="cryptoAmountFocus" />
-            <span>ZIL</span>
+        <z-input
+          v-model="transaction.address"
+          :hide="false"
+          class="mb-2"
+          placeholder="Enter Zilliqa Mainnet address here" />
+        <div class="amount-wrapper">
+          <div class="label">
+            <div class="tracking-wide text-sm font-semibold mb-2">
+              Amount
+            </div>
+            <div
+              class="label__btn"
+              @click="fullAmount">
+              Send All
+            </div>
           </div>
-          <div class="amount__approx">
-            <i class="eva eva-swap-outline" />
-          </div>
-          <div class="amount__fiat">
-            <z-input
-              v-model.number="usdAmount"
-              :hide="false"
-              :valid="validateFiatAmount"
-              number
-              placeholder="Enter amount here"
-              @focus="fiatAmountFocus" />
-            <span>USD</span>
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="isAdvance"
-        class="gas-form">
-        <div class="gas__limit">
-          <div class="tracking-wide text-sm font-semibold mb-2">
-            Gas Limit
-          </div>
-          <z-input
-            v-model="transaction.gasLimit"
-            :hide="false"
-            :valid="isNumber(transaction.gasLimit) && transaction.gasLimit > 0"
-            number
-            placeholder="10" />
-        </div>
-        <div class="gas__space" />
-        <div class="gas__price">
-          <div class="tracking-wide text-sm font-semibold mb-2">
-            Gas Price (Li)
-          </div>
-          <z-input
-            v-model="transaction.gasPrice"
-            :valid="isNumber(transaction.gasPrice) && transaction.gasPrice > 0"
-            :hide="false"
-            number
-            placeholder="1" />
-        </div>
-      </div>
-      <div class="flex items-center justify-between">
-        <div>
-          <div
-            class="text-sm text-left inline-block
-          align-middle font-normal  font-semibold">
-            Fee:
-            <span class="text-md font-bold">
-              {{ transactionFee }}
-            </span>
-            ZIL
+          <div class="amount-form">
+            <div class="relative w-1/4">
+              <div
+                v-if="fromTokenDropDown"
+                class="fixed inset-0"
+                @click="fromTokenDropDown = false" />
+              <span
+                class="flex items-center focus:outline-none bg-white text-gray-900 
+              px-4 py-2 rounded border border-gray-400 w-32"
+                @click="fromTokenDropDown = !fromTokenDropDown">
+                <span
+                  class="inline-block mt-0 hover:text-teal-500
+                block text uppercase tracking-wide cursor-pointer
+                font-semibold text-gray-900 items-center space-between">
+                  <div class="flex flex-column items-center space-between">
+                    <img 
+                      :src="getImages(fromToken.symbol)" 
+                      height="18px" 
+                      class="rounded-full"
+                      width="18px">
+                    <p 
+                      class="text-gray-800 font-bold pl-4 relative" 
+                      style="top:2px">
+                      {{ fromToken.symbol }}
+                    </p>
+                  </div>
+                </span>
+                <i class="eva eva-arrow-ios-downward-outline ml-1 text-gray-600 text-lg relative right-10" />
+              </span>
+              <transition
+                enter-active-class="transition-all transition-fastest ease-out-quad"
+                leave-active-class="transition-all transition-faster ease-in-quad"
+                enter-class="opacity-0 scale-70"
+                enter-to-class="opacity-100 scale-100"
+                leave-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-70">
+                <div
+                  v-if="fromTokenDropDown"
+                  class="origin-top-right absolute left-0 mt-2 w-64 bg-white rounded border shadow-md z-50 overflow-hidden">
+                  <div
+                    v-for="n in orderBy(tokens,'name')"
+                    :key="n.symbol"
+                    :class="{'bg-gray-200':fromToken.symbol === n.symbol}"
+                    class="flex items-start text-left px-4 py-2 cursor-pointer hover:bg-grey-lightest"
+                    @click="fromTokenChange(n, false)">
+                    <div class="text-sm flex flex-column justify-between items-cetenr w-full">
+                      <div class="flex flex-column items-center">
+                        <img 
+                          :src="getImages(n.symbol)" 
+                          height="18px" 
+                          class="rounded-full"
+                          width="18px">
+                        <p class="text-gray-800 font-bold pl-2">
+                          {{ n.symbol }}
+                        </p>
+                      </div>
+                      <p class="text-gray-700 text-xs font-semibold">
+                        {{ n.balance* Math.pow(10, -1*n.decimals) | currency('', 2) }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+              <!-- <vov-select
+            :data="tokens"
+            field="symbol"
+            @change="fromTokenChange"/> -->
+            </div>
+            <div class="amount__crypto ">
+              <z-input
+                v-model.number="transaction.amount"
+                :hide="false"
+                :valid="validateCryptoAmount"
+                number
+                placeholder="Enter amount here"
+                @focus="cryptoAmountFocus" />
+            </div>
+            <div class="amount__approx">
+              <i class="eva eva-swap-outline" />
+            </div>
+            <div class="amount__fiat">
+              <z-input
+                v-model.number="usdAmount"
+                :hide="false"
+                :valid="validateFiatAmount"
+                number
+                placeholder="Enter amount here"
+                @focus="fiatAmountFocus" />
+              <span>USD</span>
+            </div>
           </div>
         </div>
         <div
-          @click="isAdvance=!isAdvance">
-          <span
-            class="text-sm italic text-left inline-block
-        align-middle font-normal
-        cursor-pointer hover:text-teal-500 font-semibold">
-            {{ isAdvance ? '-': '+' }} Advance
-          </span>
+          v-if="isAdvance"
+          class="gas-form">
+          <div class="gas__limit">
+            <div class="tracking-wide text-sm font-semibold mb-2">
+              Gas Limit
+            </div>
+            <z-input
+              v-model="transaction.gasLimit"
+              :hide="false"
+              :valid="isNumber(transaction.gasLimit) && transaction.gasLimit > 0"
+              number
+              placeholder="10" />
+          </div>
+          <div class="gas__space" />
+          <div class="gas__price">
+            <div class="tracking-wide text-sm font-semibold mb-2">
+              Gas Price (Li)
+            </div>
+            <z-input
+              v-model="transaction.gasPrice"
+              :valid="isNumber(transaction.gasPrice) && transaction.gasPrice > 0"
+              :hide="false"
+              number
+              placeholder="1" />
+          </div>
         </div>
-      </div>
-      <z-button
-        :loading="loading"
-        class="w-full"
-        rounded
-        @click="createTxn">
-        {{ 'Send Transaction' }}
-      </z-button>
-      <p
-        v-if="accessType===1006 && loading"
-        type="info"
-        class="flex items-center justify-center font-semibold text-gray-800">
-        <i class="eva eva-loader-outline rotating font-bold mr-2" />
-        Confirm transaction on hardware wallet
-      </p>
-      <div
-        v-show="isSigned && isAdvance"
-        class="mt-4">
-        <div class="tracking-wide text-sm font-semibold mb-2">
-          Signed Transaction
+        <div class="flex items-center justify-between">
+          <div>
+            <div
+              class="text-sm text-left inline-block
+          align-middle font-normal  font-semibold">
+              Fee:
+              <span class="text-md font-bold">
+                {{ transactionFee }}
+              </span>
+              ZIL
+            </div>
+          </div>
+          <div
+            @click="isAdvance=!isAdvance">
+            <span
+              class="text-sm italic text-left inline-block
+              align-middle font-normal
+              cursor-pointer hover:text-teal-500 font-semibold">
+              {{ isAdvance ? '-': '+' }} Advance
+            </span>
+          </div>
         </div>
-        <z-textarea
-          v-show="isSigned"
-          :value="stringifySignedTx"
-          readonly
-          rows="5"
-          class="mb-2" />
-
         <z-button
+          :loading="loading"
           class="w-full"
-          rounded>
-          Send Transaction
+          rounded
+          @click="createTxn">
+          {{ 'Send Transaction' }}
         </z-button>
+        <p
+          v-if="accessType===1006 && loading"
+          type="info"
+          class="flex items-center justify-center font-semibold text-gray-800">
+          <i class="eva eva-loader-outline rotating font-bold mr-2" />
+          Confirm transaction on hardware wallet
+        </p>
+        <div
+          v-show="isSigned && isAdvance"
+          class="mt-4">
+          <div class="tracking-wide text-sm font-semibold mb-2">
+            Signed Transaction
+          </div>
+          <z-textarea
+            v-show="isSigned"
+            :value="stringifySignedTx"
+            readonly
+            rows="5"
+            class="mb-2" />
+          <z-button
+            class="w-full"
+            rounded>
+            Send Transaction
+          </z-button>
+        </div>
       </div>
+    </div>
+    <div
+      class="flex card w-full ml-4"
+      style="max-width:300px">
+      <TokenBalance />
     </div>
     <z-modal
       :visible="isBroadcast"
@@ -178,7 +245,9 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
+import Vue2Filters from 'vue2-filters';
 import { BN, Long, validation, units } from '@zilliqa-js/util';
+import { getImages } from '@/utils';
 import {
   fromBech32Address,
   isValidChecksumAddress,
@@ -189,6 +258,7 @@ import { util, Transaction } from '@zilliqa-js/account';
 import { Zilliqa } from '@zilliqa-js/zilliqa';
 import ZilliqaHW from '@/utils/ledger';
 import { isNumber, moonletZilliqa } from '@/utils/validation';
+import TokenBalance from '@/components/TokenBalance';
 import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
@@ -198,6 +268,10 @@ const lookupMap = new Map([
 export default {
   name: 'SendTransactionForm',
   middleware: 'ifKeyExists',
+  components: {
+    TokenBalance
+  },
+  mixins: [Vue2Filters.mixin],
   data() {
     return {
       transaction: {
@@ -216,15 +290,30 @@ export default {
       tranxId: '',
       loading: false,
       isCryptoAmountFocus: false,
-      isFiatAmountFocus: false
+      isFiatAmountFocus: false,
+      fromTokenDropDown: false,
+      fromToken: {
+        name: 'Zilliqa',
+        symbol: 'ZIL'
+      }
     };
   },
   computed: {
     ...mapGetters(['Account', 'Prices', 'Balance']),
     ...mapState({
       selectedNode: state => state.selectedNode,
-      accessType: state => state.accessType
+      accessType: state => state.accessType,
+      zrc2: state => state.zrc2
     }),
+    tokens() {
+      return [
+        {
+          name: 'Zilliqa',
+          symbol: 'ZIL'
+        },
+        ...this.zrc2
+      ];
+    },
     validateCryptoAmount() {
       return (
         this.isNumber(this.transaction.amount) &&
@@ -282,6 +371,7 @@ export default {
     ...mapActions(['sendTransaction']),
     ...mapMutations(['updateBalance', 'saveTxn']),
     isNumber: isNumber,
+    getImages,
     normaliseAddress(address) {
       if (validation.isBech32(address)) {
         this.transaction.base16address = fromBech32Address(address);
@@ -305,7 +395,6 @@ export default {
               (1000 * 60) <
             10
           ) {
-            console.log('ehy');
             localNonce = accountNonce[this.Account.address]['nonce'];
           }
         }
@@ -317,170 +406,231 @@ export default {
       }
       this.updateBalance(balance.result);
     },
-    async createTxn() {
-      if (this.normaliseAddress(this.transaction.address)) {
-        const VERSION = this.selectedNode.version;
-        const amount = units.toQa(this.transaction.amount, units.Units.Zil);
-        const fee = units.toQa(this.transactionFee, units.Units.Zil);
-        const balance = new BN(this.Account.balance);
-        const total = amount.add(fee);
-        if (total.gt(balance)) {
-          this.$notify({
-            message: `Amount+Fee can not be greater than your balance`,
-            type: 'danger'
-          });
-        } else {
-          this.loading = true;
-          // Update nonce and balance
-          await this.updateWallet();
-          // transaction object
-          const gasPrice = units.toQa(
-            this.transaction.gasPrice,
-            units.Units.Li
-          ); // in QA
-          if (this.accessType === 1004) {
-            const zilliqa = window.zilPay;
-            try {
-              const tx = await zilliqa.blockchain.createTransaction(
-                zilliqa.transactions.new({
-                  toAddr: this.transaction.base16address,
-                  amount: new BN(amount),
-                  gasPrice: new BN(gasPrice),
-                  gasLimit: Long.fromNumber(this.transaction.gasLimit)
-                })
-              );
-              this.txnDone(tx);
-              tx.type = 'zilpay';
-              this.saveTxn(tx);
-            } catch (error) {
-              this.loading = false;
-              return this.$notify({
-                message: error,
-                type: 'danger'
-              });
-            }
-          } else if (this.accessType === 1005) {
-            /// Moonlet me
-            const zilliqa = new Zilliqa('', window.moonlet.providers.zilliqa);
-            // apply a hack to disable internal ZilliqaJS autosigning feature
-            zilliqa.blockchain.signer = zilliqa.contracts.signer = {
-              sign: m => m
-            };
-            if (zilliqa) {
-              try {
-                const tx = new Transaction(
-                  {
-                    toAddr: this.transaction.base16address,
-                    amount: new BN(amount),
-                    gasPrice: new BN(gasPrice),
-                    gasLimit: Long.fromNumber(this.transaction.gasLimit)
-                  },
-                  moonlet.providers.zilliqa
-                );
-                tx.observed().on('track', trackInfo => {
-                  if (trackInfo.attempt === 0) {
-                    tx.type = 'moonlet';
-                    tx.TranID = trackInfo.txHash;
-                    tx.amount = tx.amount.toString(10);
-                    tx.gasLimit = tx.gasLimit.toString(10);
-                    tx.gasPrice = tx.gasPrice.toString(10);
-                    tx.Info = 'Transaction broadcasted';
-                    this.txnDone(tx);
-                    this.saveTxn(tx);
-                  }
-                });
-                const broadcastedTx = await zilliqa.blockchain.createTransaction(
-                  tx
-                );
-              } catch (err) {
-                this.loading = false;
-                return this.$notify({
-                  message: err.message,
-                  type: 'danger'
-                });
-              }
-            }
-          } else if (this.accessType === 1006) {
-            const transport = await ZilliqaHW.create();
-            const ledgerZil = new ZilliqaHW(transport);
-            const hwIndex = this.Account.index;
-            const type = 'CreateTransaction';
-            const txParams = {
-              version: VERSION,
-              nonce: this.Account.nonce + 1,
-              pubKey: this.Account.publicKey,
-              toAddr: this.transaction.base16address,
-              amount: new BN(amount),
-              gasPrice: new BN(gasPrice),
-              gasLimit: Long.fromNumber(this.transaction.gasLimit),
-              data: '',
-              code: ''
-            };
-            try {
-              const signature = await ledgerZil.signTxn(hwIndex, txParams);
-
-              this.signedTx = {
-                ...txParams,
-                amount: txParams.amount.toString(),
-                gasPrice: txParams.gasPrice.toString(),
-                gasLimit: txParams.gasLimit.toString(),
-                data: '',
-                code: '',
-                signature
-              };
-
-              this.sendTxn();
-            } catch (err) {
-              this.$notify({
-                message: err.message,
-                type: 'danger'
-              });
-              // Add will some notify about user denied transaction.
-            }
-            this.loading = false;
-          } else {
-            const tx = {
-              version: VERSION,
-              nonce: this.transaction.nonce
-                ? this.transaction.nonce
-                : this.Account.nonce + 1,
-              pubKey: this.Account.publicKey,
-              toAddr: toChecksumAddress(this.transaction.base16address).slice(
-                2
-              ),
-              amount: new BN(amount),
-              gasPrice: new BN(gasPrice),
-              gasLimit: Long.fromNumber(this.transaction.gasLimit)
-            };
-            // encoding transaction
-            const msg = await util.encodeTransactionProto(tx);
-            // signing transasction
-            const signature = await sign(
-              msg,
-              this.Account.privateKey,
-              this.Account.publicKey
-            );
-            // signed transaction object
-            this.signedTx = {
-              ...tx,
-              amount: tx.amount.toString(),
-              gasPrice: tx.gasPrice.toString(),
-              gasLimit: tx.gasLimit.toString(),
-              data: '',
-              code: '',
-              signature
-            };
-            this.loading = false;
-            this.sendTxn();
-          }
-        }
-      } else {
-        this.$notify({
-          message: `Address format is invalid`,
+    async txnViaZilPay(amount, gasPrice) {
+      const zilliqa = window.zilPay;
+      try {
+        const tx = await zilliqa.blockchain.createTransaction(
+          zilliqa.transactions.new({
+            toAddr: this.transaction.base16address,
+            amount: new BN(amount),
+            gasPrice: new BN(gasPrice),
+            gasLimit: Long.fromNumber(this.transaction.gasLimit)
+          })
+        );
+        this.txnDone(tx);
+        tx.type = 'zilpay';
+        this.saveTxn(tx);
+      } catch (error) {
+        this.loading = false;
+        return this.$notify({
+          message: error,
           type: 'danger'
         });
       }
     },
+    async txnViaMoonlet(amount, gasPrice) {
+      const zilliqa = new Zilliqa('', window.moonlet.providers.zilliqa);
+      // apply a hack to disable internal ZilliqaJS autosigning feature
+      zilliqa.blockchain.signer = zilliqa.contracts.signer = {
+        sign: m => m
+      };
+      if (zilliqa) {
+        try {
+          const tx = new Transaction(
+            {
+              toAddr: this.transaction.base16address,
+              amount: new BN(amount),
+              gasPrice: new BN(gasPrice),
+              gasLimit: Long.fromNumber(this.transaction.gasLimit)
+            },
+            moonlet.providers.zilliqa
+          );
+          tx.observed().on('track', trackInfo => {
+            if (trackInfo.attempt === 0) {
+              tx.type = 'moonlet';
+              tx.TranID = trackInfo.txHash;
+              tx.amount = tx.amount.toString(10);
+              tx.gasLimit = tx.gasLimit.toString(10);
+              tx.gasPrice = tx.gasPrice.toString(10);
+              tx.Info = 'Transaction broadcasted';
+              this.txnDone(tx);
+              this.saveTxn(tx);
+            }
+          });
+          const broadcastedTx = await zilliqa.blockchain.createTransaction(tx);
+        } catch (err) {
+          this.loading = false;
+          return this.$notify({
+            message: err.message,
+            type: 'danger'
+          });
+        }
+      }
+    },
+    async txnViaLedger(amount, gasPrice, VERSION) {
+      const transport = await ZilliqaHW.create();
+      const ledgerZil = new ZilliqaHW(transport);
+      const hwIndex = this.Account.index;
+      const type = 'CreateTransaction';
+      const txParams = {
+        version: VERSION,
+        nonce: this.Account.nonce + 1,
+        pubKey: this.Account.publicKey,
+        toAddr: this.transaction.base16address,
+        amount: new BN(amount),
+        gasPrice: new BN(gasPrice),
+        gasLimit: Long.fromNumber(this.transaction.gasLimit),
+        data: '',
+        code: ''
+      };
+      try {
+        const signature = await ledgerZil.signTxn(hwIndex, txParams);
+
+        this.signedTx = {
+          ...txParams,
+          amount: txParams.amount.toString(),
+          gasPrice: txParams.gasPrice.toString(),
+          gasLimit: txParams.gasLimit.toString(),
+          data: '',
+          code: '',
+          signature
+        };
+
+        this.sendTxn();
+      } catch (err) {
+        this.$notify({
+          message: err.message,
+          type: 'danger'
+        });
+        // Add will some notify about user denied transaction.
+      }
+      this.loading = false;
+    },
+    async txnViaZillet(amount, gasPrice, VERSION, tokenAmount) {
+      if (this.fromToken.symbol.toLowerCase() == 'zil') {
+        const tx = {
+          version: VERSION,
+          nonce: this.transaction.nonce
+            ? this.transaction.nonce
+            : this.Account.nonce + 1,
+          pubKey: this.Account.publicKey,
+          toAddr: toChecksumAddress(this.transaction.base16address).slice(2),
+          amount: new BN(amount),
+          gasPrice: new BN(gasPrice),
+          gasLimit: Long.fromNumber(this.transaction.gasLimit)
+        };
+        // encoding transaction
+        const msg = await util.encodeTransactionProto(tx);
+        // signing transasction
+        const signature = await sign(
+          msg,
+          this.Account.privateKey,
+          this.Account.publicKey
+        );
+        // signed transaction object
+        this.signedTx = {
+          ...tx,
+          amount: tx.amount.toString(),
+          gasPrice: tx.gasPrice.toString(),
+          gasLimit: tx.gasLimit.toString(),
+          data: '',
+          code: '',
+          signature
+        };
+        this.loading = false;
+        this.sendTxn();
+      } else {
+        let contractAddress;
+        const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
+        if (networkType == 'mainet') {
+          contractAddress = this.fromToken.address;
+        } else {
+          contractAddress = this.fromToken.testnetAddress;
+        }
+        const contract = this.$zillet.contracts.at(contractAddress);
+        try {
+          const tx = await contract.call(
+            'proxyTransfer',
+            [
+              {
+                vname: 'to',
+                type: 'ByStr20',
+                value: toChecksumAddress(this.transaction.base16address)
+              },
+              {
+                vname: 'value',
+                type: 'Uint128',
+                value: String(tokenAmount)
+              }
+            ],
+            {
+              version: VERSION,
+              gasPrice,
+              gasLimit: Long.fromNumber(9000),
+              amount: new BN(0)
+            }
+          );
+          tx.observed().on('track', trackInfo => {
+            console.log(trackInfo);
+          });
+          console.log(tx);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    },
+    async createTxn() {
+      // Applying checks
+      if (!this.normaliseAddress(this.transaction.address)) {
+        return this.$notify({
+          message: `Address format is invalid`,
+          type: 'danger'
+        });
+      }
+      this.loading = true;
+      const VERSION = this.selectedNode.version;
+      let tokenAmount = 0;
+      if (this.fromToken.symbol.toLowerCase() != 'zil') {
+        tokenAmount = this.transaction.amount;
+        this.transaction.amount = 0;
+      }
+      let amount = units.toQa(this.transaction.amount, units.Units.Zil);
+      await this.updateWallet();
+      const fee = units.toQa(this.transactionFee, units.Units.Zil);
+      const balance = new BN(this.Account.balance);
+      const total = amount.add(fee);
+      if (total.gt(balance)) {
+        return this.$notify({
+          message: `Amount+Fee can not be greater than your balance`,
+          type: 'danger'
+        });
+      }
+      const gasPrice = units.toQa(this.transaction.gasPrice, units.Units.Li);
+      const minGasPrice = await this.$zillet.blockchain.getMinimumGasPrice();
+      const isGasSufficient = gasPrice.gte(new BN(minGasPrice.result)); // Checks if your gas price is less than the minimum gas price
+      if (!isGasSufficient) {
+        return this.$notify({
+          message: `Gas price is not sufficient`,
+          type: 'danger'
+        });
+      }
+      const nonce = this.transaction.nonce
+        ? this.transaction.nonce
+        : this.Account.nonce + 1;
+
+      // Making transactions
+      this.loading = false;
+      if (this.accessType === 1004) {
+        return await this.txnViaZilPay(amount, gasPrice, tokenAmount);
+      } else if (this.accessType === 1005) {
+        return await this.txnViaMoonlet(amount, gasPrice, tokenAmount);
+      } else if (this.accessType === 1006) {
+        return await this.txnViaLedger(amount, gasPrice, VERSION, tokenAmount);
+      } else {
+        return await this.txnViaZillet(amount, gasPrice, VERSION, tokenAmount);
+      }
+    },
+    async sentToken() {},
     async sendTxn() {
       try {
         this.loading = true;
@@ -548,6 +698,15 @@ export default {
     fiatAmountFocus() {
       this.isCryptoAmountFocus = false;
       this.isFiatAmountFocus = true;
+    },
+    fromTokenChange(token) {
+      this.fromToken = token;
+      this.fromTokenDropDown = false;
+    },
+    contractBySymbol(symbol) {
+      return this.tokens.find(element => {
+        return element.symbol == symbol;
+      });
     }
   }
 };
@@ -562,7 +721,7 @@ export default {
     }
     &__btn {
       @apply text-teal-600 text-sm cursor-pointer;
-      margin-left: 13.3rem;
+      margin-left: 11.3rem;
     }
   }
   .amount-form {

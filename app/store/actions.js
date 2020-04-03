@@ -115,3 +115,37 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
       });
   });
 }
+
+export function fetchBalance({ commit, state, getters }) {
+  return new Promise((resolve, reject) => {
+    commit('LOADING');
+    const t = this;
+    let balances = [];
+    try {
+      const networkType = state.selectedNode.id == 1 ? 'mainet' : 'testnet';
+      const address =
+        getters.Account.address && getters.Account.address.toLowerCase();
+      state.zrc2.forEach(async (element, index) => {
+        let deployedContract;
+        if (networkType == 'mainet') {
+          deployedContract = t.$zillet.contracts.at(element.address);
+        } else {
+          deployedContract = t.$zillet.contracts.at(element.testnetAddress);
+        }
+        const bal = await deployedContract.getSubState('balances', [address]);
+        balances.push({
+          ...element,
+          balance: bal.balances[address]
+        });
+        if (index == state.zrc2.length - 1) {
+          commit('UPDATE_BALANCE', balances);
+          commit('SUCCESS');
+          resolve(balances);
+        }
+      });
+    } catch (error) {
+      commit('ERROR');
+      reject(error);
+    }
+  });
+}

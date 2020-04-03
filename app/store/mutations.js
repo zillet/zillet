@@ -36,7 +36,9 @@ export const SELECT_NODE = (state, node) => {
     };
   }
 };
-
+export const UPDATE_BALANCE = (state, result) => {
+  state.tokenBalances = result;
+};
 export const FETCHED_PRICE = (state, prices) => {
   state.prices = prices;
 };

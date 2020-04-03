@@ -1,129 +1,131 @@
 <template>
-  <div>
-    <h3 class="font-semibold text-2xl mb-8 text-center w-full">
-      Transactions
-    </h3>
-    <div class="flex w-full">
-      <Loader v-if="loading" />
-      <div
-        v-else-if="!loading && !transactions.length"
-        style="min-height:16rem"
-        class="w-full flex flex-col justify-center items-center">
-        No transaction found.
-      </div>
-      <div
-        v-else
-        class="w-full">
-        <transition-group name="list-item">
-          <div
-            v-for="txn in transactions"
-            :key="txn.hash"
-            :class="{'selected': selectedTxn==txn.hash}"
-            class="transaction">
+  <div class="w-full">
+    <div class="card">
+      <h3 class="font-semibold text-2xl mb-8 text-center w-full">
+        Transactions
+      </h3>
+      <div class="flex w-full">
+        <Loader v-if="loading" />
+        <div
+          v-else-if="!loading && !transactions.length"
+          style="min-height:16rem"
+          class="w-full flex flex-col justify-center items-center">
+          No transaction found.
+        </div>
+        <div
+          v-else
+          class="w-full">
+          <transition-group name="list-item">
             <div
-              class="transaction__top-row"
-              @click="toggleTxn(txn.hash)">
-              <div class="transaction__token">
-                <cryptoicon
-                  symbol="zil"
-                  size="24" />
+              v-for="txn in transactions"
+              :key="txn.hash"
+              :class="{'selected': selectedTxn==txn.hash}"
+              class="transaction">
+              <div
+                class="transaction__top-row"
+                @click="toggleTxn(txn.hash)">
+                <div class="transaction__token">
+                  <cryptoicon
+                    symbol="zil"
+                    size="24" />
                 &nbsp;<span class="font-semibold ml-2">Zilliqa</span>
-              </div>
-              <div class="transaction__status">
-                <span
-                  :class="txn.direction">
-                  {{ txnStatus(txn.direction) }}
-                  <i
-                    v-if="txn.direction=='out' && !txn.status"
-                    class="eva eva-arrow-upward-outline font-bold ml-1" />
-                  <i
-                    v-else-if="txn.direction=='in'"
-                    class="eva eva-arrow-downward-outline font-bold ml-1" />
-                  <i
-                    v-else-if="txn.direction=='self'"
-                    class="eva eva-radio-button-on-outline ml-1 font-bold" />
-                  <i
-                    v-else-if="txn.status"
-                    class="eva eva-loader-outline rotating ml-1 font-bold" />
-                </span>
+                </div>
+                <div class="transaction__status">
+                  <span
+                    :class="txn.direction">
+                    {{ txnStatus(txn.direction) }}
+                    <i
+                      v-if="txn.direction=='out' && !txn.status"
+                      class="eva eva-arrow-upward-outline font-bold ml-1" />
+                    <i
+                      v-else-if="txn.direction=='in'"
+                      class="eva eva-arrow-downward-outline font-bold ml-1" />
+                    <i
+                      v-else-if="txn.direction=='self'"
+                      class="eva eva-radio-button-on-outline ml-1 font-bold" />
+                    <i
+                      v-else-if="txn.status"
+                      class="eva eva-loader-outline rotating ml-1 font-bold" />
+                  </span>
                 <!-- <span></span> -->
                 <!-- Zilliqa -->
+                </div>
+                <div class="transaction__amount">
+                  <span
+                    :class="{'text-green-600': txn.direction=='in'}"
+                    class="zil">
+                    <span v-if="txn.direction=='in'">+</span>
+                    <span v-else>-</span>
+                    <!-- TODO: Use zilliqa unit function -->
+                    {{ txn.direction=='self'? '--' :amountInZil(txn.value)| currency('', 2) }}
+                  </span>
+                  &nbsp; ZIL
+                  <span
+                    v-if="txn.direction!='self'"
+                    class="usd">
+                    <!-- TODO: Use zilliqa unit function -->
+                    &nbsp; &asymp; &nbsp; {{ amountInUsd(txn.value)| currency('$', 2) }}
+                  </span>
+                </div>
+                <div class="transaction__address">
+                  <span
+                    v-clipboard:copy="`${txn.direction=='in' ? toBech32(txn.from):toBech32(txn.to)}`"
+                    v-clipboard:success="onCopy"
+                    v-clipboard:error="onError">
+                    <jazzicon
+                      :diameter="18"
+                      :address="txn.direction=='in' ? toBase16(txn.from):toBase16(txn.to)"
+                      class="mt-1 mr-2" />
+                    {{ txn.direction=='in' ? toAddress(txn.from):toAddress(txn.to) }}
+                  </span>
+                </div>
+                <div class="transaction__time">
+                  {{ txn.timestamp | moment(" MMM Do, h:mm a") }}
+                </div>
               </div>
-              <div class="transaction__amount">
-                <span
-                  :class="{'text-green-600': txn.direction=='in'}"
-                  class="zil">
-                  <span v-if="txn.direction=='in'">+</span>
-                  <span v-else>-</span>
-                  <!-- TODO: Use zilliqa unit function -->
-                  {{ txn.direction=='self'? '--' :amountInZil(txn.value)| currency('', 2) }}
-                </span>
-                &nbsp; ZIL
-                <span
-                  v-if="txn.direction!='self'"
-                  class="usd">
-                  <!-- TODO: Use zilliqa unit function -->
-                  &nbsp; &asymp; &nbsp; {{ amountInUsd(txn.value)| currency('$', 2) }}
-                </span>
-              </div>
-              <div class="transaction__address">
-                <span
-                  v-clipboard:copy="`${txn.direction=='in' ? toBech32(txn.from):toBech32(txn.to)}`"
-                  v-clipboard:success="onCopy"
-                  v-clipboard:error="onError">
-                  <jazzicon
-                    :diameter="18"
-                    :address="txn.direction=='in' ? toBase16(txn.from):toBase16(txn.to)"
-                    class="mt-1 mr-2" />
-                  {{ txn.direction=='in' ? toAddress(txn.from):toAddress(txn.to) }}
-                </span>
-              </div>
-              <div class="transaction__time">
-                {{ txn.timestamp | moment(" MMM Do, h:mm a") }}
+              <div class="divider" />
+              <div
+                v-if="selectedTxn===txn.hash"
+                class="transaction__bottom-row">
+                <div>
+                  <div class="block tracking-wide text-gray-700 text-sm font-semibold">
+                    Transaction Hash
+                  </div>
+                  <span>
+                    <a
+                      :href="explorerLink(txn.hash)"
+                      class="hover:text-teal-600"
+                      target="_blank">{{ txn.hash }}</a>
+                    <i
+                      v-clipboard:copy="`${txn.hash}`"
+                      v-clipboard:success="onCopyTxn"
+                      v-clipboard:error="onErrorTxn"
+                      class="eva eva-copy-outline" />
+                    <a
+                      :href="explorerLink(txn.hash)"
+                      target="_blank">
+                      <i class="eva eva-external-link-outline" />
+                    </a>
+                  </span>
+                </div>
+                <div class="ml-12">
+                  <div class="block tracking-wide text-gray-700 text-sm font-semibold">
+                    Fee
+                  </div>
+                  <span>
+                    <!-- TODO: Use zilliqa unit function -->
+                    {{ amountInZil(txn.fee) }} ZIL
+                  </span>
+                </div>
               </div>
             </div>
-            <div class="divider" />
-            <div
-              v-if="selectedTxn===txn.hash"
-              class="transaction__bottom-row">
-              <div>
-                <div class="block tracking-wide text-gray-700 text-sm font-semibold">
-                  Transaction Hash
-                </div>
-                <span>
-                  <a
-                    :href="explorerLink(txn.hash)"
-                    class="hover:text-teal-600"
-                    target="_blank">{{ txn.hash }}</a>
-                  <i
-                    v-clipboard:copy="`${txn.hash}`"
-                    v-clipboard:success="onCopyTxn"
-                    v-clipboard:error="onErrorTxn"
-                    class="eva eva-copy-outline" />
-                  <a
-                    :href="explorerLink(txn.hash)"
-                    target="_blank">
-                    <i class="eva eva-external-link-outline" />
-                  </a>
-                </span>
-              </div>
-              <div class="ml-12">
-                <div class="block tracking-wide text-gray-700 text-sm font-semibold">
-                  Fee
-                </div>
-                <span>
-                  <!-- TODO: Use zilliqa unit function -->
-                  {{ amountInZil(txn.fee) }} ZIL
-                </span>
-              </div>
-            </div>
-          </div>
-        </transition-group>
-        <span
-          v-if="transactions.length > 24"
-          class="text-gray-700 pt-4 text-left text-sm italic text-left">
-          * These are only last 25 Transactions
-        </span>
+          </transition-group>
+          <span
+            v-if="transactions.length > 24"
+            class="text-gray-700 pt-4 text-left text-sm italic text-left">
+            * These are only last 25 Transactions
+          </span>
+        </div>
       </div>
     </div>
   </div>
