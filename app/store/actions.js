@@ -20,7 +20,8 @@ export async function nuxtClientInit({ commit, dispatch }, app) {
     if (localTxn) {
       commit('LOAD_LOCAL_TXN', localTxn);
     }
-    await dispatch('getPrice', app.env.cryptocompare);
+    await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'ZIL' });
+    await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'SGD' });
   } catch (error) {}
 }
 export function selectNode({ commit }, node) {
@@ -31,18 +32,18 @@ export function clearWallet({ commit }) {
   this.$zillet.clearAccount();
   commit('CLEAR_WALLET');
 }
-export function getPrice({ commit }, { url, token }) {
+export function getPrice({ commit }, { url, token, symbol }) {
   return new Promise((resolve, reject) => {
     this.$axios
       .$get(url, {
         params: {
-          fsym: 'ZIL',
+          fsym: symbol,
           tsyms: 'BTC,ETH,USD,EUR,INR,',
           api_key: token
         }
       })
       .then(resData => {
-        commit('FETCHED_PRICE', resData);
+        commit('FETCHED_PRICE', { symbol: symbol, data: resData });
         resolve(resData);
       })
       .catch(err => {

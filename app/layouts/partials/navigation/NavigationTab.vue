@@ -23,7 +23,7 @@
           for="tab1"
           role="button">
           <i class="eva eva-diagonal-arrow-right-up-outline font-semibold mr-2" />
-          <span>Send Zilliqa</span>
+          <span>Send </span>
         </label>
       </li>
       <li

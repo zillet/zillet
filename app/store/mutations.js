@@ -40,7 +40,8 @@ export const UPDATE_BALANCE = (state, result) => {
   state.tokenBalances = result;
 };
 export const FETCHED_PRICE = (state, prices) => {
-  state.prices = prices;
+  if (prices.symbol == 'SGD') prices.symbol = 'SXGD';
+  state.prices[prices.symbol] = prices.data;
 };
 export const SAVE_TRANSACTIONS = (state, data) => {
   state.viewblockAccount.txs = data;
@@ -55,19 +56,6 @@ export const SAVE_TRANSACTIONS = (state, data) => {
 export const saveTxn = (state, data) => {
   var txn;
   if (data.type === 'zillet') {
-    txn = {
-      direction: data.toAddr == state.wallet.address ? 'self' : 'out',
-      timestamp: new Date(),
-      hash: '0x' + (data.res && data.res.result && data.res.result.TranID),
-      from: state.wallet.address,
-      to: data.toAddr,
-      value: data.amount,
-      fee: data.gasLimit * data.gasPrice,
-      extra: {},
-      status: 'pending',
-      type: 'transfer',
-      version: state.selectedNode.version
-    };
     state.wallet.nonce = data.nonce;
     let localNonces;
     try {
@@ -80,21 +68,20 @@ export const saveTxn = (state, data) => {
       lastUpdated: +new Date()
     };
     localStorage.setItem('_local_nonces', JSON.stringify(localNonces));
-  } else if (data.type === 'zilpay' || data.type === 'moonlet') {
-    txn = {
-      direction: data.toAddr == state.wallet.address ? 'self' : 'out',
-      timestamp: new Date(),
-      hash: '0x' + data.TranID,
-      from: state.wallet.address,
-      to: data.toAddr,
-      value: data.amount,
-      fee: data.gasLimit * data.gasPrice,
-      extra: {},
-      status: 'pending',
-      type: 'transfer',
-      version: data.version
-    };
   }
+  txn = {
+    direction: data.toAddr == state.wallet.address ? 'self' : 'out',
+    timestamp: new Date(),
+    hash: '0x' + data.TranID,
+    from: state.wallet.address,
+    to: data.toAddr,
+    value: data.amount,
+    fee: data.gasLimit * data.gasPrice,
+    extra: {},
+    status: 'pending',
+    type: 'transfer',
+    version: data.version
+  };
   state.localTxns.push(txn);
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };

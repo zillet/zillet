@@ -228,7 +228,7 @@ export default {
     },
     explorerLink(id) {
       const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
-      return this.selectedNode.id === 1002
+      return this.selectedNode.id == 333
         ? `${this.selectedNode.explorer}tx/${hash}?network=testnet`
         : `${this.selectedNode.explorer}tx/${hash}`;
     },

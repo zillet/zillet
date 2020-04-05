@@ -31,27 +31,33 @@
                 class="fixed inset-0"
                 @click="fromTokenDropDown = false" />
               <span
-                class="flex items-center focus:outline-none bg-white text-gray-900 
-              px-4 py-2 rounded border border-gray-400 w-32"
+                class="flex flex-row items-center justify-between focus:outline-none bg-white text-gray-900 
+                  h-12 border-r-0 bg-gray-100
+                  px-4 py-3 rounded rounded-r-none border border-gray-400 w-full drop-down-select"
                 @click="fromTokenDropDown = !fromTokenDropDown">
                 <span
                   class="inline-block mt-0 hover:text-teal-500
                 block text uppercase tracking-wide cursor-pointer
-                font-semibold text-gray-900 items-center space-between">
-                  <div class="flex flex-column items-center space-between">
+                font-semibold text-gray-900">
+                  <div class="flex flex-column items-center space-between w-16">
                     <img 
                       :src="getImages(fromToken.symbol)" 
                       height="18px" 
                       class="rounded-full"
                       width="18px">
-                    <p 
-                      class="text-gray-800 font-bold pl-4 relative" 
-                      style="top:2px">
+                    <span
+                      class="text-gray-800 font-bold pl-4 relative">
                       {{ fromToken.symbol }}
-                    </p>
+                    </span>
                   </div>
                 </span>
-                <i class="eva eva-arrow-ios-downward-outline ml-1 text-gray-600 text-lg relative right-10" />
+                <i
+                  v-if="!fromTokenDropDown"
+                  class="eva eva-arrow-ios-downward-outline ml-1 text-gray-600 text-lg relative right-6" />
+                <i
+                  v-else
+                  class="eva eva-arrow-ios-upward-outline ml-1 text-gray-600 text-lg relative right-6" />
+
               </span>
               <transition
                 enter-active-class="transition-all transition-fastest ease-out-quad"
@@ -62,12 +68,12 @@
                 leave-to-class="opacity-0 scale-70">
                 <div
                   v-if="fromTokenDropDown"
-                  class="origin-top-right absolute left-0 mt-2 w-64 bg-white rounded border shadow-md z-50 overflow-hidden">
+                  class="origin-top-right absolute left-0 mt-2 w-32 bg-white rounded border shadow-md z-50 overflow-hidden">
                   <div
                     v-for="n in orderBy(tokens,'name')"
                     :key="n.symbol"
                     :class="{'bg-gray-200':fromToken.symbol === n.symbol}"
-                    class="flex items-start text-left px-4 py-2 cursor-pointer hover:bg-grey-lightest"
+                    class="flex items-start text-left px-4 py-3 cursor-pointer hover:bg-grey-lightest"
                     @click="fromTokenChange(n, false)">
                     <div class="text-sm flex flex-column justify-between items-cetenr w-full">
                       <div class="flex flex-column items-center">
@@ -80,22 +86,19 @@
                           {{ n.symbol }}
                         </p>
                       </div>
-                      <p class="text-gray-700 text-xs font-semibold">
+                      <!-- <p class="text-gray-700 text-xs font-semibold">
                         {{ n.balance* Math.pow(10, -1*n.decimals) | currency('', 2) }}
-                      </p>
+                      </p> -->
                     </div>
                   </div>
                 </div>
               </transition>
-              <!-- <vov-select
-            :data="tokens"
-            field="symbol"
-            @change="fromTokenChange"/> -->
             </div>
             <div class="amount__crypto ">
               <z-input
                 v-model.number="transaction.amount"
                 :hide="false"
+                custom-class="rounded-l-none"
                 :valid="validateCryptoAmount"
                 number
                 placeholder="Enter amount here"
@@ -202,7 +205,7 @@
     <div
       class="flex card w-full ml-4"
       style="max-width:300px">
-      <TokenBalance />
+      <TokenBalance @tokenClicked="tokenClicked" />
     </div>
     <z-modal
       :visible="isBroadcast"
@@ -303,7 +306,7 @@ export default {
     ...mapState({
       selectedNode: state => state.selectedNode,
       accessType: state => state.accessType,
-      zrc2: state => state.zrc2
+      zrc2: state => state.tokenBalances
     }),
     tokens() {
       return [
@@ -315,16 +318,32 @@ export default {
       ];
     },
     validateCryptoAmount() {
-      return (
-        this.isNumber(this.transaction.amount) &&
-        parseFloat(this.transaction.amount) < this.Balance.zil
-      );
+      if (!this.isNumber(this.transaction.amount)) {
+        return false;
+      }
+      if (this.fromToken.symbol == 'ZIL') {
+        return parseFloat(this.transaction.amount) < this.Balance.zil;
+      } else {
+        return (
+          parseFloat(this.transaction.amount) <
+          this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals)
+        );
+      }
     },
     validateFiatAmount() {
-      return (
-        this.isNumber(this.usdAmount) &&
-        parseFloat(this.usdAmount) < this.Balance.usd
-      );
+      if (!this.isNumber(this.usdAmount)) {
+        return false;
+      }
+      if (this.fromToken.symbol == 'ZIL') {
+        return parseFloat(this.usdAmount) < this.Balance.usd;
+      } else {
+        return (
+          parseFloat(this.usdAmount) <
+          (this.fromToken.balance *
+            Math.pow(10, -1 * this.fromToken.decimals)) /
+            this.Prices[this.fromToken.symbol].USD
+        );
+      }
     },
     transactionFee() {
       const fee =
@@ -341,14 +360,18 @@ export default {
     usdAmount: {
       handler(value) {
         if (this.isFiatAmountFocus) {
-          this.transaction.amount = (value / this.Prices.USD).toFixed(4);
+          this.transaction.amount = (
+            value / this.Prices[this.fromToken.symbol].USD
+          ).toFixed(4);
         }
       }
     },
     'transaction.amount': {
       handler(value) {
         if (this.isCryptoAmountFocus) {
-          this.usdAmount = (value * this.Prices.USD).toFixed(2);
+          this.usdAmount = (
+            value * this.Prices[this.fromToken.symbol].USD
+          ).toFixed(2);
         }
       }
     }
@@ -399,27 +422,60 @@ export default {
           }
         }
       } catch (error) {
-        console.error(error);
+        console.warn(error);
       }
       if (localNonce > balance.result.nonce) {
         balance.result.nonce = localNonce;
       }
       this.updateBalance(balance.result);
     },
-    async txnViaZilPay(amount, gasPrice) {
+    async txnViaZilPay(amount, gasPrice, tokenAmount) {
       const zilliqa = window.zilPay;
       try {
-        const tx = await zilliqa.blockchain.createTransaction(
-          zilliqa.transactions.new({
+        if (this.fromToken.symbol.toLowerCase() == 'zil') {
+          const raw_tx = await zilliqa.transactions.new({
             toAddr: this.transaction.base16address,
             amount: new BN(amount),
             gasPrice: new BN(gasPrice),
             gasLimit: Long.fromNumber(this.transaction.gasLimit)
-          })
-        );
-        this.txnDone(tx);
-        tx.type = 'zilpay';
-        this.saveTxn(tx);
+          });
+          const tx = await zilliqa.blockchain.createTransaction(raw_tx);
+          this.txnDone(tx);
+          tx.type = 'zilpay';
+          this.saveTxn(tx);
+        } else {
+          let contractAddress;
+          const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
+          if (networkType == 'mainet') {
+            contractAddress = this.fromToken.address;
+          } else {
+            contractAddress = this.fromToken.testnetAddress;
+          }
+          const contract = zilliqa.contracts.at(contractAddress);
+          const tx = await contract.call(
+            'proxyTransfer',
+            [
+              {
+                vname: 'to',
+                type: 'ByStr20',
+                value: toChecksumAddress(this.transaction.base16address)
+              },
+              {
+                vname: 'value',
+                type: 'Uint128',
+                value: `${tokenAmount}`
+              }
+            ],
+            {
+              gasPrice,
+              gasLimit: Long.fromNumber(10000),
+              amount: new BN(0)
+            }
+          );
+          this.txnDone(tx);
+          tx.type = 'zilpay';
+          this.saveTxn(tx);
+        }
       } catch (error) {
         this.loading = false;
         return this.$notify({
@@ -435,35 +491,93 @@ export default {
         sign: m => m
       };
       if (zilliqa) {
-        try {
-          const tx = new Transaction(
-            {
-              toAddr: this.transaction.base16address,
-              amount: new BN(amount),
-              gasPrice: new BN(gasPrice),
-              gasLimit: Long.fromNumber(this.transaction.gasLimit)
-            },
-            moonlet.providers.zilliqa
-          );
-          tx.observed().on('track', trackInfo => {
-            if (trackInfo.attempt === 0) {
-              tx.type = 'moonlet';
-              tx.TranID = trackInfo.txHash;
-              tx.amount = tx.amount.toString(10);
-              tx.gasLimit = tx.gasLimit.toString(10);
-              tx.gasPrice = tx.gasPrice.toString(10);
-              tx.Info = 'Transaction broadcasted';
-              this.txnDone(tx);
-              this.saveTxn(tx);
-            }
-          });
-          const broadcastedTx = await zilliqa.blockchain.createTransaction(tx);
-        } catch (err) {
-          this.loading = false;
-          return this.$notify({
-            message: err.message,
-            type: 'danger'
-          });
+        if (this.fromToken.symbol == 'ZIL') {
+          try {
+            const tx = new Transaction(
+              {
+                toAddr: this.transaction.base16address,
+                amount: new BN(amount),
+                gasPrice: new BN(gasPrice),
+                gasLimit: Long.fromNumber(this.transaction.gasLimit)
+              },
+              moonlet.providers.zilliqa
+            );
+            tx.observed().on('track', trackInfo => {
+              if (trackInfo.attempt === 0) {
+                tx.type = 'moonlet';
+                tx.TranID = trackInfo.txHash;
+                tx.amount = tx.amount.toString(10);
+                tx.gasLimit = tx.gasLimit.toString(10);
+                tx.gasPrice = tx.gasPrice.toString(10);
+                tx.Info = 'Transaction broadcasted';
+                this.txnDone(tx);
+                this.saveTxn(tx);
+              }
+            });
+            const broadcastedTx = await zilliqa.blockchain.createTransaction(
+              tx
+            );
+          } catch (err) {
+            this.loading = false;
+            return this.$notify({
+              message: err.message,
+              type: 'danger'
+            });
+          }
+        } else {
+          const contract = zilliqa.contracts.at(this.getContractAddress());
+          try {
+            const contractTx = await contract.callWithoutConfirm(
+              'proxyTransfer',
+              [
+                {
+                  vname: 'to',
+                  type: 'ByStr20',
+                  value: toChecksumAddress(this.transaction.base16address)
+                },
+                {
+                  vname: 'value',
+                  type: 'Uint128',
+                  value: `${tokenAmount}`
+                }
+              ],
+              {
+                version: VERSION,
+                gasPrice,
+                gasLimit: Long.fromNumber(10000),
+                amount: new BN(0)
+              },
+              false
+            );
+            contractTx.observed().on('track', trackInfo => {
+              if (trackInfo.attempt === 0) {
+                contractTx.type = 'zillet';
+                contractTx.TranID = trackInfo.txHash;
+                contractTx.amount = contractTx.amount.toString(10);
+                contractTx.gasLimit = contractTx.gasLimit.toString(10);
+                contractTx.gasPrice = contractTx.gasPrice.toString(10);
+                contractTx.Info = 'Transaction broadcasted';
+                this.txnDone(contractTx);
+                this.saveTxn(contractTx);
+              }
+            });
+            // check the pending status
+            const pendingStatus = await zilliqa.blockchain.getPendingTxn(
+              contractTx.id
+            );
+            console.log(`Pending status is: `);
+            console.log(pendingStatus.result);
+            // this.txnDone(raw_tx);
+            // this.saveTxn(raw_tx);
+            // process confirm
+            console.log(`The transaction id is:`, contractTx.id);
+            console.log(`Waiting transaction be confirmed`);
+            const confirmedTxn = await contractTx.confirm(contractTx.id);
+            console.log(`The transaction status is:`);
+            console.log(confirmedTxn.receipt);
+          } catch {
+            console.log(error);
+          }
         }
       }
     },
@@ -508,48 +622,35 @@ export default {
     },
     async txnViaZillet(amount, gasPrice, VERSION, tokenAmount) {
       if (this.fromToken.symbol.toLowerCase() == 'zil') {
-        const tx = {
+        const raw_tx = await this.$zillet.transactions.new({
           version: VERSION,
+          toAddr: this.transaction.base16address,
           nonce: this.transaction.nonce
             ? this.transaction.nonce
             : this.Account.nonce + 1,
-          pubKey: this.Account.publicKey,
-          toAddr: toChecksumAddress(this.transaction.base16address).slice(2),
-          amount: new BN(amount),
+          amount: amount,
           gasPrice: new BN(gasPrice),
           gasLimit: Long.fromNumber(this.transaction.gasLimit)
-        };
-        // encoding transaction
-        const msg = await util.encodeTransactionProto(tx);
-        // signing transasction
-        const signature = await sign(
-          msg,
-          this.Account.privateKey,
-          this.Account.publicKey
+        });
+        raw_tx.observed().on('track', trackInfo => {
+          if (trackInfo.attempt === 0) {
+            raw_tx.type = 'zillet';
+            raw_tx.TranID = trackInfo.txHash;
+            raw_tx.amount = raw_tx.amount.toString(10);
+            raw_tx.gasLimit = raw_tx.gasLimit.toString(10);
+            raw_tx.gasPrice = raw_tx.gasPrice.toString(10);
+            raw_tx.Info = 'Transaction broadcasted';
+            this.txnDone(raw_tx);
+            this.saveTxn(raw_tx);
+          }
+        });
+        let broadcastedTx = await this.$zillet.blockchain.createTransaction(
+          raw_tx
         );
-        // signed transaction object
-        this.signedTx = {
-          ...tx,
-          amount: tx.amount.toString(),
-          gasPrice: tx.gasPrice.toString(),
-          gasLimit: tx.gasLimit.toString(),
-          data: '',
-          code: '',
-          signature
-        };
-        this.loading = false;
-        this.sendTxn();
       } else {
-        let contractAddress;
-        const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
-        if (networkType == 'mainet') {
-          contractAddress = this.fromToken.address;
-        } else {
-          contractAddress = this.fromToken.testnetAddress;
-        }
-        const contract = this.$zillet.contracts.at(contractAddress);
+        const contract = this.$zillet.contracts.at(this.getContractAddress());
         try {
-          const tx = await contract.call(
+          const contractTx = await contract.callWithoutConfirm(
             'proxyTransfer',
             [
               {
@@ -560,20 +661,43 @@ export default {
               {
                 vname: 'value',
                 type: 'Uint128',
-                value: String(tokenAmount)
+                value: `${tokenAmount}`
               }
             ],
             {
               version: VERSION,
               gasPrice,
-              gasLimit: Long.fromNumber(9000),
+              gasLimit: Long.fromNumber(10000),
               amount: new BN(0)
-            }
+            },
+            false
           );
-          tx.observed().on('track', trackInfo => {
-            console.log(trackInfo);
+          contractTx.observed().on('track', trackInfo => {
+            if (trackInfo.attempt === 0) {
+              contractTx.type = 'zillet';
+              contractTx.TranID = trackInfo.txHash;
+              contractTx.amount = contractTx.amount.toString(10);
+              contractTx.gasLimit = contractTx.gasLimit.toString(10);
+              contractTx.gasPrice = contractTx.gasPrice.toString(10);
+              contractTx.Info = 'Transaction broadcasted';
+              this.txnDone(contractTx);
+              this.saveTxn(contractTx);
+            }
           });
-          console.log(tx);
+          // check the pending status
+          const pendingStatus = await this.$zillet.blockchain.getPendingTxn(
+            contractTx.id
+          );
+          console.log(`Pending status is: `);
+          console.log(pendingStatus.result);
+          // this.txnDone(raw_tx);
+          // this.saveTxn(raw_tx);
+          // process confirm
+          console.log(`The transaction id is:`, contractTx.id);
+          console.log(`Waiting transaction be confirmed`);
+          const confirmedTxn = await contractTx.confirm(contractTx.id);
+          console.log(`The transaction status is:`);
+          console.log(confirmedTxn.receipt);
         } catch (err) {
           console.log(err);
         }
@@ -590,11 +714,15 @@ export default {
       this.loading = true;
       const VERSION = this.selectedNode.version;
       let tokenAmount = 0;
-      if (this.fromToken.symbol.toLowerCase() != 'zil') {
-        tokenAmount = this.transaction.amount;
-        this.transaction.amount = 0;
-      }
       let amount = units.toQa(this.transaction.amount, units.Units.Zil);
+      if (this.fromToken.symbol.toLowerCase() != 'zil') {
+        tokenAmount = new BN(
+          parseInt(
+            this.transaction.amount * Math.pow(10, this.fromToken.decimals)
+          )
+        ).toString();
+        amount = new BN(0);
+      }
       await this.updateWallet();
       const fee = units.toQa(this.transactionFee, units.Units.Zil);
       const balance = new BN(this.Account.balance);
@@ -671,25 +799,34 @@ export default {
       }
     },
     explorerLink(tx) {
-      return this.selectedNode.id === 333
+      return this.selectedNode.id == 333
         ? `${this.selectedNode.explorer}tx/${tx}?network=testnet`
         : `${this.selectedNode.explorer}tx/${tx}`;
     },
     fullAmount() {
-      const balance = this.Balance.zil;
-      const fee = this.transactionFee;
-      const amount = parseFloat((balance - fee).toPrecision(12));
-      if (amount > 0) {
-        this.transaction.amount = amount;
-        this.usdAmount = (this.transaction.amount * this.Prices.USD).toFixed(2);
+      if (this.fromToken.symbol == 'ZIL') {
+        const balance = this.Balance.zil;
+        const fee = this.transactionFee;
+        const amount = parseFloat((balance - fee).toPrecision(12));
+        if (amount > 0) {
+          this.transaction.amount = amount;
+        } else {
+          this.transaction.amount = 0;
+          this.usdAmount = 0;
+          this.$notify({
+            message: 'Your balance seems low',
+            type: 'danger'
+          });
+        }
       } else {
-        this.transaction.amount = 0;
-        this.usdAmount = 0;
-        this.$notify({
-          message: 'Your balance seems low',
-          type: 'danger'
-        });
+        const balance = parseFloat(
+          this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals)
+        ).toPrecision(4);
+        this.transaction.amount = balance;
       }
+      this.usdAmount = (
+        this.transaction.amount * this.Prices[this.fromToken.symbol].USD
+      ).toFixed(2);
     },
     cryptoAmountFocus(test) {
       this.isCryptoAmountFocus = true;
@@ -707,6 +844,21 @@ export default {
       return this.tokens.find(element => {
         return element.symbol == symbol;
       });
+    },
+    getContractAddress() {
+      let contractAddress;
+      const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
+      if (networkType == 'mainet') {
+        contractAddress = this.fromToken.address;
+      } else {
+        contractAddress = this.fromToken.testnetAddress;
+      }
+      return contractAddress;
+    },
+    tokenClicked(token) {
+      console.log(token);
+      this.fromToken = token;
+      this.fullAmount();
     }
   }
 };
@@ -721,7 +873,7 @@ export default {
     }
     &__btn {
       @apply text-teal-600 text-sm cursor-pointer;
-      margin-left: 11.3rem;
+      margin-left: 15.3rem;
     }
   }
   .amount-form {
@@ -751,5 +903,8 @@ export default {
 }
 .gas__space {
   width: 3rem;
+}
+.drop-down-select {
+  @include no-select;
 }
 </style>

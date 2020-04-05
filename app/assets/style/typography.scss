@@ -1,0 +1,52 @@
+@font-face {
+  font-family: Jost;
+  src: url(../fonts/Jost-400-Book.otf);
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Jost;
+  src: url(../fonts/Jost-500-Medium.otf);
+  font-weight: bold;
+  font-display: swap;
+}
+
+/* Smaller text for mobile */
+@media screen and (max-width: 750px) {
+  html {
+    font-size: 99%;
+  }
+}
+
+.lead {
+  font-size: 1.2rem;
+}
+
+.small {
+  font-size: 0.8em;
+}
+
+h1,
+h2,
+.lead {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+p {
+  letter-spacing: -.15px;
+  &:last-child {
+    margin: 0;
+  }
+}
+
+li {
+  letter-spacing: -.15px;
+}
+
+
+.uppercase {
+  text-transform: uppercase;
+}
+

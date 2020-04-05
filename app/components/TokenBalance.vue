@@ -12,10 +12,19 @@
           <img
             :src="getImages(token.symbol)"
             class="token__icon rounded-full">
-          {{ token.symbol }}
+          <p class="ml-1 uppercase font-semibold">
+            {{ token.symbol }}
+          </p>
         </div>
-        <div class="flex">
-          {{ token.balance*Math.pow(10, -1*token.decimals) | currency('', 2) }}
+        <div
+          class="flex items-center"
+          @click="$emit('tokenClicked', token)">
+          <div class="flex underline font-bold cursor-pointer">
+            {{ token.balance*Math.pow(10, -1*token.decimals) | currency('', 2) }}
+          </div>
+          <div class="ml-2 text-xs font-semibold text-gray-700">
+            ≈  {{ amountInUsd(token) | currency('$', 2) }}
+          </div>
         </div>
       </div>
     </div>
@@ -27,6 +36,7 @@ import { getImages } from '@/utils';
 export default {
   name: 'TokenBalance',
   computed: {
+    ...mapGetters(['Account', 'Prices', 'Balance']),
     ...mapState({
       tokens: state => state.zrc2,
       tokenBalances: state => state.tokenBalances
@@ -42,7 +52,18 @@ export default {
   },
   methods: {
     ...mapActions(['fetchBalance']),
-    getImages
+    getImages,
+    amountInUsd(token) {
+      try {
+        return (
+          token.balance *
+          Math.pow(10, -1 * token.decimals) *
+          this.Prices[token.symbol].USD
+        );
+      } catch (error) {
+        return 0;
+      }
+    }
   }
 };
 </script>
