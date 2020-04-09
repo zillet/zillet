@@ -135,6 +135,8 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { units, BN, validation, isHex } from '@zilliqa-js/util';
 import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
+import { getImages } from '@/utils';
+
 export default {
   name: 'Home',
   middleware: 'ifKeyExists',
@@ -163,6 +165,7 @@ export default {
       let txn = this.localTxns.filter(function(obj) {
         return obj.from == address || obj.to == address;
       });
+      console.log(this.viewTxns);
       const tx = [...txn, ...this.viewTxns];
       return this.orderBy(tx, 'timestamp', -1);
     }
@@ -184,6 +187,7 @@ export default {
   },
   methods: {
     ...mapActions(['getTransactions']),
+    getImages,
     async fetchTransactions() {
       this.loading = true;
       this.requestParams.address = this.Account.address;

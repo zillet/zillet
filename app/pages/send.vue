@@ -468,8 +468,8 @@ export default {
             ],
             {
               gasPrice,
-              gasLimit: Long.fromNumber(10000),
-              amount: new BN(0)
+              amount: new BN(0),
+              gasLimit: Long.fromNumber(this.transaction.gasLimit)
             }
           );
           this.txnDone(tx);
@@ -544,7 +544,7 @@ export default {
               {
                 version: VERSION,
                 gasPrice,
-                gasLimit: Long.fromNumber(10000),
+                gasLimit: Long.fromNumber(this.transaction.gasLimit),
                 amount: new BN(0)
               },
               false
@@ -667,7 +667,7 @@ export default {
             {
               version: VERSION,
               gasPrice,
-              gasLimit: Long.fromNumber(10000),
+              gasLimit: Long.fromNumber(this.transaction.gasLimit),
               amount: new BN(0)
             },
             false
@@ -838,6 +838,9 @@ export default {
     },
     fromTokenChange(token) {
       this.fromToken = token;
+      if (this.fromToken.symbol != 'ZIL') {
+        this.transaction.gasLimit = 10000;
+      }
       this.fromTokenDropDown = false;
     },
     contractBySymbol(symbol) {
