@@ -9,7 +9,6 @@ import Textarea from './textarea';
 import Upload from './upload';
 import Link from './link';
 import Loader from './loader';
-import Dropdown from './Dropdown';
 import { Table, TableColumn } from './table';
 
 export {
@@ -25,6 +24,5 @@ export {
   Link,
   Loader,
   Table,
-  TableColumn,
-  Dropdown
+  TableColumn
 };
