@@ -22,15 +22,55 @@ export async function nuxtClientInit({ commit, dispatch }, app) {
     }
     await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'ZIL' });
     await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'SGD' });
+    await dispatch('getZrc2List');
   } catch (error) {}
 }
-export function selectNode({ commit }, node) {
+export function selectNode({ commit, getters, dispatch }, node) {
   this.$zillet.setProvider(new HTTPProvider(node.url));
   commit('SELECT_NODE', node);
+  if (getters.LoggedIn) {
+    dispatch('fetchBalance');
+  }
 }
 export function clearWallet({ commit }) {
   this.$zillet.clearAccount();
   commit('CLEAR_WALLET');
+}
+export function getContract({ commit }, contractAddress) {
+  return new Promise(async (resolve, reject) => {
+    let details = {};
+    try {
+      const contract = await this.$zillet.contracts.at(contractAddress);
+      const contractInit = await contract.getInit();
+      if (contractInit) {
+        contractInit.forEach(el => {
+          if (['decimals', 'name', 'symbol'].includes(el.vname)) {
+            details[el.vname] = el.value;
+          }
+        });
+        resolve(details);
+      } else {
+        reject(Error('Not a contract address'));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+export function getZrc2List({ commit }) {
+  return new Promise((resolve, reject) => {
+    this.$axios
+      .$get(
+        'https://raw.githubusercontent.com/zillet/zrc2-tokens/master/zrc2.json'
+      )
+      .then(resData => {
+        commit('UPDATE_ZRC2_LIST', resData);
+        resolve(resData);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 export function getPrice({ commit }, { url, token, symbol }) {
   return new Promise((resolve, reject) => {
@@ -133,11 +173,24 @@ export function fetchBalance({ commit, state, getters }) {
         } else {
           deployedContract = t.$zillet.contracts.at(element.testnetAddress);
         }
-        const bal = await deployedContract.getSubState('balances', [address]);
-        balances.push({
-          ...element,
-          balance: bal.balances[address]
-        });
+        let bal;
+        if (element.symbol == 'XSGD') {
+          bal = await deployedContract.getSubState('balances', [address]);
+          if (bal && bal.balances) {
+            balances.push({
+              ...element,
+              balance: bal.balances[address]
+            });
+          }
+        } else {
+          bal = await deployedContract.getSubState('balances_map', [address]);
+          if (bal && bal.balances_map) {
+            balances.push({
+              ...element,
+              balance: bal.balances_map[address]
+            });
+          }
+        }
         if (index == state.zrc2.length - 1) {
           commit('UPDATE_BALANCE', balances);
           commit('SUCCESS');

@@ -45,7 +45,7 @@
           </div>
           <div class="account-info__amount">
             <span class="zil">
-              {{ Balance.zil }} ZIL
+              {{ Balance.zil && Number(Balance.zil).toFixed(4) }} ZIL
             </span>
             <span class="usd">
               &nbsp; &asymp; &nbsp; {{ Balance.usd | currency('$', 3) }}

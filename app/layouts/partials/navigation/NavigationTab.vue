@@ -46,6 +46,16 @@
           <span>Wallet Info</span>
         </label>
       </li>
+      <!-- <li
+        title="Wallet Info"
+        @click="$emit('tabSelected', 'contract')">
+        <label
+          for="tab3"
+          role="button">
+          <i class="eva eva-eye-outline font-semibold mr-2" />
+          <span>Contract</span>
+        </label>
+      </li> -->
     </ul>
     <div class="slider">
       <div class="indicator" />

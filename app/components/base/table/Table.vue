@@ -4,7 +4,7 @@
   <div>
     <table
       class="text-left w-full bc-table"
-      style="border-collapse:collapse">
+      style="border-collapse: separate;border-spacing: 0 1em;">
       <thead>
         <tr>
           <th
@@ -50,7 +50,7 @@
         <template v-for="(row, index) in data">
           <tr
             :key="uniqueKey? row[uniqueKey] :index"
-            class="hover:bg-gray-100 cursor-pointer"
+            class="border hover:shadow-sm rounded"
             @click="$emit('rowClicked', row, index)">
             <td
               v-if="checkable"
@@ -279,9 +279,16 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.bc-table {
+  border-collapse: separate;
+  border-spacing: 0 1em;
+  td {
+    // @apply text-sm font-semibold border-b border-gray-300;
+  }
+}
 .table-header {
   @apply py-2 px-4  font-medium;
-  @apply text-sm font-semibold border-b border-gray-300;
+  @apply text-sm font-semibold border-b border-gray-300 bg-gray-100;
 }
 .checkbox-header {
   @apply pr-0;
@@ -304,7 +311,7 @@ export default {
       @apply flex w-auto justify-between text-right border-gray-200 px-0;
     }
     tr {
-      @apply mb-8 border-b cursor-pointer;
+      @apply mb-8 cursor-pointer;
       max-width: 100%;
       position: relative;
       display: block;
