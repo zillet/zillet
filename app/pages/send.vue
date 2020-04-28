@@ -5,7 +5,6 @@
         <h3 class="font-semibold text-xl mb-4 text-left">
           Send Zilliqa and Tokens
         </h3>
-       
         <div>
           <div class="tracking-wide text-sm font-semibold mb-2">
             Recipient Address
@@ -55,7 +54,6 @@
                         class="text-gray-800 font-bold pl-2 relative">
                         {{ fromToken.symbol }}
                       </span>
-                      
                     </div>
                   </span>
                   <i
@@ -594,7 +592,6 @@ export default {
       };
       try {
         const signature = await ledgerZil.signTxn(hwIndex, txParams);
-
         this.signedTx = {
           ...txParams,
           amount: txParams.amount.toString(),
