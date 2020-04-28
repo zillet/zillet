@@ -11,7 +11,7 @@
         v-model="transaction.address"
         :hide="false"
         class="mb-2"
-        placeholder="Enter Zilliqa Mainnet address here" />
+        :placeholder="`Enter Zilliqa ${selectedNode.id==1? 'Mainnet':'Testnet'} address here`" />
       <z-alert
         type="danger"
         class="mb-6">
@@ -521,7 +521,7 @@ export default {
       }
     },
     explorerLink(tx) {
-      return this.selectedNode.id === 333
+      return this.selectedNode.id == 333
         ? `${this.selectedNode.explorer}tx/${tx}?network=testnet`
         : `${this.selectedNode.explorer}tx/${tx}`;
     },
