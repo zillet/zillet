@@ -574,19 +574,30 @@ export default {
       }
       this.loading = false;
     },
-    async txnViaLedger(amount, gasPrice, VERSION) {
+    async txnViaLedger(tx) {
       const transport = await ZilliqaHW.create();
       const ledgerZil = new ZilliqaHW(transport);
       const hwIndex = this.Account.index;
-      const type = 'CreateTransaction';
+      let {
+        type,
+        gasPrice,
+        VERSION,
+        nonce,
+        base16address,
+        gasLimit,
+        amount,
+        tokenAmount,
+        token,
+        contractMethod
+      } = tx;
       const txParams = {
         version: VERSION,
-        nonce: this.Account.nonce + 1,
+        nonce: nonce,
         pubKey: this.Account.publicKey,
-        toAddr: this.transaction.base16address,
+        toAddr: base16address,
         amount: new BN(amount),
         gasPrice: new BN(gasPrice),
-        gasLimit: Long.fromNumber(this.transaction.gasLimit),
+        gasLimit: Long.fromNumber(gasLimit),
         data: '',
         code: ''
       };
@@ -601,7 +612,6 @@ export default {
           code: '',
           signature
         };
-
         this.sendTxn();
       } catch (err) {
         this.$notify({
@@ -750,7 +760,7 @@ export default {
       } else if (this.accessType === 1005) {
         return await this.txnViaMoonlet(tx);
       } else if (this.accessType === 1006) {
-        return await this.txnViaLedger(amount, gasPrice, VERSION, tokenAmount);
+        return await this.txnViaLedger(tx);
       } else {
         return await this.txnViaZillet(tx);
       }
