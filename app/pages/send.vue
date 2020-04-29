@@ -590,17 +590,38 @@ export default {
         token,
         contractMethod
       } = tx;
-      const txParams = {
+      let txParams = {
         version: VERSION,
         nonce: nonce,
         pubKey: this.Account.publicKey,
         toAddr: base16address,
         amount: new BN(amount),
         gasPrice: new BN(gasPrice),
-        gasLimit: Long.fromNumber(gasLimit),
-        data: '',
-        code: ''
+        gasLimit: Long.fromNumber(gasLimit)
       };
+      if (type == 'normal') {
+        txParams['data'] = '';
+        txParams['code'] = '';
+      } else {
+        let { contractAddress } = tx;
+        tx['toAddr'] = contractAddress;
+        const contractParams = {
+          _tag: contractMethod,
+          params: tokenTransfer(toChecksumAddress(base16address), tokenAmount)
+        };
+        raw_tx = new Transaction(
+          {
+            ...txParams,
+            toAddr: contractAddress,
+            data: JSON.stringify(contractParams)
+          },
+          false
+        );
+        const { data, code } = raw_tx;
+        txParams[data] = data;
+        txParams[code] = code;
+        console.log(raw_tx, tx);
+      }
       try {
         const signature = await ledgerZil.signTxn(hwIndex, txParams);
         this.signedTx = {
@@ -657,7 +678,6 @@ export default {
             toChecksumAddress(base16address),
             tokenAmount
           );
-          console.log(contractMethod, contractParams);
           if (token.symbol == 'XSGD') {
             contractParams[1].vname = 'value';
           }
@@ -770,6 +790,7 @@ export default {
       try {
         this.loading = true;
         const { result } = await this.sendTransaction(this.signedTx);
+        console.log(result);
         this.txnDone(result);
       } catch (error) {
         this.loading = false;
