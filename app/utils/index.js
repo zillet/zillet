@@ -61,4 +61,24 @@ function tokenTransfer(address, amount) {
     }
   ];
 }
-export { getImages, formatTransaction, tokenTransfer, formatLocalTransaction };
+function openAddressOnVb(node, bech32Address) {
+  const link =
+    node.id == 333
+      ? `${node.explorer}address/${bech32Address}?network=testnet`
+      : `${node.explorer}address/${bech32Address}`;
+  window.open(link, '_blank');
+}
+function openTxOnVb(node, id) {
+  let hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
+  return node.id == 333
+    ? `${node.explorer}tx/${hash}?network=testnet`
+    : `${node.explorer}tx/${hash}`;
+}
+export {
+  getImages,
+  formatTransaction,
+  tokenTransfer,
+  formatLocalTransaction,
+  openAddressOnVb,
+  openTxOnVb
+};

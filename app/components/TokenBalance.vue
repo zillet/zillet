@@ -2,7 +2,7 @@
   <div class="w-full">
     <div class="flex flex-row items-center justify-between">
       <h3 class="font-semibold text-xl my-0 text-left">
-        Tokens
+        Tokens 
       </h3>
       <z-button
         class="m-0 p-1 px-4 text-sm rounded"
@@ -12,22 +12,10 @@
       </z-button>
     </div>
     <div class="h-full">
-      <Loader v-if="loading" />
-      <div
-        v-else-if="!sortTokenBalances.length && !loading"
-        class="flex flex-col items-center justify-center h-full">
-        <img
-          src="@/assets/illustrations/no_data.svg"
-          height="150"
-          width="150">
-        <p class="font-semibold text-gray-700 text-sm pt-12">
-          No ZRC2 token available.<br>
-          <span class="text-xs italic text-gray-700 font-normal">* Click on `Add token` to add a custom ZRC2</span>
-        </p>
-      </div>
+      <Loader v-if="loading || fetching" />
       <div
         v-for="bal in sortTokenBalances"
-        v-else
+        v-else-if="sortTokenBalances.length"
         :key="bal.symbol"
         class="flex flex-row justify-between items-center border-b pb-2 pt-3">
         <div class="flex">
@@ -35,7 +23,7 @@
             :src="getImages(bal.symbol)"
             :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
             class="token__icon rounded">
-          <p class="ml-1 uppercase font-semibold">
+          <p class="ml-2 uppercase font-semibold">
             {{ bal.symbol }}
           </p>
         </div>
@@ -45,10 +33,24 @@
           <div class="flex  font-bold cursor-pointer">
             {{ bal.balance*Math.pow(10, -1*bal.decimals) | currency('', 2) }}
           </div>
-          <div class="ml-2 text-xs font-semibold text-gray-700">
+          <div
+            v-if="amountInUsd(bal) > 0"
+            class="ml-2 text-xs font-semibold text-gray-700">
             ≈  {{ amountInUsd(bal) | currency('$', 2) }}
           </div>
         </div>
+      </div>
+      <div
+        v-else
+        class="flex flex-col items-center justify-center h-full">
+        <img
+          src="@/assets/illustrations/no_data.svg"
+          height="150"
+          width="150">
+        <p class="font-semibold text-gray-700 text-sm pt-12">
+          No ZRC2 token available.<br>
+          <span class="text-xs italic text-gray-700 font-normal">* Click on `Add token` to add a custom ZRC2</span>
+        </p>
       </div>
     </div>
     <!-- ADd new token modal -->
@@ -127,7 +129,7 @@ export default {
         symbol: '',
         decimals: ''
       },
-      fetching: false
+      fetching: true
     };
   },
   computed: {
@@ -154,12 +156,9 @@ export default {
       }
     }
   },
-  beforeMount() {
-    // console.log(this.tokens);
-    // const deployedContract = this.$zillet.contracts.at(
-    //   this.tokens[0].testnetAddress
-    // );
-    // console.log(deployedContract);
+  async beforeMount() {
+    await this.fetchBalance();
+    this.fetching = false;
   },
   methods: {
     ...mapActions(['fetchBalance', 'getContract', 'getZrc2List']),

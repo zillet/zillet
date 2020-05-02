@@ -8,12 +8,14 @@
         <z-button
           class="m-0 p-2 px-4 text-sm"
           type="default"
-          size="mini">
+          size="mini"
+          @click="openAddressOnVb(selectedNode, Account.bech32Address)">
           <img
             src="@/assets/icons/viewblock.png"
             height="20"
             class="mr-4"
-            width="20">
+            width="20"
+          >
           Check on Viewblock.io
         </z-button>
       </div>
@@ -37,7 +39,7 @@
               sortable
               class="font-semibold">
               <a
-                :href="explorerLink(scope.row.hash)"
+                :href="openTxOnVb(selectedNode, scope.row.hash)"
                 class="text-teal-700 font-semibold"
                 target="_blank">{{ formatTxHash(scope.row.hash) }}</a>
               <!-- <a
@@ -181,6 +183,7 @@ import Vue2Filters from 'vue2-filters';
 import { units, BN, validation, isHex } from '@zilliqa-js/util';
 import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
 import { getImages } from '@/utils';
+import { openAddressOnVb, openTxOnVb } from '@/utils';
 export default {
   name: 'Home',
   middleware: 'ifKeyExists',
@@ -199,6 +202,7 @@ export default {
   },
   computed: {
     ...mapGetters(['Account', 'Prices']),
+
     ...mapState({
       viewTxns: state => state.viewblockAccount.txs,
       selectedNode: state => state.selectedNode,
@@ -231,6 +235,8 @@ export default {
   methods: {
     ...mapActions(['getTransactions']),
     getImages,
+    openAddressOnVb,
+    openTxOnVb,
     async fetchTransactions() {
       this.loading = true;
       this.requestParams.address = this.Account.address;
@@ -276,12 +282,6 @@ export default {
     formatTxHash(txhash) {
       return `${txhash && txhash.substr(0, 6)}...${txhash &&
         txhash.substr(60)}`;
-    },
-    explorerLink(id) {
-      const hash = id && id.substr(0, 2) === '0x' ? id : `0x${id}`;
-      return this.selectedNode.id == 333
-        ? `${this.selectedNode.explorer}tx/${hash}?network=testnet`
-        : `${this.selectedNode.explorer}tx/${hash}`;
     },
     toggleTxn(hash) {
       if (hash == this.selectedTxn) {

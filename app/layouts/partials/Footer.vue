@@ -7,7 +7,7 @@
           target="_blank"
           rel="noopener noreferrer">
           <i class="eva eva-github mr-1" />
-          v0.2.7
+          v{{ version }}
         </a>
         <a
           href="https://twitter.com/zilletio"
@@ -103,13 +103,16 @@
   </div>
 </template>
 <script>
+import pkg from './../../../package.json';
+console.log(pkg);
 export default {
   name: 'Footer',
   data() {
     return {
       showDisclaimer: false,
       hasConsent: false,
-      isReporting: false
+      isReporting: false,
+      version: pkg.version
     };
   },
   watch: {

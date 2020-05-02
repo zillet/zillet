@@ -11,7 +11,9 @@
               :diameter="22"
               :address="Account.address"
               class="mt-1 mr-2" />
-            <h3 class="truncate">
+            <h3
+              class="truncate hover:text-primary cursor-pointer"
+              @click="openAddressOnVb(selectedNode, Account.bech32Address)">
               {{ `${Account.bech32Address}` }}
               <!-- <span
                 data-balloon="This is the new bech32 address which derives from the old address and supported by all the exchanges and wallets. You can check your old 20 bytes, base 16 address in Wallet Info page. kindly use this new address to receive funds. Note that your funds are not affected in any way."
@@ -83,6 +85,18 @@
           Scan QR code to import Address
         </p>
         <z-button
+          class="m-0 p-2 px-4 text-sm"
+          type="default"
+          size="mini"
+          @click="openAddressOnVb(selectedNode, Account.bech32Address)">
+          <img
+            src="@/assets/icons/viewblock.png"
+            height="20"
+            class="mr-4"
+            width="20">
+          Check on Viewblock.io
+        </z-button>
+        <z-button
           type="default"
           class="mt-6 w-full"
           rounded
@@ -96,6 +110,7 @@
 <script>
 import { mapGetters, mapMutations, mapState } from 'vuex';
 import NavigationTab from './NavigationTab';
+import { openAddressOnVb } from '@/utils';
 export default {
   components: {
     NavigationTab
@@ -128,6 +143,7 @@ export default {
   },
   methods: {
     ...mapMutations(['updateBalance']),
+    openAddressOnVb,
     async fetchBalance() {
       try {
         this.$nuxt.$loading.start();

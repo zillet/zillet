@@ -13,7 +13,7 @@
             v-model="transaction.address"
             :hide="false"
             class="mb-2"
-            placeholder="Enter Zilliqa Mainnet address here" />
+            :placeholder="`Enter Zilliqa ${selectedNode.id==1? 'Mainnet':'Testnet'} address here`" />
         </div>
         <div class="flex flex-row amount-wrapper items-end">
           <div class="flex flex-col w-3/5">
@@ -246,7 +246,7 @@
           </div>
           <div class="w-1/2 px-2">
             <a
-              :href="explorerLink(`0x${tranxId}`)"
+              :href="openTxOnVb(selectedNode, `0x${tranxId}`)"
               target="_blank"
               rounded
               class="w-full flex-1">
@@ -266,7 +266,8 @@
 import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { BN, Long, validation, units } from '@zilliqa-js/util';
-import { getImages, tokenTransfer } from '@/utils';
+import { getImages, tokenTransfer, openTxOnVb } from '@/utils';
+
 import {
   fromBech32Address,
   isValidChecksumAddress,
@@ -431,6 +432,7 @@ export default {
     ...mapMutations(['updateBalance', 'saveTxn']),
     isNumber: isNumber,
     getImages,
+    openTxOnVb,
     normaliseAddress(address) {
       if (validation.isBech32(address)) {
         this.transaction.base16address = fromBech32Address(address);
@@ -514,13 +516,11 @@ export default {
         sentTx.via = via;
         this.saveTxn(sentTx);
       } catch (error) {
-        this.loading = false;
-        return this.$notify({
+        this.$notify({
           message: error,
           type: 'danger'
         });
       }
-      this.loading = false;
     },
     async txnViaMoonlet(tx) {
       const zilliqa = new Zilliqa('', window.moonlet.providers.zilliqa);
@@ -531,7 +531,6 @@ export default {
       let { type, gasPrice, amount, base16address, gasLimit } = tx;
       let sentTx;
       let via = 'moonlet';
-
       if (type == 'normal') {
         const raw_tx = new Transaction(
           {
@@ -572,7 +571,6 @@ export default {
         sentTx.rawTx = tx;
         this.saveTxn(sentTx);
       }
-      this.loading = false;
     },
     async txnViaLedger(tx) {
       const transport = await ZilliqaHW.create();
@@ -641,7 +639,6 @@ export default {
         });
         // Add will some notify about user denied transaction.
       }
-      this.loading = false;
     },
     async txnViaZillet(tx) {
       try {
@@ -702,14 +699,11 @@ export default {
           this.saveTxn(sentTx);
         }
       } catch (error) {
-        console.error(error);
-        this.loading = false;
         this.$notify({
           message: error.message,
           type: 'danger'
         });
       }
-      this.loading = false;
     },
     async createTxn() {
       // Applying checks
@@ -776,16 +770,19 @@ export default {
       }
       // Making transactions
       if (this.accessType === 1004) {
-        return await this.txnViaZilPay(tx);
+        await this.txnViaZilPay(tx);
       } else if (this.accessType === 1005) {
-        return await this.txnViaMoonlet(tx);
+        await this.txnViaMoonlet(tx);
       } else if (this.accessType === 1006) {
-        return await this.txnViaLedger(tx);
+        await this.txnViaLedger(tx);
       } else {
-        return await this.txnViaZillet(tx);
+        await this.txnViaZillet(tx);
       }
+      if (tx.type === 'contract') {
+        await this.fetchBalance();
+      }
+      this.loading = false;
     },
-    async sentToken() {},
     async sendTxn() {
       try {
         this.loading = true;
@@ -839,11 +836,6 @@ export default {
           this.saveTxn(raw_tx);
         }
       });
-    },
-    explorerLink(tx) {
-      return this.selectedNode.id == 333
-        ? `${this.selectedNode.explorer}tx/${tx}?network=testnet`
-        : `${this.selectedNode.explorer}tx/${tx}`;
     },
     fullAmount() {
       if (this.fromToken.symbol == 'ZIL') {
@@ -911,10 +903,9 @@ export default {
     showTokenDropDown() {
       this.fromTokenDropDown = true;
       // const t = this;
-      // console.log(t.$refs)
       // setTimeout(() => {
-      //   t.$refs.typeBox.focus();
-      // }, 1);
+      //   console.log(t.$refs.typeBox);
+      // }, 10);
     }
   }
 };
