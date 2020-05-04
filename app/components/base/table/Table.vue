@@ -50,7 +50,7 @@
         <template v-for="(row, index) in data">
           <tr
             :key="uniqueKey? row[uniqueKey] :index"
-            class="border hover:shadow-sm rounded"
+            class="border hover:shadow-sm rounded mobile:p-4"
             @click="$emit('rowClicked', row, index)">
             <td
               v-if="checkable"

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-full">
+  <div class="flex flex-row w-full mobile:flex-col">
     <div class="card w-full overflow-visible">
       <div class="max-w-2xl m-auto text-left">
         <h3 class="font-semibold text-xl mb-4 text-left">
@@ -219,8 +219,8 @@
       </div>
     </div>
     <div
-      class="flex card w-full ml-4 px-6"
-      style="max-width:330px">
+      class="flex card w-full ml-4 px-6 mobile:mt-4 mobile:w-full mobile:mb-8 max-w-sm mobile:max-w-full mobile:mx-0"
+      style="">
       <TokenBalance @tokenClicked="tokenClicked" />
     </div>
     <z-modal
@@ -425,7 +425,6 @@ export default {
         type: 'danger'
       });
     }
-    this.fetchBalance();
   },
   methods: {
     ...mapActions(['sendTransaction', 'fetchBalance']),

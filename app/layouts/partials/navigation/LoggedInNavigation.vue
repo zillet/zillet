@@ -85,9 +85,8 @@
           Scan QR code to import Address
         </p>
         <z-button
-          class="m-0 p-2 px-4 text-sm"
+          class="text-sm mt-6 w-full"
           type="default"
-          size="mini"
           @click="openAddressOnVb(selectedNode, Account.bech32Address)">
           <img
             src="@/assets/icons/viewblock.png"
@@ -98,7 +97,7 @@
         </z-button>
         <z-button
           type="default"
-          class="mt-6 w-full"
+          class="mt-0 w-full"
           rounded
           @click="showQr=false">
           Okay, Got it
