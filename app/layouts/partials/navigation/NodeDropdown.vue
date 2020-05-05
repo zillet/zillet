@@ -135,15 +135,13 @@ export default {
       this.connectionStatusClass = 'bg-yellow-400';
       this.showDropDown = false;
       const network = await this.checkConnection(node.url);
-      if (network) {
-        node.id = network; // chainId of the developer testnet
-        const msgVersion = 1; // current msgVersion
-        node.version = bytes.pack(node.id, msgVersion);
-        await localStorage.setItem('_selected_node', JSON.stringify(node));
-        this.isNewNode = false;
-        node.refresh = refresh;
-        this.selectNode(node);
-      }
+      node.id = network; // chainId of the developer testnet
+      const msgVersion = 1; // current msgVersion
+      node.version = bytes.pack(node.id, msgVersion);
+      await localStorage.setItem('_selected_node', JSON.stringify(node));
+      this.isNewNode = false;
+      node.refresh = refresh;
+      this.selectNode(node);
     },
     async checkConnection(url) {
       try {

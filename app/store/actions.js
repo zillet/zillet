@@ -176,20 +176,24 @@ export function fetchBalance({ commit, state, getters }) {
         let bal;
         if (element.symbol == 'XSGD') {
           bal = await deployedContract.getSubState('balances', [address]);
+          let tokenBal = 0;
           if (bal && bal.balances) {
-            balances.push({
-              ...element,
-              balance: bal.balances[address]
-            });
+            tokenBal = bal.balances[address];
           }
+          balances.push({
+            ...element,
+            balance: tokenBal
+          });
         } else {
           bal = await deployedContract.getSubState('balances_map', [address]);
+          let tokenBal = 0;
           if (bal && bal.balances_map) {
-            balances.push({
-              ...element,
-              balance: bal.balances_map[address]
-            });
+            tokenBal = bal.balances_map[address];
           }
+          balances.push({
+            ...element,
+            balance: tokenBal
+          });
         }
         if (index == state.zrc2.length - 1) {
           commit('UPDATE_BALANCE', balances);

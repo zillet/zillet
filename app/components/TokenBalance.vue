@@ -71,7 +71,7 @@
           :hide="false"
           :valid="validateAddress"
           class="mb-4"
-          :disabled="fetching"
+          :disabled="fetchingDetails"
           placeholder="zil1399rnnzxnl3yllhakxn08eelmrpk3ydwywv8xy" />
         <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
           Token Symbol
@@ -80,7 +80,7 @@
           v-model="token.symbol"
           :hide="false"
           class="mb-4 flex-1"
-          :disabled="fetching"
+          :disabled="fetchingDetails"
           placeholder="ZWT" />
         <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
           Token Decimals
@@ -90,7 +90,7 @@
           :hide="false"
           class="18"
           number
-          :disabled="fetching"
+          :disabled="fetchingDetails"
           placeholder="18" />
         <div class="flex items-center justify-between -mx-3">
           <z-button
@@ -103,7 +103,7 @@
           <z-button
             class="mx-3 min-w-42"
             rounded
-            :disabled="fetching || !validateAddress"
+            :disabled="fetchingDetails || !validateAddress"
             @click="saveToken(token)">
             Save Token
           </z-button>
@@ -129,7 +129,8 @@ export default {
         symbol: '',
         decimals: ''
       },
-      fetching: true
+      fetching: true,
+      fetchingDetails: false
     };
   },
   computed: {
@@ -175,38 +176,56 @@ export default {
       }
     },
     async getDetails(address) {
-      this.fetching = true;
+      this.fetchingDetails = true;
       try {
         const td = await this.getContract(address);
-        this.fetching = false;
+        this.fetchingDetails = false;
         this.token = { ...this.token, ...td };
       } catch (error) {
         this.$notify({
           message: `${error.message}`,
           type: 'danger'
         });
-        this.fetching = false;
+        this.fetchingDetails = false;
       }
     },
     async saveToken() {
       let zrc2;
-      this.fetching = true;
+      let token = this.token;
+      let address;
       if (this.selectedNode.id != '1') {
-        this.token.testnetAddress = this.token.address;
-        this.token.address = '';
+        token.testnetAddress = token.address;
+        address = token.address;
+        delete token.address;
       }
       try {
         zrc2 = JSON.parse(localStorage.getItem('_zrc2_tokens'));
+        let obj = zrc2.find(
+          t =>
+            (t.address && t.address == token.address) ||
+            (t.testnetAddress && t.testnetAddress == token.testnetAddress)
+        );
+        console.log(obj);
+        if (obj && obj.symbol) {
+          token.address = address;
+          return this.$notify({
+            message: `${'This token already exists in your list.'}`,
+            type: 'danger'
+          });
+        }
         if (zrc2 && zrc2.length) {
-          zrc2.push(this.token);
+          zrc2.push(token);
         } else {
-          zrc2 = [this.token];
+          zrc2 = [token];
         }
       } catch (error) {
-        zrc2 = [this.token];
+        zrc2 = [token];
       }
       localStorage.setItem('_zrc2_tokens', JSON.stringify(zrc2));
+      this.isAddModal = false;
+      this.fetching = true;
       await this.getZrc2List();
+      await this.fetchBalance();
       this.fetching = false;
     }
   }

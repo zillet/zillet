@@ -27,7 +27,6 @@ export const UPDATE_ZRC2_LIST = (state, zrc2) => {
   } catch (error) {
     lzrc2 = [];
   }
-  console.log(zrc2, lzrc2);
   state.zrc2 = [...zrc2, ...lzrc2];
 };
 export const CLEAR_WALLET = (state, result) => {
