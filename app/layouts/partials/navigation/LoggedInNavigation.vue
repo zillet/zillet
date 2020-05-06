@@ -57,6 +57,9 @@
             font-semibold align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
               @click="fetchBalance(Account.address)">
+              <i
+                class="eva eva-sync-outline relative font-bold"
+                style="top:2px" />
               Refresh
             </span>
           </div>
@@ -77,7 +80,7 @@
       <div class="flex justify-center items-center flex-col">
         <div class="qr-code">
           <z-qrcode
-            :value="Account.bech32Address"
+            :value="`${Account.bech32Address}`"
             :options="{ width: 250, color:{ dark: '#303133'}}" />
         </div>
         <span class="mb-4 font-semibold">{{ Account.bech32Address }}</span>
@@ -107,7 +110,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState, mapActions } from 'vuex';
 import NavigationTab from './NavigationTab';
 import { openAddressOnVb } from '@/utils';
 export default {
@@ -128,22 +131,23 @@ export default {
   watch: {
     'Account.address': {
       handler(newValue, oldValue) {
-        this.fetchBalance(newValue);
+        this.fetchZilBalance(newValue);
       }
     },
     'selectedNode.url': {
       handler(newValue, oldValue) {
-        this.fetchBalance();
+        this.fetchZilBalance();
       }
     }
   },
   mounted() {
-    this.fetchBalance();
+    this.fetchZilBalance();
   },
   methods: {
     ...mapMutations(['updateBalance']),
+    ...mapActions(['fetchTokenBalance']),
     openAddressOnVb,
-    async fetchBalance() {
+    async fetchZilBalance() {
       try {
         this.$nuxt.$loading.start();
         const balance = await this.$zillet.blockchain.getBalance(
@@ -152,17 +156,23 @@ export default {
         if (balance.result) {
           this.updateBalance(balance.result);
         } else {
-          this.updateBalance({ balance: '0', nonce: 0 });
+          this.updateBalance({ balance: 0, nonce: 0 });
         }
         this.$nuxt.$loading.finish();
       } catch (error) {
         console.error(error);
-        this.$notify({
+        return this.$notify({
           icon: 'eva eva-close-circle-outline',
           message: `Something went wrong ${error}`,
           type: 'danger'
         });
       }
+    },
+    async fetchBalance() {
+      this.$nuxt.$loading.start();
+      await this.fetchZilBalance();
+      await this.fetchTokenBalance();
+      this.$nuxt.$loading.finish();
     },
     onCopy(e) {
       this.$notify({
@@ -240,10 +250,6 @@ export default {
   @apply flex justify-center items-center;
 }
 
-.divider {
-  @apply bg-gray-300 w-full;
-  height: 1px;
-}
 .circle-button {
   @apply ml-2 text-gray-800 p-1 text-xs font-semibold border rounded-full cursor-pointer;
   @apply flex items-center justify-center px-2 border-gray-400;

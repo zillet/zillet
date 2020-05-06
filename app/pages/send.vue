@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row w-full mobile:flex-col">
-    <div class="card w-full overflow-visible">
+    <div class="card w-full py-4 overflow-visible">
       <div class="max-w-2xl m-auto text-left">
         <h3 class="font-semibold text-xl mb-4 text-left">
           Send Zilliqa and Tokens
@@ -219,7 +219,7 @@
       </div>
     </div>
     <div
-      class="flex card w-full ml-4 px-6 mobile:mt-4 mobile:w-full mobile:mb-8 max-w-sm mobile:max-w-full mobile:mx-0"
+      class="flex card w-full ml-4 p-0 mobile:mt-4 mobile:w-full mobile:mb-8 max-w-sm mobile:max-w-full mobile:mx-0"
       style="">
       <TokenBalance @tokenClicked="tokenClicked" />
     </div>
@@ -426,7 +426,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendTransaction', 'fetchBalance']),
+    ...mapActions(['sendTransaction', 'fetchTokenBalance']),
     ...mapMutations(['updateBalance', 'saveTxn']),
     isNumber: isNumber,
     getImages,
@@ -498,7 +498,6 @@ export default {
             tokenAmount
           );
           console.log(contractMethod, contractParams);
-
           if (token.symbol == 'XSGD') {
             contractParams[1].vname = 'value';
           }
@@ -792,7 +791,7 @@ export default {
         await this.txnViaZillet(tx);
       }
       if (tx.type === 'contract') {
-        await this.fetchBalance();
+        await this.fetchTokenBalance();
       }
       this.loading = false;
     },

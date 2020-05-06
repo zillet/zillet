@@ -1,9 +1,19 @@
 <template>
   <div class="w-full">
-    <div class="card">
+    <div class="card py-4">
       <div class="flex flex-row items-center justify-between">
         <h3 class="font-semibold text-xl">
           Transactions
+          <span
+            class="text-xs italic text-left inline-block ml-2
+            font-semibold align-middle text-gray-700 font-normal
+            underline cursor-pointer hover:text-teal-500"
+            @click="fetchTransactions()">
+            <i
+              class="eva eva-sync-outline relative font-bold"
+              style="top:2px" />
+            Refresh
+          </span>
         </h3>
         <z-button
           class="m-0 p-2 px-4 text-sm"

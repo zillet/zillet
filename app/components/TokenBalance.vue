@@ -1,8 +1,18 @@
 <template>
   <div class="w-full">
-    <div class="flex flex-row items-center justify-between">
+    <div class="flex flex-row items-center justify-between px-6 pt-4 pb-2">
       <h3 class="font-semibold text-xl my-0 text-left">
         Tokens 
+        <span
+          class="text-xs italic text-left inline-block ml-2
+            font-semibold align-middle text-gray-700 font-normal
+            underline cursor-pointer hover:text-teal-500"
+          @click="fetchTokenBalance()">
+          <i
+            class="eva eva-sync-outline relative font-bold"
+            style="top:2px" />
+          Refresh
+        </span>
       </h3>
       <z-button
         class="m-0 p-1 px-4 text-sm rounded"
@@ -11,14 +21,19 @@
         Add Token
       </z-button>
     </div>
-    <div class="h-full">
+    <!-- <div class="divider" /> -->
+    <div
+      class="h-full px-6 overflow-scroll"
+      style="max-height:18rem">
       <Loader v-if="loading || fetching" />
       <div
         v-for="bal in sortTokenBalances"
         v-else-if="sortTokenBalances.length"
         :key="bal.symbol"
         class="flex flex-row justify-between items-center border-b pb-2 pt-3">
-        <div class="flex">
+        <div
+          class="flex cursor-pointer"
+          @click="displayTokenDetail(bal)">
           <img
             :src="getImages(bal.symbol)"
             :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
@@ -53,7 +68,14 @@
         </p>
       </div>
     </div>
-    <!-- ADd new token modal -->
+    <div
+      v-if="sortTokenBalances.length > 6"
+      class="text-sm text-gray-800 pt-2">
+      Scroll for more <i
+        class="eva eva-arrowhead-down-outline relative"
+        style="top:3px" />
+    </div>
+    <!-- Add new token modal -->
     <z-modal
       :visible="isAddModal"
       @close="isAddModal=false">
@@ -158,11 +180,11 @@ export default {
     }
   },
   async beforeMount() {
-    await this.fetchBalance();
+    await this.fetchTokenBalance();
     this.fetching = false;
   },
   methods: {
-    ...mapActions(['fetchBalance', 'getContract', 'getZrc2List']),
+    ...mapActions(['fetchTokenBalance', 'getContract', 'getZrc2List']),
     getImages,
     amountInUsd(token) {
       try {
@@ -189,6 +211,9 @@ export default {
         this.fetchingDetails = false;
       }
     },
+    displayTokenDetail(token) {
+      console.log(token);
+    },
     async saveToken() {
       let zrc2;
       let token = this.token;
@@ -211,8 +236,7 @@ export default {
             message: `${'This token already exists in your list.'}`,
             type: 'danger'
           });
-        }
-        if (zrc2 && zrc2.length) {
+        } else if (zrc2 && zrc2.length) {
           zrc2.push(token);
         } else {
           zrc2 = [token];
@@ -221,10 +245,17 @@ export default {
         zrc2 = [token];
       }
       localStorage.setItem('_zrc2_tokens', JSON.stringify(zrc2));
+      this.token = {
+        address: '',
+        testnetAddress: '',
+        name: '',
+        symbol: '',
+        decimals: ''
+      };
       this.isAddModal = false;
       this.fetching = true;
       await this.getZrc2List();
-      await this.fetchBalance();
+      await this.fetchTokenBalance();
       this.fetching = false;
     }
   }

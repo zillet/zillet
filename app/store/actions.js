@@ -29,7 +29,7 @@ export function selectNode({ commit, getters, dispatch }, node) {
   this.$zillet.setProvider(new HTTPProvider(node.url));
   commit('SELECT_NODE', node);
   if (getters.LoggedIn) {
-    dispatch('fetchBalance');
+    dispatch('fetchTokenBalance');
   }
 }
 export function clearWallet({ commit }) {
@@ -154,7 +154,7 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
   });
 }
 
-export function fetchBalance({ commit, state, getters }) {
+export function fetchTokenBalance({ commit, state, getters }) {
   return new Promise((resolve, reject) => {
     commit('LOADING');
     const t = this;
