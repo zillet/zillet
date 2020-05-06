@@ -606,7 +606,7 @@ export default {
           _tag: contractMethod,
           params: tokenTransfer(toChecksumAddress(base16address), tokenAmount)
         };
-        raw_tx = new Transaction(
+        let raw_tx = new Transaction(
           {
             ...txParams,
             toAddr: contractAddress,

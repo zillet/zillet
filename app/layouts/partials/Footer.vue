@@ -104,7 +104,6 @@
 </template>
 <script>
 import pkg from './../../../package.json';
-console.log(pkg);
 export default {
   name: 'Footer',
   data() {

@@ -205,7 +205,6 @@ export default {
             (t.address && t.address == token.address) ||
             (t.testnetAddress && t.testnetAddress == token.testnetAddress)
         );
-        console.log(obj);
         if (obj && obj.symbol) {
           token.address = address;
           return this.$notify({
