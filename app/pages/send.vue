@@ -304,7 +304,6 @@ export default {
       usdAmount: 0,
       multiplier: config.MULTIPLIER,
       isAdvance: false,
-      signedTx: {},
       isSigned: false,
       isBroadcast: false,
       tranxId: '',
@@ -383,7 +382,7 @@ export default {
       return parseFloat(fee.toFixed(4));
     },
     stringifySignedTx() {
-      return JSON.stringify(this.signedTx);
+      return {};
     }
   },
   watch: {
@@ -617,11 +616,10 @@ export default {
         const { data, code } = raw_tx;
         txParams[data] = data;
         txParams[code] = code;
-        console.log(raw_tx, tx);
       }
       try {
         const signature = await ledgerZil.signTxn(hwIndex, txParams);
-        this.signedTx = {
+        const signedTx = {
           ...txParams,
           amount: txParams.amount.toString(),
           gasPrice: txParams.gasPrice.toString(),
@@ -630,7 +628,26 @@ export default {
           code: '',
           signature
         };
-        this.sendTxn();
+        console.log(signedTx);
+        try {
+          this.loading = true;
+          const { result } = await this.sendTransaction(signedTx);
+          signedTx.TranID = result.TranID;
+          signedTx.Info = 'Transaction broadcasted';
+          this.txnDone(sentTx);
+          signedTx.via = 'ledger';
+          signedTx.type = type;
+          signedTx.rawTx = tx;
+          this.saveTxn(sentTx);
+          this.loading = false;
+        } catch (error) {
+          this.loading = false;
+          return this.$notify({
+            message: `Something went wrong${JSON.stringify(error)}`,
+            type: 'danger'
+          });
+        }
+        this.sendTxn(signedTx);
       } catch (err) {
         this.$notify({
           message: err.message,
@@ -782,20 +799,6 @@ export default {
       }
       this.loading = false;
     },
-    async sendTxn() {
-      try {
-        this.loading = true;
-        const { result } = await this.sendTransaction(this.signedTx);
-        console.log(result);
-        this.txnDone(result);
-      } catch (error) {
-        this.loading = false;
-        return this.$notify({
-          message: `Something went wrong${JSON.stringify(error)}`,
-          type: 'danger'
-        });
-      }
-    },
     txnDone(result) {
       this.loading = false;
       this.transaction = {
@@ -813,7 +816,6 @@ export default {
         });
       } else {
         this.isSigned = false;
-        this.signedTx = {};
         this.isBroadcast = true;
         this.tranxId = result.TranID;
         return this.$notify({
