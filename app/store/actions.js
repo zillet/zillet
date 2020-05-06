@@ -144,9 +144,6 @@ export function sendTransaction({ commit, dispatch, state }, tx) {
       .then(res => {
         console.info(res);
         commit('SUCCESS');
-        tx.res = res;
-        tx.type = 'zillet';
-        commit('saveTxn', tx);
         resolve(res);
       })
       .catch(err => {

@@ -590,17 +590,17 @@ export default {
         version: VERSION,
         nonce: nonce,
         pubKey: this.Account.publicKey,
-        toAddr: base16address,
         amount: new BN(amount),
         gasPrice: new BN(gasPrice),
         gasLimit: Long.fromNumber(gasLimit)
       };
       if (type == 'normal') {
+        txParams['toAddr'] = base16address;
         txParams['data'] = '';
         txParams['code'] = '';
       } else {
         let { contractAddress } = tx;
-        tx['toAddr'] = contractAddress;
+        txParams['toAddr'] = fromBech32Address(contractAddress);
         const contractParams = {
           _tag: contractMethod,
           params: tokenTransfer(toChecksumAddress(base16address), tokenAmount)
@@ -614,8 +614,8 @@ export default {
           false
         );
         const { data, code } = raw_tx;
-        txParams[data] = data;
-        txParams[code] = code;
+        txParams.data = data;
+        txParams.code = code;
       }
       try {
         const signature = await ledgerZil.signTxn(hwIndex, txParams);
@@ -624,8 +624,6 @@ export default {
           amount: txParams.amount.toString(),
           gasPrice: txParams.gasPrice.toString(),
           gasLimit: txParams.gasLimit.toString(),
-          data: '',
-          code: '',
           signature
         };
         console.log(signedTx);
@@ -634,11 +632,11 @@ export default {
           const { result } = await this.sendTransaction(signedTx);
           signedTx.TranID = result.TranID;
           signedTx.Info = 'Transaction broadcasted';
-          this.txnDone(sentTx);
-          signedTx.via = 'ledger';
+          this.txnDone(signedTx);
+          signedTx.via = 'zillet';
           signedTx.type = type;
           signedTx.rawTx = tx;
-          this.saveTxn(sentTx);
+          this.saveTxn(signedTx);
           this.loading = false;
         } catch (error) {
           this.loading = false;
@@ -647,7 +645,6 @@ export default {
             type: 'danger'
           });
         }
-        this.sendTxn(signedTx);
       } catch (err) {
         this.$notify({
           message: err.message,
