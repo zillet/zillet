@@ -74,11 +74,16 @@ function openTxOnVb(node, id) {
     ? `${node.explorer}tx/${hash}?network=testnet`
     : `${node.explorer}tx/${hash}`;
 }
+function roundDown(number, decimals) {
+  decimals = decimals || 0;
+  return Math.floor(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
 export {
   getImages,
   formatTransaction,
   tokenTransfer,
   formatLocalTransaction,
   openAddressOnVb,
-  openTxOnVb
+  openTxOnVb,
+  roundDown
 };

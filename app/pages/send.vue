@@ -234,6 +234,10 @@
         <span class="text-base leading-normal font-semibold">
           {{ `0x${tranxId}` }}
         </span>
+        <div
+          class="mt-4 mt-2 text-sm italic">
+          * Your balance will be updated after transaction got confirmed.
+        </div>
         <div class="flex flex-row -mx-2">
           <div class="w-1/2 px-2">
             <z-button
@@ -266,7 +270,7 @@
 import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { BN, Long, validation, units } from '@zilliqa-js/util';
-import { getImages, tokenTransfer, openTxOnVb } from '@/utils';
+import { getImages, tokenTransfer, openTxOnVb, roundDown } from '@/utils';
 
 import {
   fromBech32Address,
@@ -343,8 +347,11 @@ export default {
         return parseFloat(this.transaction.amount) < this.Balance.zil;
       } else {
         return (
-          parseFloat(this.transaction.amount) <
-          this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals)
+          parseFloat(this.transaction.amount) <=
+          roundDown(
+            this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals),
+            4
+          )
         );
       }
     },
@@ -725,11 +732,20 @@ export default {
           type: 'danger'
         });
       }
-      this.loading = true;
       const VERSION = this.selectedNode.version;
       let tokenAmount = 0;
       let amount = units.toQa(this.transaction.amount, units.Units.Zil);
       if (this.fromToken.symbol != 'ZIL') {
+        const tBal = roundDown(
+          this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals),
+          4
+        );
+        if (this.transaction.amount > tBal) {
+          return this.$notify({
+            message: `Amount can not be greater than balance`,
+            type: 'danger'
+          });
+        }
         tokenAmount = new BN(
           parseInt(
             this.transaction.amount * Math.pow(10, this.fromToken.decimals)
@@ -737,6 +753,7 @@ export default {
         ).toString();
         amount = new BN(0);
       }
+      this.loading = true;
       await this.updateWallet();
       const fee = units.toQa(this.transactionFee, units.Units.Zil);
       const balance = new BN(this.Account.balance);
@@ -850,10 +867,9 @@ export default {
           });
         }
       } else {
-        const balance = parseFloat(
-          this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals)
-        ).toPrecision(4);
-        this.transaction.amount = Number(balance);
+        const balance =
+          this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals);
+        this.transaction.amount = roundDown(balance, 4);
       }
       try {
         this.usdAmount = (

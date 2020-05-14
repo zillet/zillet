@@ -16,7 +16,7 @@
           </span>
         </h3>
         <z-button
-          class="m-0 p-2 px-4 text-sm"
+          class="m-0 p-2 px-4 text-sm rounded"
           type="default"
           size="mini"
           @click="openAddressOnVb(selectedNode, Account.bech32Address)">
