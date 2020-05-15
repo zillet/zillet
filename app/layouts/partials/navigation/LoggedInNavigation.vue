@@ -28,9 +28,20 @@
               v-clipboard:copy="`${Account.bech32Address}`"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              class="circle-button">
-              <i class="eva eva-copy-outline" />
-              Copy
+            >
+              <div
+                v-if="!copied"
+                class="circle-button">
+                <i class="eva eva-copy-outline" />
+                Copy
+              </div>
+              <div
+                v-else
+                class="circle-button text-green-700">
+                <i
+                  class="eva eva-checkmark-circle-2-outline" />
+                Copied
+              </div>
             </span>
             <span
               class="circle-button"
@@ -119,7 +130,8 @@ export default {
   },
   data() {
     return {
-      showQr: false
+      showQr: false,
+      copied: false
     };
   },
   computed: {
@@ -175,11 +187,19 @@ export default {
       this.$nuxt.$loading.finish();
     },
     onCopy(e) {
-      this.$notify({
-        icon: 'eva eva-checkmark-circle-outline',
-        message: `Address copied successfully `,
-        type: 'success'
-      });
+      const t = this;
+      if (!t.copied) {
+        t.copied = true;
+
+        setTimeout(() => {
+          t.copied = false;
+        }, 5000);
+      }
+      // this.$notify({
+      //   icon: 'eva eva-checkmark-circle-outline',
+      //   message: `Address copied successfully `,
+      //   type: 'success'
+      // });
     },
     onError: function(e) {
       this.$notify({

@@ -85,7 +85,7 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { getImages, roundDown } from '@/utils';
+import { getImages, roundDown, openContractOnVb } from '@/utils';
 import Vue2Filters from 'vue2-filters';
 import AddToken from '@/components/AddToken.vue';
 export default {
@@ -106,7 +106,8 @@ export default {
     ...mapState({
       tokens: state => state.zrc2,
       tokenBalances: state => state.tokenBalances,
-      loading: state => state.loading
+      loading: state => state.loading,
+      selectedNode: state => state.selectedNode
     }),
     sortTokenBalances() {
       return this.orderBy(this.tokenBalances, 'balance', -1);
@@ -132,8 +133,7 @@ export default {
       }
     },
     displayTokenDetail(token) {
-      this.showTokenDetails = true;
-      this.selectedToken = token;
+      openContractOnVb(this.selectedNode, token);
     }
   }
 };

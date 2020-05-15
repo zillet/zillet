@@ -44,7 +44,8 @@
               sortable
               class="font-semibold ">
               <div 
-                class="flex flex-row token-symbol cursor-pointer pr-6 hover:text-gray-900">
+                class="flex flex-row token-symbol cursor-pointer pr-6 hover:text-gray-900"
+                @click="openContractOnVb(selectedNode, scope.row)">
                 <img
                   :src="getImages(scope.row.symbol)"
 
@@ -146,7 +147,7 @@
 
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { getImages, roundDown } from '@/utils';
+import { getImages, roundDown, openContractOnVb } from '@/utils';
 import AddToken from '@/components/AddToken.vue';
 import Vue2Filters from 'vue2-filters';
 export default {
@@ -169,7 +170,8 @@ export default {
     ...mapState({
       tokens: state => state.zrc2,
       tokenBalances: state => state.tokenBalances,
-      loading: state => state.loading
+      loading: state => state.loading,
+      selectedNode: state => state.selectedNode
     }),
     sortTokenBalances() {
       return this.orderBy(this.tokenBalances, 'balance', -1);
@@ -183,6 +185,7 @@ export default {
     ...mapActions(['fetchTokenBalance', 'getZrc2List']),
     getImages,
     roundDown,
+    openContractOnVb,
     amountInUsd(token) {
       try {
         return (

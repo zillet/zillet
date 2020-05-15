@@ -270,7 +270,13 @@
 import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { BN, Long, validation, units } from '@zilliqa-js/util';
-import { getImages, tokenTransfer, openTxOnVb, roundDown } from '@/utils';
+import {
+  getImages,
+  tokenTransfer,
+  openTxOnVb,
+  roundDown,
+  getContractAddress
+} from '@/utils';
 
 import {
   fromBech32Address,
@@ -790,7 +796,10 @@ export default {
         tx.type = 'normal';
       } else {
         tx.type = 'contract';
-        tx.contractAddress = this.getContractAddress(this.fromToken);
+        tx.contractAddress = getContractAddress(
+          this.selectedNode.id,
+          this.fromToken
+        );
         if (this.fromToken.symbol.toLowerCase() == 'xsgd') {
           tx.contractMethod = 'proxyTransfer';
         } else {
@@ -898,16 +907,6 @@ export default {
       return this.tokens.find(element => {
         return element.symbol == symbol;
       });
-    },
-    getContractAddress(token) {
-      let contractAddress;
-      const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
-      if (networkType == 'mainet') {
-        contractAddress = token.address;
-      } else {
-        contractAddress = token.testnetAddress;
-      }
-      return contractAddress;
     },
     tokenClicked(token) {
       this.fromTokenChange(token);

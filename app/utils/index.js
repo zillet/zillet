@@ -74,6 +74,24 @@ function openTxOnVb(node, id) {
     ? `${node.explorer}tx/${hash}?network=testnet`
     : `${node.explorer}tx/${hash}`;
 }
+function getContractAddress(nodeId, token) {
+  let contractAddress;
+  const networkType = nodeId == 1 ? 'mainet' : 'testnet';
+  if (networkType == 'mainet') {
+    contractAddress = token.address;
+  } else {
+    contractAddress = token.testnetAddress;
+  }
+  return contractAddress;
+}
+function openContractOnVb(node, token) {
+  let address = getContractAddress(node.id, token);
+  const link =
+    node.id == 333
+      ? `${node.explorer}address/${address}?network=testnet`
+      : `${node.explorer}address/${address}`;
+  window.open(link, '_blank');
+}
 function roundDown(number, decimals) {
   decimals = decimals || 0;
   return Math.floor(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
@@ -85,5 +103,6 @@ export {
   formatLocalTransaction,
   openAddressOnVb,
   openTxOnVb,
-  roundDown
+  roundDown,
+  openContractOnVb
 };
