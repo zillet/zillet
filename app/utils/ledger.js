@@ -36,6 +36,7 @@ export default class Zilliqa {
 
   constructor(transport, scrambleKey = 'w0w') {
     this.transport = transport;
+    transport.setExchangeTimeout(30000);
     transport.decorateAppAPIMethods(
       this,
       ['getVersion', 'getPublicKey', 'getPublicAddress', 'signHash', 'signTxn'],

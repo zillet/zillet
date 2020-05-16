@@ -104,5 +104,6 @@ export {
   openAddressOnVb,
   openTxOnVb,
   roundDown,
-  openContractOnVb
+  openContractOnVb,
+  getContractAddress
 };
