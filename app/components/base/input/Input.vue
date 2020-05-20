@@ -13,7 +13,8 @@
         :value="value"
         :type="`${number ? 'number': isVisible || !hide ? 'text': 'password'}`"
         v-bind="$attrs"
-        :class="[customClass, {'rounded-r-none': hide, 'focus:border-red-500': !valid, 'focus:border-green-500': valid && value}]"
+        :disabled="disabled"
+        :class="[customClass, {'rounded-r-none': hide, 'focus:border-red-500': !valid, 'focus:border-green-500': valid && value, 'cursor-not-allowed bg-gray-200': disabled}]"
         class="input__field"
         v-on="{...$listeners,input: event => $emit('input', event.target.value)}">
       <div
@@ -58,6 +59,10 @@ export default {
     customClass: {
       type: [String, Object, Array],
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -88,7 +93,7 @@ i.eva {
   }
 
   &__field {
-    @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-gray-200;
+    @apply flex-1 h-12 relative py-3 px-4 mb-3 bg-gray-100;
     @apply border border-gray-400 rounded;
     @apply appearance-none leading-normal font-semibold text-gray-800;
 

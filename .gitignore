@@ -90,3 +90,6 @@ sw.*
 coverage
 
 *.pem
+
+# contract test
+contracts/

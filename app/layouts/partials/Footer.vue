@@ -47,13 +47,37 @@
       </div>
     </div>
     <z-modal
-      :visible="isReporting"
+      :visible="newVersionNotify"
       title="Disclaimer"
       custom-class="p-8"
-      @close="isReporting=false">
-      <h3 class="font-semibold text-xl mb-8 text-gray-700">
-        Report Issue
-      </h3>
+      @close="newVersionNotify=false">
+      <div 
+        style="max-width:300px" 
+        class="mx-4 flex flex-col items-center justify-center">
+        <h3 class="font-semibold text-xl mb-4 text-gray-800">
+          🎉 &nbsp; &nbsp; &nbsp;New version of Zillet   &nbsp; &nbsp; &nbsp;🎉
+        </h3>
+        <div class="text-left">
+          A new version of Zillet is available with the following changes and updates.
+          <ul class="mt-4 font-semibold">
+            <li>
+              - XSGD Support
+            </li>
+            <li>
+              - ZRC2 Token support
+            </li>
+            <li class="font-normal">
+              - And lots of UI and bug fixes.
+            </li>
+            <!-- <li /> -->
+          </ul>
+          <z-button
+            class="mt-8 w-full rounded mb-0"
+            @click="dontShowVersionNotify">
+            Ok, I got it.
+          </z-button>
+        </div>
+      </div>
     </z-modal>
     <z-modal
       :visible="showDisclaimer"
@@ -104,7 +128,6 @@
 </template>
 <script>
 import pkg from './../../../package.json';
-console.log(pkg);
 export default {
   name: 'Footer',
   data() {
@@ -112,7 +135,8 @@ export default {
       showDisclaimer: false,
       hasConsent: false,
       isReporting: false,
-      version: pkg.version
+      version: pkg.version,
+      newVersionNotify: false
     };
   },
   watch: {
@@ -122,7 +146,17 @@ export default {
       }
     }
   },
+  mounted() {
+    const item = localStorage.getItem('_new_version_notify');
+    if (!!item == false) {
+      this.newVersionNotify = true;
+    }
+  },
   methods: {
+    dontShowVersionNotify() {
+      localStorage.setItem('_new_version_notify', true);
+      this.newVersionNotify = false;
+    },
     saveConsent() {
       if (this.hasConsent) {
         this.showDisclaimer = false;
@@ -181,5 +215,9 @@ export default {
       }
     }
   }
+}
+ul {
+  list-style-type: none;
+  list-style-position: inside;
 }
 </style>

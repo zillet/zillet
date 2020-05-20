@@ -11,7 +11,9 @@
               :diameter="22"
               :address="Account.address"
               class="mt-1 mr-2" />
-            <h3 class="truncate">
+            <h3
+              class="truncate hover:text-primary cursor-pointer"
+              @click="openAddressOnVb(selectedNode, Account.bech32Address)">
               {{ `${Account.bech32Address}` }}
               <!-- <span
                 data-balloon="This is the new bech32 address which derives from the old address and supported by all the exchanges and wallets. You can check your old 20 bytes, base 16 address in Wallet Info page. kindly use this new address to receive funds. Note that your funds are not affected in any way."
@@ -26,9 +28,20 @@
               v-clipboard:copy="`${Account.bech32Address}`"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              class="circle-button">
-              <i class="eva eva-copy-outline" />
-              Copy
+            >
+              <div
+                v-if="!copied"
+                class="circle-button">
+                <i class="eva eva-copy-outline" />
+                Copy
+              </div>
+              <div
+                v-else
+                class="circle-button text-green-700">
+                <i
+                  class="eva eva-checkmark-circle-2-outline" />
+                Copied
+              </div>
             </span>
             <span
               class="circle-button"
@@ -45,7 +58,7 @@
           </div>
           <div class="account-info__amount">
             <span class="zil">
-              {{ Balance.zil }} ZIL
+              {{ Balance.zil && Number(Balance.zil).toFixed(4) }} ZIL
             </span>
             <span class="usd">
               &nbsp; &asymp; &nbsp; {{ Balance.usd | currency('$', 3) }}
@@ -55,6 +68,9 @@
             font-semibold align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
               @click="fetchBalance(Account.address)">
+              <i
+                class="eva eva-sync-outline relative font-bold"
+                style="top:2px" />
               Refresh
             </span>
           </div>
@@ -75,7 +91,7 @@
       <div class="flex justify-center items-center flex-col">
         <div class="qr-code">
           <z-qrcode
-            :value="Account.bech32Address"
+            :value="`${Account.bech32Address}`"
             :options="{ width: 250, color:{ dark: '#303133'}}" />
         </div>
         <span class="mb-4 font-semibold">{{ Account.bech32Address }}</span>
@@ -83,8 +99,19 @@
           Scan QR code to import Address
         </p>
         <z-button
+          class="text-sm mt-6 w-full"
           type="default"
-          class="mt-6 w-full"
+          @click="openAddressOnVb(selectedNode, Account.bech32Address)">
+          <img
+            src="@/assets/icons/viewblock.png"
+            height="20"
+            class="mr-4"
+            width="20">
+          Check on Viewblock.io
+        </z-button>
+        <z-button
+          type="default"
+          class="mt-0 w-full"
           rounded
           @click="showQr=false">
           Okay, Got it
@@ -94,15 +121,17 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState, mapActions } from 'vuex';
 import NavigationTab from './NavigationTab';
+import { openAddressOnVb } from '@/utils';
 export default {
   components: {
     NavigationTab
   },
   data() {
     return {
-      showQr: false
+      showQr: false,
+      copied: false
     };
   },
   computed: {
@@ -114,21 +143,23 @@ export default {
   watch: {
     'Account.address': {
       handler(newValue, oldValue) {
-        this.fetchBalance(newValue);
+        this.fetchZilBalance(newValue);
       }
     },
     'selectedNode.url': {
       handler(newValue, oldValue) {
-        this.fetchBalance();
+        this.fetchZilBalance();
       }
     }
   },
   mounted() {
-    this.fetchBalance();
+    this.fetchZilBalance();
   },
   methods: {
     ...mapMutations(['updateBalance']),
-    async fetchBalance() {
+    ...mapActions(['fetchTokenBalance']),
+    openAddressOnVb,
+    async fetchZilBalance() {
       try {
         this.$nuxt.$loading.start();
         const balance = await this.$zillet.blockchain.getBalance(
@@ -137,24 +168,38 @@ export default {
         if (balance.result) {
           this.updateBalance(balance.result);
         } else {
-          this.updateBalance({ balance: '0', nonce: 0 });
+          this.updateBalance({ balance: 0, nonce: 0 });
         }
         this.$nuxt.$loading.finish();
       } catch (error) {
         console.error(error);
-        this.$notify({
+        return this.$notify({
           icon: 'eva eva-close-circle-outline',
           message: `Something went wrong ${error}`,
           type: 'danger'
         });
       }
     },
+    async fetchBalance() {
+      this.$nuxt.$loading.start();
+      await this.fetchZilBalance();
+      await this.fetchTokenBalance();
+      this.$nuxt.$loading.finish();
+    },
     onCopy(e) {
-      this.$notify({
-        icon: 'eva eva-checkmark-circle-outline',
-        message: `Address copied successfully `,
-        type: 'success'
-      });
+      const t = this;
+      if (!t.copied) {
+        t.copied = true;
+
+        setTimeout(() => {
+          t.copied = false;
+        }, 5000);
+      }
+      // this.$notify({
+      //   icon: 'eva eva-checkmark-circle-outline',
+      //   message: `Address copied successfully `,
+      //   type: 'success'
+      // });
     },
     onError: function(e) {
       this.$notify({
@@ -225,10 +270,6 @@ export default {
   @apply flex justify-center items-center;
 }
 
-.divider {
-  @apply bg-gray-300 w-full;
-  height: 1px;
-}
 .circle-button {
   @apply ml-2 text-gray-800 p-1 text-xs font-semibold border rounded-full cursor-pointer;
   @apply flex items-center justify-center px-2 border-gray-400;

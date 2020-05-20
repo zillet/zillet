@@ -9,6 +9,8 @@ const createStore = () =>
     state: {
       loading: false,
       nodes: config.NODES,
+      zrc2: {},
+      tokenBalances: [],
       selectedNode: config.NODES[0],
       selectedAccount: 'Account 1',
       wallet: {

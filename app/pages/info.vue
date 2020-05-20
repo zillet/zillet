@@ -1,182 +1,315 @@
 <template>
-  <div class="flex flex-row mobile:flex-col">
-    <div class="flex-1 flex-col justify-start text-left">
-      <div class="tracking-wide  text-sm font-semibold mb-2">
-        Address
-      </div>
-      <z-input
-        :value="Account.bech32Address"
-        :hide="false"
-        custom-class="rounded-r-none border-r-0"
-        disabled>
+  <div class="w-full">
+    <div class="card">
+      <div class="flex flex-row mobile:flex-col w-full text-left">
         <div
-          class="flex -mr-px">
-          <button
-            class="flex items-center leading-normal
-                bg-white rounded rounded-l-none h-12 px-3
-                border border-gray-400 text-gray-500 text-sm"
-            @click="showQr='bech32Address'">
-            <div class="qr-code-btn">
-              <i
-                :class="{'selected':showQr==='bech32Address'}"
-                class="eva eva-grid-outline"
-              />
+          class="flex-1 font-semibold text-lg"
+          style="max-width:300px">
+          Wallet Info
+        </div>
+        <div class="flex-1">
+          <div v-if="Account.publicKey">
+            <div class="tracking-wide text-sm  text-gray-700">
+              Public Key
             </div>
-          </button>
-        </div>
-      </z-input>
-      <z-button
-        size="small"
-        class="rounded w-full mb-2"
-        type="default"
-        @click="showBase16=!showBase16">
-        Reveal Base 16 address (Old Ethereum style address starts with 0x..)
-      </z-button>
-      <div
-        v-if="showBase16"
-        class="mt-2">
-        <div class="tracking-wide  text-sm font-semibold mb-2">
-          Base 16 Address
-        </div>
-        <z-input
-          :value="`${Account.checksummedAddress}`"
-          :hide="false"
-          custom-class="rounded-r-none border-r-0"
-          disabled>
-          <div
-            class="flex -mr-px">
-            <button
-              class="flex items-center leading-normal
-                bg-white rounded rounded-l-none h-12 px-3
-                border border-gray-400 text-gray-500 text-sm"
-              @click="showQr='address'">
-              <div class="qr-code-btn">
-                <i
-                  :class="{'selected':showQr==='address'}"
-                  class="eva eva-grid-outline"
-                />
-              </div>
-            </button>
+            <div class="font-semibold mt-1 truncate flex flex-row">
+              {{ Account.publicKey }}
+              <span
+                v-clipboard:copy="`${Account.publicKey}`"
+                v-clipboard:success="onCopyPublicKey"
+                v-clipboard:error="onError">
+                <div
+                  v-if="copiedItem=='publicKey'"
+                  class="circle-button text-green-700">
+                  <i
+                    class="eva eva-checkmark-circle-2-outline" />
+                  Copied
+                </div>
+                <div
+                  v-else
+                  class="circle-button">
+                  <i class="eva eva-copy-outline" />
+                  Copy
+                </div>
+              </span>
+            </div>
           </div>
-        </z-input>
-        <z-alert
-          type="danger"
-          class="mb-6 mt-2">
-          Do not send ERC-20 ZILfunds to this address.
-        </z-alert>
+          <div
+            class="mt-4">
+            <div class="tracking-wide text-sm text-gray-700">
+              Base 16 Address
+            </div>
+            <div class="font-semibold mt-1 truncate flex flex-row">
+              {{ Account.checksummedAddress }}
+              <span
+                v-clipboard:copy="`${Account.checksummedAddress}`"
+                v-clipboard:success="onCopyAddress"
+                v-clipboard:error="onError">
+                <div
+                  v-if="copiedItem=='checksummedAddress'"
+                  class="circle-button text-green-700">
+                  <i
+                    class="eva eva-checkmark-circle-2-outline" />
+                  Copied
+                </div>
+                <div
+                  v-else
+                  class="circle-button">
+                  <i class="eva eva-copy-outline" />
+                  Copy
+                </div>
+              </span>
+            </div>
+            <div
+              type="danger"
+              class="text-red-700 text-xs italic font-semibold">
+              * Do not send ERC-20 ZIL funds to above address. 
+            </div>
+          </div>
+          <div
+            v-if="Account.privateKey"
+            class="mt-4">
+            <div class="tracking-wide text-sm text-gray-700">
+              Private Key
+            </div>
+            <div class="font-semibold mt-1 mb-2">
+              <div
+                v-if="showPk"
+                class="mb-2 truncate flex flex-row">
+                {{ Account.privateKey }}
+                <span
+                  v-clipboard:copy="`${Account.privateKey}`"
+                  v-clipboard:success="onCopyPk"
+                  v-clipboard:error="onError">
+                  <div
+                    v-if="copiedItem=='privateKey'"
+                    class="circle-button text-green-700">
+                    <i
+                      class="eva eva-checkmark-circle-2-outline" />
+                    Copied
+                  </div>
+                  <div
+                    v-else
+                    class="circle-button">
+                    <i class="eva eva-copy-outline" />
+                    Copy
+                  </div>
+                </span>
+              </div>
+              <z-button
+                v-if="showPk"
+                size="small"
+                class="w-full rounded mb-4"
+                @click="showPassphraseModal = true">
+                Download Keystore JSON file
+              </z-button>
+              <z-button
+                size="small"
+                class="w-full rounded"
+                type="default"
+                @click="showPk=!showPk">
+                {{ showPk ? 'Hide': 'Reveal' }} Private Key
+              </z-button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div v-if="Account.publicKey">
-        <div class="tracking-wide text-sm font-semibold mb-2">
-          Public Key
+      <div class="flex flex-row mobile:flex-col w-full text-left mt-4 border-t pt-4">
+        <div
+          class="flex-1 font-semibold text-lg"
+          style="max-width:300px">
+          Help and Support
         </div>
-        <z-input
-          :value="`${Account.publicKey}`"
-          :hide="false"
-          custom-class="rounded-r-none border-r-0"
-          disabled>
-          <div
-            class="flex -mr-px">
-            <button
-              class="flex items-center leading-normal
-                bg-white rounded rounded-l-none h-12 px-3
-                border border-gray-400 text-gray-500 text-sm"
-              @click="showQr='publicKey'">
-              <div class="qr-code-btn">
-                <i
-                  :class="{'selected':showQr==='publicKey'}"
-                  class="eva eva-grid-outline"
-                />
-              </div>
-            </button>
-          </div>
-        </z-input>
+        <div class="flex flex-col justify-center">
+          <a
+            href="https://twitter.com/zilletio"
+            target="_blank"
+            class="my-2 flex items-center hover:text-primary"
+            rel="noopener noreferrer">
+            <i class="eva eva-twitter mr-1 text-lg" />
+            Twitter
+          </a>
+          <a
+            href="mailto:support@zillet.io"
+            target="_blank"
+            class="my-2 flex items-center hover:text-primary"
+            rel="noopener noreferrer">
+            <i class="eva eva-email-outline mr-1 text-lg" />
+            Email Support
+          </a>
+          <a
+            href="//support.zillet.io"
+            target="_blank"
+            class="my-2 flex items-center hover:text-primary"
+            rel="noopener noreferrer">
+            <i
+              class="eva eva-book-outline mr-1 text-lg" />
+            Knowledge Base
+          </a>
+          <a
+            href="https://github.com/zillet/zillet"
+            target="_blank"
+            class="my-2 flex items-center hover:text-primary"
+
+            rel="noopener noreferrer">
+            <i class="eva eva-github mr-1" />
+            Github
+          </a>
+        </div>
       </div>
-      <div v-if="Account.publicKey">
-        <div class="tracking-wide  text-sm font-semibold mb-2">
-          Private Key
+      <div class="flex flex-row mobile:flex-col w-full text-left mt-4 border-t pt-4">
+        <div
+          class="flex-1 font-semibold text-lg"
+          style="max-width:300px">
+          Data
         </div>
-        <z-input
-          :hide="true"
-          :value="`${Account.privateKey}`"
-          disabled>
-          <div
-            class="flex -mr-px">
-            <button
-              class="flex items-center leading-normal
-                bg-white rounded rounded-l-none h-12 px-3
-                border border-gray-400 text-gray-500 text-sm"
-              @click="doCopy">
-              <div class="qr-code-btn">
-                <i
-                  :class="{'selected':showQr==='privateKey'}"
-                  class="eva eva-clipboard-outline"
-                />
-              </div>
-            </button>
+        <div class="flex-1">
+          <z-button
+            size="small"
+            type="default"
+            class="w-full rounded"
+            @click="clearLs">
+            Clear Local Storage and Cache
+          </z-button>
+          <div class="italic text-sm mt-2">
+            * This option is useful when there are stuck transactions in UI.
           </div>
-        </z-input>
-        <p class=" text-sm italic font-semibold">
-          Save your private key somewhere safe. else your funds will be lost forever
-        </p>
+        </div>
       </div>
     </div>
-    <div class="flex  mx-8 justify-center items-center flex-col">
-      <div class="qr-code">
-        <z-qrcode
-          :value="showQr==='address' ? Account.bech32Address : `${Account[showQr]}`"
-          :options="{ width: 200, color:{ dark: '#303133'}}" />
+    <z-modal
+      :visible="showPassphraseModal"
+      @close="showPassphraseModal=false">
+      <div 
+        style="min-width:400px" 
+        class="mx-4">
+        <h3 class="font-semibold text-2xl mb-6 text-gray-800">
+          Download encrypted Keystore file
+        </h3>
+        <div class="flex justify-start flex-col w-full items-start">
+          <z-input
+            v-model="passphrase"
+            :valid="passphrase.length > 7"
+            class="w-full"
+            :label="'Set a password'"
+            placeholder="Do not forget this password" />
+          <p
+            class="text-gray-700 -mt-1 text-left text-sm italic text-left">
+            Password should be atleast 8 chracter long
+          </p>
+        </div>
+        <div class="flex items-center justify-between -mx-3">
+          <z-button
+            class="mx-3"
+            type="default"
+            rounded
+            @click="showPassphraseModal=false">
+            Cancel
+          </z-button>
+          <z-button
+            class="mx-3 min-w-42"
+            rounded
+            :disabled="passphrase.length < 8"
+            @click="downloadWalletJson">
+            Download File
+          </z-button>
+        </div>
       </div>
-      <label
-        class="block uppercase tracking-wide text-gray-800 text-sm font-bold mb-2"
-        for="qr-code">
-        {{ key }}
-      </label>
-      <p class=" text-xs italic font-semibold">
-        Scan QR code to import {{ key }}
-      </p>
-    </div>
+    </z-modal>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import {
+  getAddressFromPrivateKey,
+  encryptPrivateKey,
+  schnorr,
+  toBech32Address
+} from '@zilliqa-js/crypto';
+
 export default {
   name: 'WalletInfo',
   middleware: 'ifKeyExists',
   data() {
     return {
-      showQr: 'bech32Address',
-      showBase16: false
+      showPk: false,
+      copiedItem: '',
+      passphrase: '',
+      showPassphraseModal: false
     };
   },
   computed: {
-    key() {
-      if (this.showQr === 'bech32Address') {
-        return 'Address';
-      } else if (this.showQr === 'privateKey') {
-        return 'Private Key';
-      } else if (this.showQr === 'address') {
-        return 'Base 16 address';
-      } else {
-        return 'Public Key';
-      }
-    },
     ...mapGetters(['Account'])
   },
   methods: {
-    doCopy() {
-      this.$copyText(this.Account.privateKey)
-        .then(() => {
-          this.$notify({
-            message: `Private Key succesfully copied to clipboard`,
-            type: 'success'
-          });
-        })
-        .catch(() => {
-          this.$notify({
-            message: `Something went wrong`,
-            type: 'danger'
-          });
-        });
+    async downloadWalletJson() {
+      try {
+        this.encryptedWallet = await encryptPrivateKey(
+          'scrypt',
+          this.Account.privateKey,
+          this.passphrase
+        );
+        const fileName =
+          'UTC--' +
+          new Date().toJSON() +
+          '.0--' +
+          this.Account.bech32Address +
+          '.json';
+        // await this.downloadWalletJson(address, result);
+        let element = document.createElement('a');
+        element.setAttribute(
+          'href',
+          'data:text/plain;charset=utf-8,' +
+            encodeURIComponent(this.encryptedWallet)
+        );
+        element.setAttribute('download', fileName);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        this.showPassphraseModal = false;
+        this.passphrase = '';
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    onCopyPublicKey() {
+      const t = this;
+      if (t.copiedItem == '' || t.copiedItem != 'publicKey') {
+        t.copiedItem = 'publicKey';
+        setTimeout(() => {
+          t.copiedItem = '';
+        }, 5000);
+      }
+    },
+    onCopyAddress() {
+      const t = this;
+      if (t.copiedItem == '' || t.copiedItem != 'checksummedAddress') {
+        t.copiedItem = 'checksummedAddress';
+        setTimeout(() => {
+          t.copiedItem = '';
+        }, 5000);
+      }
+    },
+    onCopyPk() {
+      const t = this;
+      if (t.copiedItem == '' || t.copiedItem != 'privateKey') {
+        t.copiedItem = 'privateKey';
+        setTimeout(() => {
+          t.copiedItem = '';
+        }, 5000);
+      }
+    },
+    onError: function(e) {
+      this.$notify({
+        icon: 'eva eva-close-circle-outline',
+        message: `Failed to copy address`,
+        type: 'danger'
+      });
+    },
+    clearLs() {
+      localStorage.clear();
+      location.reload();
     }
   }
 };
@@ -185,5 +318,19 @@ export default {
 .qr-code-btn i.eva-grid-outline {
   position: relative;
   top: 2px;
+}
+.circle-button {
+  @apply ml-2 text-gray-800 p-1 text-xs font-semibold border rounded-full cursor-pointer;
+  @apply flex items-center justify-center px-2 border-gray-400;
+  line-height: 1rem;
+  @include no-select;
+  @include transition;
+  &:hover {
+    @apply shadow-md;
+    @include transition;
+  }
+  i {
+    @apply text-sm mr-1;
+  }
 }
 </style>

@@ -4,10 +4,10 @@
 
 
 .card {
-    @apply rounded overflow-hidden shadow p-8 w-full bg-white;
+    @apply rounded overflow-hidden shadow p-6 w-full bg-white;
 
     @include mobile {
-        @apply p-6;
+        @apply p-4;
     }
 }
 

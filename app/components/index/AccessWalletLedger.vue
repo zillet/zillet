@@ -70,7 +70,6 @@ export default {
     ...mapGetters(['Account', 'Prices', 'Balance'])
   },
   methods: {
-    ...mapActions(['selectNode']),
     ...mapMutations(['importAccount', 'saveAccessType']),
     async transportInit() {
       const transport = await ZilliqaHW.create();

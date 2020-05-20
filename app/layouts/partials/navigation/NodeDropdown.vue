@@ -65,6 +65,7 @@
         <z-input
           v-model="node.name"
           :hide="false"
+          :valid="node.name > 2"
           class="mb-4"
           placeholder="My Zilliqa Node" />
         <div class="tracking-wide text-gray-700 text-sm font-semibold mb-2 text-left">
@@ -73,6 +74,7 @@
         <z-input
           v-model="node.url"
           :hide="false"
+          :valid="validURL(node.url)"
           class="mb-4 flex-1"
           placeholder="http://127.0.0.1:4200" />
         <div class="flex items-center mt-4 justify-between -mx-3">
@@ -86,6 +88,7 @@
           <z-button
             class="mx-3 min-w-32"
             rounded
+            :disabled="disableButton"
             @click="changeNode(node, false)">
             Save and Use
           </z-button>
@@ -124,6 +127,13 @@ export default {
       const found = this.defaultNodes.some(el => el.url === selectedUrl);
       if (!found) return [...this.defaultNodes, this.selectedNode];
       return this.defaultNodes;
+    },
+    disableButton() {
+      return !(
+        this.node.name &&
+        this.node.name.length > 2 &&
+        this.validURL(this.node.url)
+      );
     }
   },
   async beforeMount() {
@@ -135,15 +145,25 @@ export default {
       this.connectionStatusClass = 'bg-yellow-400';
       this.showDropDown = false;
       const network = await this.checkConnection(node.url);
-      if (network) {
-        node.id = network; // chainId of the developer testnet
-        const msgVersion = 1; // current msgVersion
-        node.version = bytes.pack(node.id, msgVersion);
-        await localStorage.setItem('_selected_node', JSON.stringify(node));
-        this.isNewNode = false;
-        node.refresh = refresh;
-        this.selectNode(node);
-      }
+      node.id = network; // chainId of the developer testnet
+      const msgVersion = 1; // current msgVersion
+      node.version = bytes.pack(node.id, msgVersion);
+      await localStorage.setItem('_selected_node', JSON.stringify(node));
+      this.isNewNode = false;
+      node.refresh = refresh;
+      this.selectNode(node);
+    },
+    validURL(str) {
+      var pattern = new RegExp(
+        '^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+          '(\\#[-a-z\\d_]*)?$',
+        'i'
+      ); // fragment locator
+      return !!pattern.test(str);
     },
     async checkConnection(url) {
       try {

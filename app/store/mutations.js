@@ -1,3 +1,5 @@
+import { formatTransaction, formatLocalTransaction } from '@/utils';
+import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
 export const LOADING = state => {
   state.loading = true;
 };
@@ -14,6 +16,18 @@ export const importAccount = (state, result) => {
 };
 export const updateBalance = (state, result) => {
   state.wallet = { ...state.wallet, ...result };
+};
+export const UPDATE_ZRC2_LIST = (state, zrc2) => {
+  let lzrc2;
+  try {
+    lzrc2 = JSON.parse(localStorage.getItem('_zrc2_tokens'));
+    if (lzrc2 == null) {
+      lzrc2 = [];
+    }
+  } catch (error) {
+    lzrc2 = [];
+  }
+  state.zrc2 = [...zrc2, ...lzrc2];
 };
 export const CLEAR_WALLET = (state, result) => {
   state.wallet = {
@@ -36,14 +50,21 @@ export const SELECT_NODE = (state, node) => {
     };
   }
 };
-
+export const UPDATE_BALANCE = (state, result) => {
+  state.tokenBalances = result;
+};
 export const FETCHED_PRICE = (state, prices) => {
-  state.prices = prices;
+  if (prices.symbol == 'SGD') prices.symbol = 'XSGD';
+  state.prices[prices.symbol] = prices.data;
 };
 export const SAVE_TRANSACTIONS = (state, data) => {
   state.viewblockAccount.txs = data;
+  const nodeId = state.selectedNode.id == 1 ? 'address' : 'testnetAddress';
+  const zrc2 = state.zrc2;
   for (let index = 0; index < state.viewblockAccount.txs.length; index++) {
-    const hash = state.viewblockAccount.txs[index].hash;
+    let tx = state.viewblockAccount.txs[index];
+    tx = formatTransaction(tx, zrc2, nodeId);
+    const hash = tx.hash;
     state.localTxns = state.localTxns.filter(function(obj) {
       return obj.hash !== hash;
     });
@@ -51,21 +72,24 @@ export const SAVE_TRANSACTIONS = (state, data) => {
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
 export const saveTxn = (state, data) => {
-  var txn;
-  if (data.type === 'zillet') {
-    txn = {
-      direction: data.toAddr == state.wallet.address ? 'self' : 'out',
-      timestamp: new Date(),
-      hash: '0x' + (data.res && data.res.result && data.res.result.TranID),
-      from: state.wallet.address,
-      to: data.toAddr,
-      value: data.amount,
-      fee: data.gasLimit * data.gasPrice,
-      extra: {},
-      status: 'pending',
-      type: 'transfer',
-      version: state.selectedNode.version
-    };
+  let txn = {
+    direction: data.toAddr == state.wallet.address ? 'self' : 'out',
+    timestamp: new Date(),
+    hash: '0x' + data.TranID,
+    from: state.wallet.address,
+    to: data.toAddr,
+    value: data.amount,
+    fee: data.gasLimit * data.gasPrice,
+    extra: {},
+    status: 'pending',
+    type: 'transfer',
+    version: data.version
+  };
+  if (data.type == 'contract') {
+    txn = formatLocalTransaction(txn, data);
+  } else {
+  }
+  if (data.via === 'zillet') {
     state.wallet.nonce = data.nonce;
     let localNonces;
     try {
@@ -78,20 +102,6 @@ export const saveTxn = (state, data) => {
       lastUpdated: +new Date()
     };
     localStorage.setItem('_local_nonces', JSON.stringify(localNonces));
-  } else if (data.type === 'zilpay' || data.type === 'moonlet') {
-    txn = {
-      direction: data.toAddr == state.wallet.address ? 'self' : 'out',
-      timestamp: new Date(),
-      hash: '0x' + data.TranID,
-      from: state.wallet.address,
-      to: data.toAddr,
-      value: data.amount,
-      fee: data.gasLimit * data.gasPrice,
-      extra: {},
-      status: 'pending',
-      type: 'transfer',
-      version: data.version
-    };
   }
   state.localTxns.push(txn);
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));

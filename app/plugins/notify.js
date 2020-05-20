@@ -1,3 +1,3 @@
 import Vue from 'vue';
 import Notify from 'vue-notifyjs';
-Vue.use(Notify);
+Vue.use(Notify, { timeout: 7000 });

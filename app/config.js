@@ -38,7 +38,7 @@ export default {
     {
       id: 1002,
       img: 'keystore.svg',
-      title: 'Keystore file',
+      title: 'Keystore File',
       body: 'Access your wallet using Keystore(JSON) file',
       allowed: true,
       buttonText: 'Import File',
@@ -47,7 +47,7 @@ export default {
     {
       id: 1003,
       img: 'mnemonic.svg',
-      title: 'Mnemonic phrase',
+      title: 'Mnemonic Phrase',
       body: 'Access your wallet using 12-word mnemonic Phrase',
       allowed: true,
       buttonText: 'Access',

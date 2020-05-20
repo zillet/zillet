@@ -1,12 +1,15 @@
 const { Zilliqa } = require('@zilliqa-js/zilliqa');
-
+const { Network } = require('@zilliqa-js/blockchain');
+const { TransactionFactory } = require('@zilliqa-js/account');
+const { Blockchain } = require('@zilliqa-js/blockchain');
+const { Contracts } = require('@zilliqa-js/contract');
 Zilliqa.prototype.setProvider = function(provider) {
-  this.wallet.provider = provider;
-  this.provider = provider;
   this.blockchain.provider = provider;
-  this.network.provider = provider;
-  this.transactions.provider = provider;
-  this.contracts.provider = provider;
+  this.wallet.provider = this.blockchain.provider;
+  this.blockchain = new Blockchain(this.wallet.provider, this.wallet);
+  this.network = new Network(this.wallet.provider, this.wallet);
+  this.contracts = new Contracts(this.wallet.provider, this.wallet);
+  this.transactions = new TransactionFactory(this.wallet.provider, this.wallet);
 };
 Zilliqa.prototype.clearAccount = function() {
   this.wallet.accounts = {};

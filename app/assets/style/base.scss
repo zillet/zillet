@@ -51,3 +51,9 @@ a {
 a:hover:not(.active) {
     opacity: 1;
 }
+
+
+.divider {
+    @apply bg-gray-300 w-full;
+    height: 1px;
+}

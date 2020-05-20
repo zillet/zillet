@@ -2,7 +2,7 @@
 /* tab setting */
 $tab-count: 3;
 $indicator-width: 5.33rem;
-$indicator-height: 0.2rem;
+$indicator-height: 3px;
 
 /* breakpoints */
 $breakpoints: (
@@ -27,7 +27,7 @@ $content-selector: '~ .content > section';
       }
 
       #{$slider-selector} {
-        transform: translateX(#{100% * ($i - 1)});
+        transform: translateX(#{103% * ($i - 1)});
       }
 
       #{$content-selector}:nth-child(#{$i}) {
@@ -40,7 +40,7 @@ $content-selector: '~ .content > section';
 .tabs {
   min-width: #{$tab-count * 11rem};
   @include mobile {
-    min-width: 100%;
+    min-width: calc(100% - 100px);
   }
   input[name='tab-control'] {
     display: none;
@@ -61,9 +61,9 @@ $content-selector: '~ .content > section';
       width: #{100% / $tab-count};
       &:nth-child(1) {
         @apply pl-0;
-        @include mobile {
-          @apply pl-6;
-        }
+      }
+      @include mobile {
+        @apply px-1;
       }
       label {
         @include no-select;
@@ -85,7 +85,7 @@ $content-selector: '~ .content > section';
         &:focus,
         &:active {
           outline: 0;
-          @apply text-gray-600;
+          @apply text-gray-800;
         }
       }
     }
