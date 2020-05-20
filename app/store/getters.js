@@ -21,3 +21,11 @@ export const Balance = (state, getters) => {
     qa: state.wallet.balance
   };
 };
+export const pendingTx = state => {
+  try {
+    return state.localTxns.length;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
+};

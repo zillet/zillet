@@ -858,6 +858,7 @@ export default {
           this.txnDone(raw_tx);
           this.saveTxn(raw_tx);
         }
+        console.log(trackInfo);
       });
     },
     fullAmount() {

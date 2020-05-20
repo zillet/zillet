@@ -97,6 +97,13 @@
                 </span>
               </div>
               <z-button
+                v-if="showPk"
+                size="small"
+                class="w-full rounded mb-4"
+                @click="showPassphraseModal = true">
+                Download Keystore JSON file
+              </z-button>
+              <z-button
                 size="small"
                 class="w-full rounded"
                 type="default"
@@ -170,23 +177,102 @@
         </div>
       </div>
     </div>
+    <z-modal
+      :visible="showPassphraseModal"
+      @close="showPassphraseModal=false">
+      <div 
+        style="min-width:400px" 
+        class="mx-4">
+        <h3 class="font-semibold text-2xl mb-6 text-gray-800">
+          Download encrypted Keystore file
+        </h3>
+        <div class="flex justify-start flex-col w-full items-start">
+          <z-input
+            v-model="passphrase"
+            :valid="passphrase.length > 7"
+            class="w-full"
+            :label="'Set a password'"
+            placeholder="Do not forget this password" />
+          <p
+            class="text-gray-700 -mt-1 text-left text-sm italic text-left">
+            Password should be atleast 8 chracter long
+          </p>
+        </div>
+        <div class="flex items-center justify-between -mx-3">
+          <z-button
+            class="mx-3"
+            type="default"
+            rounded
+            @click="showPassphraseModal=false">
+            Cancel
+          </z-button>
+          <z-button
+            class="mx-3 min-w-42"
+            rounded
+            :disabled="passphrase.length < 8"
+            @click="downloadWalletJson">
+            Download File
+          </z-button>
+        </div>
+      </div>
+    </z-modal>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import {
+  getAddressFromPrivateKey,
+  encryptPrivateKey,
+  schnorr,
+  toBech32Address
+} from '@zilliqa-js/crypto';
+
 export default {
   name: 'WalletInfo',
   middleware: 'ifKeyExists',
   data() {
     return {
       showPk: false,
-      copiedItem: ''
+      copiedItem: '',
+      passphrase: '',
+      showPassphraseModal: false
     };
   },
   computed: {
     ...mapGetters(['Account'])
   },
   methods: {
+    async downloadWalletJson() {
+      try {
+        this.encryptedWallet = await encryptPrivateKey(
+          'scrypt',
+          this.Account.privateKey,
+          this.passphrase
+        );
+        const fileName =
+          'UTC--' +
+          new Date().toJSON() +
+          '.0--' +
+          this.Account.bech32Address +
+          '.json';
+        // await this.downloadWalletJson(address, result);
+        let element = document.createElement('a');
+        element.setAttribute(
+          'href',
+          'data:text/plain;charset=utf-8,' +
+            encodeURIComponent(this.encryptedWallet)
+        );
+        element.setAttribute('download', fileName);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        this.showPassphraseModal = false;
+        this.passphrase = '';
+      } catch (error) {
+        console.log(error);
+      }
+    },
     onCopyPublicKey() {
       const t = this;
       if (t.copiedItem == '' || t.copiedItem != 'publicKey') {

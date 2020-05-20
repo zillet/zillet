@@ -36,10 +36,10 @@
             <i class="eva eva-clock-outline font-semibold mr-2" />
             <span>Transactions</span>
             <span
-              v-if="pendingTx()> 0"
+              v-if="pendingTx> 0"
               class="relative ml-1 bg-primary h-4 w-4 rounded-full
              text-xs text-white flex items-center justify-center">
-              {{ pendingTx() }}
+              {{ pendingTx }}
             </span>
           </label>
         </li>
@@ -72,18 +72,11 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'NavigationTab',
-  methods: {
-    pendingTx() {
-      try {
-        let lt = JSON.parse(localStorage.getItem('_local_txn'));
-        console.log(lt);
-        return lt.length;
-      } catch (error) {
-        return 0;
-      }
-    }
+  computed: {
+    ...mapGetters(['pendingTx'])
   }
 };
 </script>

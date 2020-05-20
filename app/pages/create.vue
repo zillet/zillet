@@ -205,7 +205,13 @@ export default {
       }
     },
     getWalletFilename(address) {
-      return 'UTC--' + new Date().toJSON() + '.0--' + address + '.json';
+      return (
+        'UTC--' +
+        new Date().toJSON() +
+        '.0--' +
+        toBech32Address(address) +
+        '.json'
+      );
     },
     downloadWalletJson() {
       let filename = this.getWalletFilename(this.address);
