@@ -111,6 +111,7 @@
                 <z-input
                   v-model.number="transaction.amount"
                   :hide="false"
+                  custom-style="max-width: 204px;"
                   custom-class="rounded-l-none"
                   :valid="validateCryptoAmount"
                   number
@@ -126,6 +127,7 @@
             <z-input
               v-model.number="usdAmount"
               :hide="false"
+              custom-style="max-width: 158px;"
               :disabled="!(Prices[fromToken.symbol] && Prices[fromToken.symbol].USD)"
               :valid="validateFiatAmount"
               number
