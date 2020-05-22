@@ -15,8 +15,8 @@
             class="mb-2"
             :placeholder="`Enter Zilliqa ${selectedNode.id==1? 'Mainnet':'Testnet'} address here`" />
         </div>
-        <div class="flex flex-row amount-wrapper items-end">
-          <div class="flex flex-col w-3/5">
+        <div class="flex flex-row  mobile:flex-col amount-wrapper items-end">
+          <div class="flex flex-col w-3/5  mobile:w-full">
             <div class="flex flex-row items-center justify-between">
               <div class="tracking-wide text-sm font-semibold mb-2">
                 Amount
@@ -120,10 +120,10 @@
               </div>
             </div>
           </div>
-          <div class="amount__approx">
+          <div class="amount__approx mobile:hidden">
             <i class="eva eva-swap-outline" />
           </div>
-          <div class="amount__fiat">
+          <div class="amount__fiat mobile:hidden">
             <z-input
               v-model.number="usdAmount"
               :hide="false"
