@@ -84,7 +84,7 @@ export default {
       id: 1007,
       img: 'torus.svg',
       title: 'Google',
-      body: 'Access your via Google via Torus',
+      body: 'Access your wallet using Google via Torus',
       allowed: true,
       buttonText: 'Connect',
       securityLevel: 3

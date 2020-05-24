@@ -50,9 +50,9 @@ export default {
         // NEW: 74915647456-dmjtvi9heh9h944ni2iadabio9kaqd86.apps.googleusercontent.com
         // OLD: 876733105116-i0hj3s53qiio5k95prpfmj0hp0gmgtor.apps.googleusercontent.com
         const torusdirectsdk = new TorusSdk({
-          baseUrl: 'http://localhost:3000/serviceworker',
-          GOOGLE_CLIENT_ID:
-            '74915647456-dmjtvi9heh9h944ni2iadabio9kaqd86.apps.googleusercontent.com',
+          baseUrl:
+            process.env.TORUS_SW_URL || 'http://localhost:9000/serviceworker',
+          GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
           FACEBOOK_CLIENT_ID: '2554219104599979',
           proxyContractAddress: '0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183', // details for test net
           network: 'ropsten' // details for test net
