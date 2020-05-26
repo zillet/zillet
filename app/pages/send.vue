@@ -803,7 +803,7 @@ export default {
           this.fromToken
         );
         if (this.fromToken.symbol.toLowerCase() == 'xsgd') {
-          tx.contractMethod = 'proxyTransfer';
+          tx.contractMethod = 'Transfer';
         } else {
           tx.contractMethod = 'Transfer';
         }
