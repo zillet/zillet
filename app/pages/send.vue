@@ -562,9 +562,6 @@ export default {
           toChecksumAddress(tx.base16address),
           tx.tokenAmount
         );
-        if (tx.token.symbol == 'XSGD') {
-          contractParams[1].vname = 'value';
-        }
         sentTx = await contract.callWithoutConfirm(
           tx.contractMethod,
           contractParams,
