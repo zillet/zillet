@@ -767,6 +767,7 @@ export default {
       const balance = new BN(this.Account.balance);
       const total = amount.add(fee);
       if (total.gt(balance)) {
+        this.loading = false;
         return this.$notify({
           message: `Amount+Fee can not be greater than your balance`,
           type: 'danger'
@@ -776,6 +777,8 @@ export default {
       const minGasPrice = await this.$zillet.blockchain.getMinimumGasPrice();
       const isGasSufficient = gasPrice.gte(new BN(minGasPrice.result)); // Checks if your gas price is less than the minimum gas price
       if (!isGasSufficient) {
+        this.loading = false;
+
         return this.$notify({
           message: `Gas price is not sufficient`,
           type: 'danger'
@@ -867,9 +870,9 @@ export default {
       if (this.fromToken.symbol == 'ZIL') {
         const balance = this.Balance.zil;
         const fee = this.transactionFee;
-        const amount = parseFloat((balance - fee).toPrecision(4));
+        const amount = roundDown(balance - fee, 4);
         if (amount > 0) {
-          this.transaction.amount = Number(amount);
+          this.transaction.amount = amount;
         } else {
           this.transaction.amount = 0;
           this.usdAmount = 0;
