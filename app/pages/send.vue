@@ -802,11 +802,7 @@ export default {
           this.selectedNode.id,
           this.fromToken
         );
-        if (this.fromToken.symbol.toLowerCase() == 'xsgd') {
-          tx.contractMethod = 'Transfer';
-        } else {
-          tx.contractMethod = 'Transfer';
-        }
+        tx.contractMethod = 'Transfer';
       }
       // Making transactions
       if (this.accessType === 1004) {
