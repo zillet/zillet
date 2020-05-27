@@ -562,9 +562,6 @@ export default {
           toChecksumAddress(tx.base16address),
           tx.tokenAmount
         );
-        if (tx.token.symbol == 'XSGD') {
-          contractParams[1].vname = 'value';
-        }
         sentTx = await contract.callWithoutConfirm(
           tx.contractMethod,
           contractParams,
@@ -806,7 +803,7 @@ export default {
           this.fromToken
         );
         if (this.fromToken.symbol.toLowerCase() == 'xsgd') {
-          tx.contractMethod = 'proxyTransfer';
+          tx.contractMethod = 'Transfer';
         } else {
           tx.contractMethod = 'Transfer';
         }
