@@ -51,7 +51,8 @@ export default {
         // OLD: 876733105116-i0hj3s53qiio5k95prpfmj0hp0gmgtor.apps.googleusercontent.com
         const torusdirectsdk = new TorusSdk({
           baseUrl:
-            process.env.TORUS_SW_URL || 'http://localhost:9000/serviceworker',
+            process.env.TORUS_SW_URL ||
+            window.location.origin + '/serviceworker',
           GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || ''
         });
         await torusdirectsdk.init();
@@ -72,7 +73,10 @@ export default {
         });
       } catch (error) {
         this.loading = false;
-        console.error(error);
+        return this.$notify({
+          message: String(error.message),
+          type: 'danger'
+        });
       }
     }
   }
