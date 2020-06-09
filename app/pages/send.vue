@@ -513,9 +513,6 @@ export default {
             tokenAmount
           );
           console.log(contractMethod, contractParams);
-          if (token.symbol == 'XSGD') {
-            contractParams[1].vname = 'value';
-          }
           sentTx = await contract.call(contractMethod, contractParams, {
             gasPrice,
             amount: new BN(0),
@@ -699,9 +696,6 @@ export default {
             toChecksumAddress(base16address),
             tokenAmount
           );
-          if (token.symbol == 'XSGD') {
-            contractParams[1].vname = 'value';
-          }
           sentTx = await contract.callWithoutConfirm(
             contractMethod,
             contractParams,
