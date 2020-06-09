@@ -170,34 +170,21 @@ export function fetchTokenBalance({ commit, state, getters }) {
         } else {
           deployedContract = t.$zillet.contracts.at(element.testnetAddress);
         }
-        let bal;
-        if (element.symbol == 'XSGD') {
-          bal = await deployedContract.getSubState('balances', [address]);
-          let tokenBal = 0;
-          if (bal && bal.balances) {
-            tokenBal = bal.balances[address];
-          }
-          balances.push({
-            ...element,
-            balance: tokenBal
-          });
-        } else {
-          bal = await deployedContract.getSubState('balances_map', [address]);
-          let tokenBal = 0;
-          if (bal && bal.balances_map) {
-            tokenBal = bal.balances_map[address];
-          }
-          balances.push({
-            ...element,
-            balance: tokenBal
-          });
+        let bal = await deployedContract.getSubState('balances', [address]);
+        let tokenBal = 0;
+        if (bal && bal.balances) {
+          tokenBal = bal.balances[address];
         }
-        if (index == state.zrc2.length - 1) {
-          commit('UPDATE_BALANCE', balances);
-          commit('SUCCESS');
-          resolve(balances);
-        }
-      });
+        balances.push({
+          ...element,
+          balance: tokenBal
+        });
+      if (index == state.zrc2.length - 1) {
+        commit('UPDATE_BALANCE', balances);
+        commit('SUCCESS');
+        resolve(balances);
+      }
+    });
     } catch (error) {
       commit('ERROR');
       reject(error);
