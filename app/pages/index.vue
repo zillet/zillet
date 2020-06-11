@@ -35,6 +35,10 @@
           v-else-if="accessMethodId===1006"
           :uid="1006"
           @exit="accessMethodId=0" />
+        <Torus
+          v-else-if="accessMethodId===1007"
+          :uid="1007"
+          @exit="accessMethodId=0" />
       </transition>
     </div>
   </div>
@@ -47,6 +51,7 @@ import Mnemonic from '@/components/index/AccessWalletMnemonic';
 import Zilpay from '@/components/index/AccessWalletZilpay';
 import Moonlet from '@/components/index/AccessWalletMoonlet';
 import Ledger from '@/components/index/AccessWalletLedger';
+import Torus from '@/components/index/AccessWalletTorus';
 
 export default {
   name: 'Index',
@@ -57,7 +62,8 @@ export default {
     Mnemonic,
     Zilpay,
     Moonlet,
-    Ledger
+    Ledger,
+    Torus
   },
   data() {
     return {
