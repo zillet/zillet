@@ -266,6 +266,113 @@
         </div>
       </div>
     </z-modal>
+    <z-modal
+      :visible="showTransactionDetails"
+      @close="showTransactionDetails=false">
+      <h3 class="font-bold text-xl mb-4 mt-4">
+        Transaction Details
+      </h3>
+      <div class="flex flex-col px-8">
+        <div class="flex items-center justify-left text-left my-2 bg-gray-200 rounded p-4">
+          <div
+            class="flex-1 flex flex-col"
+            style="max-width:calc( 40% - 2rem)">
+            <span class=" text-sm  text-gray-700 font-semibold">
+              From
+            </span>
+            <div class="flex flex-row items-center">
+              <jazzicon
+                :diameter="14"
+                :address="Account.address"
+                class="mt-1 mr-2" />
+              <h3
+                class="font-semibold text-gray-800 
+                truncate hover:text-primary cursor-pointer"
+                @click="openAddressOnVb(selectedNode, Account.bech32Address)">
+                {{ `${Account.bech32Address}` }}
+              </h3>
+            </div>
+          </div>
+          <div
+            class="flex-1  flex flex-col items-center relative font-bold text-xl"
+            style="max-width:4rem; top:0.6rem">
+            <i class="eva eva-arrow-forward-outline" />
+          </div>
+          <div
+            class="flex-1 flex flex-col"
+            style="max-width:calc( 60% - 2rem)">
+            <span class=" text-sm text-gray-700 font-semibold">
+              Recipient
+            </span>
+            <div class="flex flex-row items-center">
+              <jazzicon
+                :diameter="14"
+                :address="transaction.address"
+                class="mt-1 mr-2" />
+              <h3
+                class="font-bold text-gray-900 text-lg
+                truncate hover:text-primary cursor-pointer"
+                @click="openAddressOnVb(selectedNode, transaction.address)">
+                {{ `${transaction.address}` }}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-left 
+          text-left my-2 border-1 border-gray-400 rounded py-2 px-4"
+          style="border: 1px solid;">
+          <div
+            class="flex-1 flex flex-col">
+            <span class=" text-sm text-gray-700 font-semibold mb-1">
+              Amount
+            </span>
+            <div class="flex flex-row items-center">
+              <img 
+                :src="getImages(fromToken.symbol)" 
+                height="18px" 
+                :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
+                class="rounded"
+                width="18px">
+              <h3
+                class="font-bold text-gray-900 text-lg ml-4 uppercase
+                truncate">
+                {{ `${transaction.amount}` }}
+                <span class="text-gray-700 text-sm">{{ fromToken.symbol }}</span>
+              </h3>
+              <span class="ml-8 text-sm font-semibold flex items-center">
+                + {{ transactionFee }} ZIL <span class="text-xs font-normal text-gray-700">(Transaction Fee)</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <p class="italic text-left text-sm mt-4">
+          * Please carefully check the transaction details. Once broadcasted to the
+          network transaction <b>can not be revert back</b>
+        </p>
+        <div class="flex flex-row -mx-2">
+          <div class="w-1/3 px-2">
+            <z-button
+              class="w-full mt-8"
+              type="default"
+              rounded
+              :disabled="loading"
+              @click="cancelTx">
+              Cancel
+            </z-button>
+          </div>
+          <div class="w-2/3 px-2">
+            <z-button
+              rounded
+              class="mt-8 w-full"
+              :loading="loading"
+              @click="hasChecked=true;createTxn()">
+              Send this transaction.
+            </z-button>
+          </div>
+        </div>
+      </div>
+    </z-modal>
   </div>
 </template>
 <script>
@@ -277,7 +384,8 @@ import {
   tokenTransfer,
   openTxOnVb,
   roundDown,
-  getContractAddress
+  getContractAddress,
+  openAddressOnVb
 } from '@/utils';
 
 import {
@@ -324,6 +432,9 @@ export default {
       isFiatAmountFocus: false,
       fromTokenDropDown: false,
       tokenSearch: '',
+      hasChecked: false,
+      showTransactionDetails: false,
+      transactionDetails: {},
       fromToken: {
         name: 'Zilliqa',
         symbol: 'ZIL'
@@ -446,6 +557,7 @@ export default {
     isNumber: isNumber,
     getImages,
     openTxOnVb,
+    openAddressOnVb,
     normaliseAddress(address) {
       if (validation.isBech32(address)) {
         this.transaction.base16address = fromBech32Address(address);
@@ -788,6 +900,15 @@ export default {
         VERSION,
         token: this.fromToken
       };
+      if (!this.hasChecked) {
+        this.loading = false;
+        this.transactionDetails = tx;
+        this.showTransactionDetails = true;
+        return;
+      } else {
+        this.showTransactionDetails = false;
+        this.hasChecked = false;
+      }
       if (this.fromToken.symbol.toLowerCase() == 'zil') {
         tx.type = 'normal';
       } else {
@@ -812,6 +933,19 @@ export default {
         await this.fetchTokenBalance();
       }
       this.loading = false;
+    },
+    cancelTx() {
+      this.loading = false;
+      this.hasChecked = false;
+      this.showTransactionDetails = false;
+      this.transaction = {
+        ...this.transaction,
+        ...{
+          address: '',
+          amount: '',
+          nonce: ''
+        }
+      };
     },
     txnDone(result) {
       this.loading = false;

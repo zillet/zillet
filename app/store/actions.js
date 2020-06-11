@@ -179,12 +179,12 @@ export function fetchTokenBalance({ commit, state, getters }) {
           ...element,
           balance: tokenBal
         });
-      if (index == state.zrc2.length - 1) {
-        commit('UPDATE_BALANCE', balances);
-        commit('SUCCESS');
-        resolve(balances);
-      }
-    });
+        if (index == state.zrc2.length - 1) {
+          commit('UPDATE_BALANCE', balances);
+          commit('SUCCESS');
+          resolve(balances);
+        }
+      });
     } catch (error) {
       commit('ERROR');
       reject(error);
