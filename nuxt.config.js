@@ -33,7 +33,9 @@ module.exports = {
     cryptocompare: {
       url: 'https://min-api.cryptocompare.com/data/price',
       token: process.env.CRYPTOCOMPARE_TOKEN
-    }
+    },
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    TORUS_SW_URL: process.env.TORUS_SW_URL
   },
   workbox: {
     runtimeCaching: [
