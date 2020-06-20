@@ -10,6 +10,7 @@ import Upload from './upload';
 import Link from './link';
 import Loader from './loader';
 import { Table, TableColumn } from './table';
+import Select from './select';
 
 export {
   Alert,
@@ -24,5 +25,6 @@ export {
   Link,
   Loader,
   Table,
-  TableColumn
+  TableColumn,
+  Select
 };

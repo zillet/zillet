@@ -23,7 +23,12 @@ export function isNumber(value) {
  * @returns {Boolean}
  */
 export function isMnemonicValid(mnemonic) {
-  if (mnemonic.trim().split(/\s+/g).length < 12) {
+  if (
+    !(
+      mnemonic.trim().split(/\s+/g).length == 12 ||
+      mnemonic.trim().split(/\s+/g).length == 24
+    )
+  ) {
     return false;
   }
   return bip39.validateMnemonic(mnemonic);
