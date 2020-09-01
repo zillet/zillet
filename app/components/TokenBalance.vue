@@ -23,7 +23,7 @@
     </div>
     <!-- <div class="divider" /> -->
     <div
-      class="h-full px-6 overflow-scroll"
+      class="h-full px-6 overflow-auto"
       style="max-height:18rem">
       <Loader v-if="loading || fetching" />
       <div
