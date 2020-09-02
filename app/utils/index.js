@@ -13,7 +13,10 @@ function formatTransaction(tx, zrc2, nodeId) {
     let contractTransfer = {};
     // find event by transfer
     let transferEvent = tx.events.find(el => {
-      return el.name && el.name.toLowerCase() === 'transfer';
+      return (
+        el.name &&
+        (el.name.toLowerCase() === 'transfer' || el.name === 'TransferSuccess')
+      );
     });
     if (transferEvent) {
       const contractKey = nodeId == 1 ? 'address' : 'testnetAddress';
