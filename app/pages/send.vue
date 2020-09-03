@@ -5,16 +5,46 @@
         <h3 class="font-semibold text-xl mb-4 text-left">
           Send Zilliqa and Tokens
         </h3>
-        <div>
+        <div class="mb-2">
           <div class="tracking-wide text-sm font-semibold mb-2">
             Recipient Address
           </div>
           <z-input
-            v-model="transaction.address"
+            v-model="transaction.to"
             :hide="false"
-            class="mb-2"
+            class="mb-0"
+            :success="validateZilDomain(transaction.to) && !resolvingDomain && transaction.address !=''"
+            :error="validateZilDomain(transaction.to) && !resolvingDomain && transaction.address ==''"
+            custom-class="mb-0"
+            :loading="resolvingDomain"
             :placeholder="`Enter Zilliqa ${selectedNode.id==1? 'Mainnet':'Testnet'} address here`" />
+          <div
+            v-if="validateZilDomain(transaction.to)"
+            class="my-1">
+            <div
+              v-if="resolvingDomain"
+              class="text-sm italic">
+              Resolving domain details...
+            </div>
+            <div
+              v-else-if="!resolvingDomain && transaction.address !=''"
+              class="text-sm flex justify-between">
+              <span class="italic">Domain resolves to </span>
+              <div
+                class="font-semibold text-gray-900
+                truncate hover:text-primary cursor-pointer"
+                @click="openAddressOnVb(selectedNode,transaction.address)">
+                {{ transaction.address }}
+              </div>
+            </div>
+            <div
+              v-else
+              class="text-sm italic">
+              Unfortunately, We are not able to resolve this domain, Kindly verify the domain name. 
+            </div>
+          </div>
         </div>
+        
         <div class="flex flex-row  mobile:flex-col amount-wrapper items-end">
           <div class="flex flex-col w-3/5  mobile:w-full">
             <div class="flex flex-row items-center justify-between">
@@ -313,7 +343,13 @@
                 class="font-bold text-gray-900 text-lg
                 truncate hover:text-primary cursor-pointer"
                 @click="openAddressOnVb(selectedNode, transaction.address)">
-                {{ `${transaction.address}` }}
+                <div v-if="transaction.address == transaction.to">
+                  {{ `${transaction.address}` }}
+                </div>
+                <div v-else>
+                  {{ `${transaction.to}` }} 
+                  <span class="font-normal text-sm ml-3">({{ transaction.address | truncate(20) }})</span>
+                </div>
               </h3>
             </div>
           </div>
@@ -385,7 +421,9 @@ import {
   openTxOnVb,
   roundDown,
   getContractAddress,
-  openAddressOnVb
+  openAddressOnVb,
+  domainResolve,
+  validateZilDomain
 } from '@/utils';
 
 import {
@@ -426,6 +464,7 @@ export default {
       isAdvance: false,
       isSigned: false,
       isBroadcast: false,
+      resolvingDomain: false,
       tranxId: '',
       loading: false,
       isCryptoAmountFocus: false,
@@ -535,6 +574,21 @@ export default {
           }
         }
       }
+    },
+    'transaction.to': {
+      async handler(value) {
+        if (validateZilDomain(value)) {
+          this.resolvingDomain = true;
+          const address = await domainResolve(value, 'ZIL');
+          console.log(address);
+          if (address) {
+            this.transaction.address = address;
+          } else {
+            this.transaction.address = '';
+          }
+          this.resolvingDomain = false;
+        }
+      }
     }
   },
   async beforeMount() {
@@ -558,6 +612,7 @@ export default {
     getImages,
     openTxOnVb,
     openAddressOnVb,
+    validateZilDomain,
     normaliseAddress(address) {
       if (validation.isBech32(address)) {
         this.transaction.base16address = fromBech32Address(address);
@@ -837,9 +892,36 @@ export default {
     },
     async createTxn() {
       // Applying checks
+      if (
+        this.transaction.to &&
+        validateZilDomain(this.transaction.to) &&
+        this.resolvingDomain
+      ) {
+        return this.$notify({
+          message: `Wait till we resolve the domain.`,
+          type: 'danger'
+        });
+      } else if (
+        this.transaction.to &&
+        validateZilDomain(this.transaction.to) &&
+        this.transaction.address == ''
+      ) {
+        return this.$notify({
+          message: `Invalid Zilliqa domain, please verify first.`,
+          type: 'danger'
+        });
+      } else if (!validateZilDomain(this.transaction.to)) {
+        this.transaction.address = this.transaction.to;
+      }
       if (!this.normaliseAddress(this.transaction.address)) {
         return this.$notify({
           message: `Address format is invalid`,
+          type: 'danger'
+        });
+      }
+      if (!(this.transaction.amount > 0)) {
+        return this.$notify({
+          message: `Transfer value should be greater than 0.`,
           type: 'danger'
         });
       }
@@ -942,6 +1024,7 @@ export default {
         ...this.transaction,
         ...{
           address: '',
+          to: '',
           amount: '',
           nonce: ''
         }
@@ -953,6 +1036,7 @@ export default {
         ...this.transaction,
         ...{
           address: '',
+          to: '',
           amount: '',
           nonce: ''
         }

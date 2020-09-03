@@ -1,4 +1,6 @@
 import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
+const { default: Resolution } = require('@unstoppabledomains/resolution');
+
 function getImages(name) {
   try {
     return `https://raw.githubusercontent.com/zillet/zrc2-tokens/master/images/${name.toLowerCase()}.png`;
@@ -99,6 +101,25 @@ function roundDown(number, decimals) {
   decimals = decimals || 0;
   return Math.floor(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
 }
+
+async function domainResolve(domain, currency = 'ZIL') {
+  console.log(domain, currency);
+  const resolution = new Resolution({
+    blockchain: {
+      ens: { url: 'https://api.zilliqa.com' }
+    }
+  });
+  try {
+    const address = await resolution.address(domain, currency);
+    return address;
+  } catch (error) {
+    throw Error(error);
+  }
+}
+function validateZilDomain(domain) {
+  return /[a-z0-9]+-?[a-z0-9]+\.(zil)(\.[a-z]+)?/i.test(domain);
+}
+
 export {
   getImages,
   formatTransaction,
@@ -108,5 +129,7 @@ export {
   openTxOnVb,
   roundDown,
   openContractOnVb,
-  getContractAddress
+  getContractAddress,
+  domainResolve,
+  validateZilDomain
 };
