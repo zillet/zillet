@@ -133,7 +133,12 @@
                   :diameter="18" 
                   :address="scope.row.direction=='in' ? toBase16(scope.row.from):toBase16(scope.row.to)"
                   class="mt-1 mr-2" />
-                {{ scope.row.direction=='in' ? toAddress(scope.row.from):toAddress(scope.row.to) }}
+                <div v-if="(scope.row.direction=='in' ? scope.row.from:scope.row.to) in zilDomains">
+                  {{ zilDomains[(scope.row.direction=='in' ? scope.row.from:scope.row.to)] }}
+                </div>
+                <div v-else>
+                  {{ scope.row.direction=='in' ? toAddress(scope.row.from):toAddress(scope.row.to) }} 
+                </div>
               </div>
             </z-table-column>
             <z-table-column
@@ -212,7 +217,6 @@ export default {
   },
   computed: {
     ...mapGetters(['Account', 'Prices']),
-
     ...mapState({
       viewTxns: state => state.viewblockAccount.txs,
       selectedNode: state => state.selectedNode,
@@ -225,6 +229,14 @@ export default {
       });
       const tx = [...txn, ...this.viewTxns];
       return this.orderBy(tx, 'timestamp', -1);
+    },
+    zilDomains() {
+      try {
+        return JSON.parse(localStorage.getItem('_zil_domains'));
+      } catch (error) {
+        console.error(error);
+        return {};
+      }
     }
   },
   watch: {

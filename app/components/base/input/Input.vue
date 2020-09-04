@@ -29,6 +29,30 @@
             class="eva" />
         </button>
       </div>
+      <div
+        v-if="loading"
+        style="right:10px"
+        class="absolute flex  mt-3">
+        <i
+          style="height:1em"
+          class="eva eva-loader-outline rotating" />
+      </div>
+      <div
+        v-if="success"
+        style="right:10px"
+        class="absolute flex mt-3">
+        <i
+          style="height:1em"
+          class="eva eva-checkmark-circle-2-outline text-green-600" />
+      </div>
+      <div
+        v-if="error"
+        style="right:10px"
+        class="absolute flex  mt-3">
+        <i
+          style="height:1em"
+          class="eva eva-alert-triangle-outline text-red-600" />
+      </div>
       <slot />
     </div>
   </div>
@@ -65,7 +89,19 @@ export default {
       type: [String, Object, Array],
       default: ''
     },
+    loading: {
+      type: Boolean,
+      default: false
+    },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    success: {
+      type: Boolean,
+      default: false
+    },
+    error: {
       type: Boolean,
       default: false
     }
@@ -112,5 +148,40 @@ i.eva {
     @apply border border-gray-400 border-l-0 rounded rounded-l-none;
     @apply leading-normal text-gray-500;
   }
+}
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.rotating {
+  -webkit-animation: rotating 1.5s linear infinite;
+  -moz-animation: rotating 1.5s linear infinite;
+  -ms-animation: rotating 1.5s linear infinite;
+  -o-animation: rotating 1.5s linear infinite;
+  animation: rotating 1.5s linear infinite;
 }
 </style>
