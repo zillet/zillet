@@ -583,6 +583,17 @@ export default {
           console.log(address);
           if (address) {
             this.transaction.address = address;
+            try {
+              const domains = JSON.parse(localStorage.getItem('_zil_domains'));
+              if (domains.length) {
+                domains[address] = value;
+                localStorage.setItem('_zil_domains', JSON.parse(domains));
+              }
+            } catch (error) {
+              const domains = {};
+              domains[address] = value;
+              localStorage.setItem('_zil_domains', JSON.stringify(domains));
+            }
           } else {
             this.transaction.address = '';
           }
