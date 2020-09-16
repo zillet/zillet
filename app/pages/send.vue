@@ -951,8 +951,10 @@ export default {
           });
         }
         tokenAmount = new BN(
-          parseInt(
-            this.transaction.amount * Math.pow(10, this.fromToken.decimals)
+          String(
+            parseInt(
+              this.transaction.amount * Math.pow(10, this.fromToken.decimals)
+            )
           )
         ).toString();
         amount = new BN(0);

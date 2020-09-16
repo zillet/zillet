@@ -232,7 +232,12 @@ export default {
     },
     zilDomains() {
       try {
-        return JSON.parse(localStorage.getItem('_zil_domains'));
+        const t = JSON.parse(localStorage.getItem('_zil_domains'));
+        if (t == null) {
+          return {};
+        } else {
+          return t;
+        }
       } catch (error) {
         console.error(error);
         return {};
