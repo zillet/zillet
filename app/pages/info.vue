@@ -172,7 +172,7 @@
             Clear Local Storage and Cache
           </z-button>
           <div class="italic text-sm mt-2">
-            * This option is useful when there are stuck transactions in UI.
+            * This option is useful when there are stuck transactions and tokens in UI.
           </div>
         </div>
       </div>

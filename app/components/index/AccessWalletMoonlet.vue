@@ -21,7 +21,7 @@
     <p
       v-if="notFound"
       align="left">
-      Moonlet extenstion not found. Please check that extenstion is installed or
+      Moonlet extension not found. Please check that extension is installed or
       download the extension from the link below.
       <z-button
         class="w-full my-4"
@@ -31,7 +31,7 @@
         <a
           href="https://moonlet.xyz/"
           target="_blank"
-          rel="noopener norefrer nofollow">Download Extenstion</a>
+          rel="noopener norefrer nofollow">Download Extension</a>
       </z-button>
     </p>
     <p

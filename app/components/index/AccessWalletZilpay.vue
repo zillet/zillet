@@ -17,7 +17,7 @@
     <p
       v-if="notFound"
       align="left">
-      Zilpay extenstion not found. Please check that extenstion is installed or
+      Zilpay extension not found. Please check that extension is installed or
       download the extension from the link below.
       <z-button
         class="w-full my-4"
@@ -27,7 +27,7 @@
         <a
           href="https://zilpay.xyz/"
           target="_blank"
-          rel="noopener norefrer nofollow">Download Extenstion</a>
+          rel="noopener norefrer nofollow">Download Extension</a>
       </z-button>
     </p>
   </AccessWalletContainer>

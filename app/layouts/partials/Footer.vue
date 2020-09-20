@@ -146,12 +146,6 @@ export default {
       }
     }
   },
-  mounted() {
-    const item = localStorage.getItem('_new_version_notify');
-    if (!!item == false) {
-      this.newVersionNotify = true;
-    }
-  },
   methods: {
     dontShowVersionNotify() {
       localStorage.setItem('_new_version_notify', true);
