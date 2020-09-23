@@ -56,6 +56,8 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: zillet-web
         IMAGE_TAG: ${{ github.sha }}
+        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        TORUS_SW_URL:  ${{ secrets.TORUS_SW_URL }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
