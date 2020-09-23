@@ -3,6 +3,8 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.16.0
 ENV HOST=0.0.0.0 \
 	PORT=80 
 
+ENV GOOGLE_CLIENT_ID $GOOGLE_CLIENT_ID
+
 RUN set -ex \
 	&& mkdir -p /data/app \
 	&& apt-get update \

@@ -1,6 +1,10 @@
 # Zilliqa Wallet
 
+![Deploy to Amazon ECS](https://github.com/zillet/zillet/workflows/Deploy%20to%20Amazon%20ECS/badge.svg)
+
 UI/UX focused minimal web wallet.
+
+_______________________
 
 ## Build Setup
 
