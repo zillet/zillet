@@ -25,7 +25,7 @@
           <z-input
             v-model.number="amount"
             :hide="false"
-            :valid="validateCryptoAmount"
+            :valid="validateAmount"
             class="mb-0"
             number
             placeholder="0 ZIL" />
@@ -110,7 +110,7 @@
         </div>
       </div>
       <div
-        class="bg-gray-200 text-gray-700 rounded my-4 p-2  text-left flex flex-row items-center">
+        class="bg-gray-100 text-gray-700 rounded my-4 p-2 px-4  text-left flex flex-row items-center">
         <i class="eva eva-info-outline text-xl mr-4" />
         <div class="text-sm">
           After Unstake you have to wait for at least <strong>{{ bnumReq }}</strong> confirmation in 
@@ -119,7 +119,7 @@
       </div>
       <div
         v-if="errorMsg"
-        class="bg-red-200 text-red-700 rounded my-4 p-2  text-left flex flex-row items-center">
+        class="bg-red-100 text-red-700 rounded my-4  px-4 p-2  text-left flex flex-row items-center">
         <i
           class="eva eva-alert-triangle-outline  text-xl mr-4" />
         <div class="text-sm">
@@ -128,7 +128,7 @@
       </div>
       <div class="flex flex-row items-center justify-between">
         <z-button
-          class="rounded-full py-2 mr-2 w-40"
+          class="rounded py-2 mr-2 w-40"
           type="default"
           :disabled="loading"
           size="medium"
@@ -138,7 +138,8 @@
         <z-button
           size="medium"
           :loading="loading"
-          class="rounded-full py-2 shadow-md ml-2 w-full"
+          :disabled="!validateAmount"
+          class="rounded py-2 shadow-md ml-2 w-full"
           @click="$emit('unstake', amount, selectedSeedNode.address)">
           Unstake
         </z-button>
@@ -150,7 +151,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import Vue2Filters from 'vue2-filters';
-import { isNumber } from '@/utils/validation';
 
 export default {
   name: 'AddToken',
@@ -185,13 +185,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['Balance']),
-    validateCryptoAmount() {
-      if (!isNumber(this.amount)) {
-        return false;
-      }
-      return parseFloat(this.amount) < this.Balance.zil - 50;
-    },
     totalZilStaked() {
       let total = 0;
       for (let index = 0; index < this.myStakes.length; index++) {
@@ -199,6 +192,12 @@ export default {
         total = total + parseInt(element.amount);
       }
       return total * Math.pow(10, -12);
+    },
+    validateAmount() {
+      return (
+        parseFloat(this.amount) <=
+        parseInt(this.selectedSeedNode.amount) * Math.pow(10, -12)
+      );
     }
   },
   watch: {
@@ -211,7 +210,6 @@ export default {
       }
     }
   },
-  mounted() {},
   methods: {
     fromTokenChange(node) {
       this.selectedSeedNode = node;
@@ -221,8 +219,7 @@ export default {
       this.amount = Number(
         this.selectedSeedNode.amount * Math.pow(10, -12)
       ).toFixed(4);
-    },
-    stake() {}
+    }
   }
 };
 </script>

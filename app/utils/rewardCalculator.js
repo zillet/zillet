@@ -5,6 +5,7 @@ const KEY_DIRECT_DEPOSIT_DELEG = 'direct_deposit_deleg';
 const KEY_BUFF_DEPOSIT_DELEG = 'buff_deposit_deleg';
 const KEY_STAKE_SSN_PER_CYCLE = 'stake_ssn_per_cycle';
 const KEY_LAST_WITHDRAW_CYCLE = 'last_withdraw_cycle_deleg';
+const KEY_DELEG_PER_CYCLE = 'deleg_stake_per_cycle';
 
 async function get_rewards(ssnContract, ssnaddr, delegator) {
   const allState = await ssnContract.getState();
@@ -20,7 +21,6 @@ async function get_rewards(ssnContract, ssnaddr, delegator) {
     ssnaddr,
     delegator
   );
-  console.log(need_list);
   const rewards = await calculate_rewards(
     allState,
     ssnaddr,
@@ -98,6 +98,7 @@ async function combine_buff_direct(state, ssnaddr, delegator, reward_list) {
   }
   const direct_deposit = state[KEY_DIRECT_DEPOSIT_DELEG];
   const buffer_deposit = state[KEY_BUFF_DEPOSIT_DELEG];
+  const deleg_stake_per_cycle = state[KEY_DELEG_PER_CYCLE];
 
   reward_list.forEach(cycle => {
     // for every reward cycle, we need to get
@@ -106,6 +107,18 @@ async function combine_buff_direct(state, ssnaddr, delegator, reward_list) {
     // 3. accumulate last result to get total amount for this cycle
     const c1 = cycle - 1;
     const c2 = cycle - 2;
+    let hist_amt = new BN(0);
+    if (
+      deleg_stake_per_cycle !== undefined &&
+      deleg_stake_per_cycle[delegator] !== undefined &&
+      deleg_stake_per_cycle[delegator][ssnaddr] !== undefined &&
+      deleg_stake_per_cycle[delegator][ssnaddr][c1.toString()] !== undefined
+    ) {
+      hist_amt = new BN(
+        deleg_stake_per_cycle[delegator][ssnaddr][c1.toString()]
+      );
+    }
+
     let dir_amt = new BN(0);
     if (
       direct_deposit !== undefined &&
@@ -126,7 +139,8 @@ async function combine_buff_direct(state, ssnaddr, delegator, reward_list) {
       buf_amt = new BN(buffer_deposit[delegator][ssnaddr][c2.toString()]);
     }
 
-    const total_amt_tmp = dir_amt.add(buf_amt);
+    let total_amt_tmp = dir_amt.add(buf_amt);
+    total_amt_tmp = total_amt_tmp.add(hist_amt);
     const last_amt = result_map.get(c1);
     if (last_amt !== undefined) {
       const total_amt = total_amt_tmp.add(last_amt);

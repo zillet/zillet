@@ -74,7 +74,7 @@
             <span
               style="top: -3px;left: -3px;transform: scale(.75);"
               class="relative ml-1 bg-primary h-4 w-8 rounded-full
-             text-xs text-white flex items-center justify-center">
+             text-xs text-white flex items-center font-normal justify-center">
               New
             </span>
           </label>

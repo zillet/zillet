@@ -656,7 +656,6 @@ export default {
             toChecksumAddress(base16address),
             tokenAmount
           );
-          console.log(contractMethod, contractParams);
           sentTx = await contract.call(contractMethod, contractParams, {
             gasPrice,
             amount: new BN(0),
