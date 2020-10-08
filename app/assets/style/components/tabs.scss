@@ -1,6 +1,6 @@
 
 /* tab setting */
-$tab-count: 3;
+$tab-count: 4;
 $indicator-width: 5.33rem;
 $indicator-height: 3px;
 
@@ -38,7 +38,7 @@ $content-selector: '~ .content > section';
 }
 
 .tabs {
-  min-width: #{$tab-count * 11rem};
+  min-width: #{$tab-count * 10rem};
   @include mobile {
     min-width: calc(100% - 100px);
   }

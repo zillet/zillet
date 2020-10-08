@@ -1,7 +1,7 @@
 export default {
   VIEWBLOCK_URL: 'https://api.viewblock.io/v1/zilliqa/addresses/',
   MULTIPLIER: 12,
-  MINIMUM_GAS_PRICE: 1000, // in Li
+  MINIMUM_GAS_PRICE: 2000, // in Li
   NODES: [
     {
       name: 'Zilliqa Mainnet',
@@ -89,5 +89,12 @@ export default {
       buttonText: 'Connect',
       securityLevel: 3
     }
-  ]
+  ],
+  STAKING: {
+    testnet: {
+      proxy: 'zil1a66ptrg3rhy6eyqwe463dpvk9z0qhksz48afdt',
+      ssnlist: 'zil1s8dys7thjrxw3fgtz36lxukz9m7dmxhvm9545y',
+      gzil: 'zil10w2fwf5kdwqvjd2zyv6nr7da2d2z63g5dvtvsy'
+    }
+  }
 };

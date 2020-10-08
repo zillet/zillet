@@ -16,6 +16,11 @@
         :checked="$route.name=='tokens'"
         type="radio"
         name="tab-control">
+      <input
+        id="tab4"
+        :checked="$route.name=='staking'"
+        type="radio"
+        name="tab-control">
       <ul>
         <li
           title="Send Zilliqa"
@@ -52,6 +57,17 @@
             <i
               class="eva eva-layers-outline font-semibold mr-2" />
             <span>Tokens</span>
+          </label>
+        </li>
+        <li
+          title="Staking"
+          @click="$emit('tabSelected', 'staking')">
+          <label
+            for="tab4"
+            role="button">
+            <i
+              class="eva eva-gift-outline font-semibold mr-2" />
+            <span>Staking</span>
           </label>
         </li>
       </ul>

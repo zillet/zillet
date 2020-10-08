@@ -255,47 +255,10 @@
       style="">
       <TokenBalance @tokenClicked="tokenClicked" />
     </div>
-    <z-modal
+    <Broadcasted
       :visible="isBroadcast"
-      @close="isBroadcast=false">
-      <h3 class="font-bold text-xl mb-8 mt-4">
-        Transaction Sent
-      </h3>
-      <div class="flex flex-col px-8">
-        <z-icon type="success" />
-        <span class="text-base leading-normal font-semibold">
-          {{ `0x${tranxId}` }}
-        </span>
-        <div
-          class="mt-4 mt-2 text-sm italic">
-          * Your balance will be updated after transaction got confirmed.
-        </div>
-        <div class="flex flex-row -mx-2">
-          <div class="w-1/2 px-2">
-            <z-button
-              class="w-full mt-8"
-              type="default"
-              rounded
-              @click="isBroadcast=false;">
-              Okay, Got it.
-            </z-button>
-          </div>
-          <div class="w-1/2 px-2">
-            <a
-              :href="openTxOnVb(selectedNode, `0x${tranxId}`)"
-              target="_blank"
-              rounded
-              class="w-full flex-1">
-              <z-button
-                rounded
-                class="mt-8 w-full">
-                Check on Explorer
-              </z-button>
-            </a>
-          </div>
-        </div>
-      </div>
-    </z-modal>
+      :tranx-id="tranxId"
+      @close="isBroadcast=false" />
     <z-modal
       :visible="showTransactionDetails"
       @close="showTransactionDetails=false">
@@ -437,6 +400,8 @@ import { Zilliqa } from '@zilliqa-js/zilliqa';
 import ZilliqaHW from '@/utils/ledger';
 import { isNumber } from '@/utils/validation';
 import TokenBalance from '@/components/TokenBalance';
+import Broadcasted from '@/components/send/Broadcasted';
+
 import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
@@ -447,7 +412,8 @@ export default {
   name: 'SendTransactionForm',
   middleware: 'ifKeyExists',
   components: {
-    TokenBalance
+    TokenBalance,
+    Broadcasted
   },
   mixins: [Vue2Filters.mixin],
   data() {

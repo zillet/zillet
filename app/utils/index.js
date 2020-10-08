@@ -1,6 +1,5 @@
 import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
 const { default: Resolution } = require('@unstoppabledomains/resolution');
-
 function getImages(name) {
   try {
     return `https://raw.githubusercontent.com/zillet/zrc2-tokens/master/images/${name.toLowerCase()}.png`;
