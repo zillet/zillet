@@ -16,9 +16,9 @@
           </div>
           <div
             class=" text-sm cursor-pointer"
-            @click="amount=(totalZilStaked && Number(totalZilStaked).toFixed(4))"
+            @click="fillMax"
           >
-            <b class="text-teal-600">{{ totalZilStaked && Number(totalZilStaked).toFixed(4) }}</b>  Delegated  
+            <b class="text-teal-600">{{ Number(selectedSeedNode.amount*Math.pow(10,-12)).toFixed(4) }}</b>  Delegated  
           </div>
         </div>
         <div class="flex flex-row">
@@ -33,14 +33,14 @@
             type="default"
             style="height:3rem; left:-3px"
             class="m-0 relative bg-white border-gray-400 rounded-r"
-            @click="amount=(totalZilStaked && Number(totalZilStaked).toFixed(4))">
+            @click="fillMax">
             Max
           </z-button>
         </div>
       </div>
       <div v-if="myStakes.length > 1">
-        <p class=" text-left my-4">
-          It Looks like you have delegted ZILs to two different seed nodes. Please select a seed node where you
+        <p class="text-sm text-left my-2">
+          It Looks like you have delegted ZILs to {{ myStakes.length }} different seed nodes. Please select a seed node where you
           want to undelegate your amount. 
         </p>
         <div class="flex flex-row items-center justify-between">
@@ -110,9 +110,21 @@
         </div>
       </div>
       <div
+        class="bg-gray-200 text-gray-700 rounded my-4 p-2  text-left flex flex-row items-center">
+        <i class="eva eva-info-outline text-xl mr-4" />
+        <div class="text-sm">
+          After Unstake you have to wait for at least <strong>{{ bnumReq }}</strong> confirmation in 
+          order to make the withdrawal
+        </div>
+      </div>
+      <div
         v-if="errorMsg"
-        class="text-red-600 text-sm">
-        {{ errorMsg }}
+        class="bg-red-200 text-red-700 rounded my-4 p-2  text-left flex flex-row items-center">
+        <i
+          class="eva eva-alert-triangle-outline  text-xl mr-4" />
+        <div class="text-sm">
+          {{ errorMsg }}
+        </div>
       </div>
       <div class="flex flex-row items-center justify-between">
         <z-button
@@ -159,6 +171,10 @@ export default {
     errorMsg: {
       type: String,
       default: ''
+    },
+    bnumReq: {
+      type: Number,
+      default: 10
     }
   },
   data() {
@@ -200,6 +216,11 @@ export default {
     fromTokenChange(node) {
       this.selectedSeedNode = node;
       this.seedNodeDropDown = false;
+    },
+    fillMax() {
+      this.amount = Number(
+        this.selectedSeedNode.amount * Math.pow(10, -12)
+      ).toFixed(4);
     },
     stake() {}
   }

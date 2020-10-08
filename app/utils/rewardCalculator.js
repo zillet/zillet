@@ -20,6 +20,7 @@ async function get_rewards(ssnContract, ssnaddr, delegator) {
     ssnaddr,
     delegator
   );
+  console.log(need_list);
   const rewards = await calculate_rewards(
     allState,
     ssnaddr,

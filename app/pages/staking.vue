@@ -18,7 +18,7 @@
         </div>
         <div class="flex flex-row items-center justify-between">
           <z-button
-            class="rounded-full py-2 shadow-md ml-2 w-full mb-0"
+            class="rounded py-2 shadow-md ml-2 w-full mb-0"
             size="medium"
             :disabled="loading"
             :loading="loading && actionType =='claimReward'"
@@ -47,7 +47,7 @@
           </div>
           <div class="flex flex-row items-center justify-between">
             <z-button
-              class="rounded-full py-2 mr-2 w-40 mb-0"
+              class="rounded py-2 mr-2 w-40 mb-0"
               type="default"
               size="medium"
               :disabled="loading"
@@ -56,7 +56,7 @@
               Unstake
             </z-button>
             <z-button
-              class="rounded-full py-2 shadow-md ml-2 w-40 mb-0"
+              class="rounded py-2 shadow-md ml-2 w-40 mb-0"
               size="medium"
               :disabled="loading"
               :loading="loading && actionType =='stake'"
@@ -75,7 +75,8 @@
             class="rounded"
             width="32px"
           >
-          <div class="text-3xl font-bold mt-2">
+          <div class="mt-2">
+            <span class="text-3xl font-bold">{{ avlWithdrawals*Math.pow(10, -12) }} </span>/ 
             {{ totalPendingWithdrawls*Math.pow(10, -12) }}
           </div>
           <div class="">
@@ -83,11 +84,11 @@
           </div>
           <div class="flex flex-row items-center justify-between">
             <z-button
-              class="rounded-full py-2 shadow-md ml-2 w-full mb-0"
+              class="rounded py-2 shadow-md ml-2 w-full mb-0"
               size="medium"
-              :disabled="loading"
-              :loading="loading && actionType =='claimReward'"
-              @click="claimReward()">
+              :disabled="loading || avlWithdrawals < 1"
+              :loading="loading && actionType =='completeWithdrawal'"
+              @click="completeWithdrawal()">
               Withdraw
             </z-button>
           </div>
@@ -106,6 +107,7 @@
       :my-stakes="myStakes"
       :loading="loading"
       :error-msg="errorMsg"
+      :bnum-req="bnumReq"
       :deposit-amt-deleg="depositAmtDeleg"
       @unstake="unstake"
       @close="showUnstakeModal=false" />
@@ -165,6 +167,8 @@ export default {
       errorMsg: '',
       myStakes: [],
       pendingWithdrawals: {},
+      bnumReq: 50,
+      currentMiniEpoch: 0,
       contractInstances: {
         proxy: {},
         ssnlist: {},
@@ -194,11 +198,23 @@ export default {
       }
       return total;
     },
+    avlWithdrawals() {
+      let total = 0;
+      const pWith = this.pendingWithdrawals[this.Account.address.toLowerCase()];
+      for (const key in pWith) {
+        if (this.currentMiniEpoch - parseInt(key) > this.bnumReq) {
+          total = total + pWith[key];
+        }
+      }
+      return total;
+    },
     totalReward() {
       let total = 0;
+      console.log(this.myStakes);
       for (let index = 0; index < this.myStakes.length; index++) {
         const element = this.myStakes[index];
-        total = total + parseInt(element.myReward);
+        console.log(element.myReward);
+        total = total + parseFloat(element.myReward);
       }
       return total;
     }
@@ -251,7 +267,6 @@ export default {
         key.toLowerCase(), // Delegated to
         this.Account.address.toLowerCase()
       );
-      console.log(myReward.toString());
       delegations.push({
         name: ssn[3],
         stakingUrl: ssn[4],
@@ -264,12 +279,25 @@ export default {
     this.myStakes = delegations;
 
     // Pending withdrawals
-    const {
-      withdrawal_pending
-    } = await this.contractInstances.ssnlist.getSubState('withdrawal_pending', [
-      address
-    ]);
-    this.pendingWithdrawals = withdrawal_pending;
+    try {
+      const {
+        withdrawal_pending
+      } = await this.contractInstances.ssnlist.getSubState(
+        'withdrawal_pending',
+        [address]
+      );
+      this.pendingWithdrawals = withdrawal_pending;
+    } catch (error) {
+      this.pendingWithdrawals = {};
+    }
+    // No. of confirmation needed for withdrawls
+    const { bnum_req } = await this.contractInstances.ssnlist.getSubState(
+      'bnum_req',
+      []
+    );
+    this.bnumReq = parseInt(bnum_req);
+    const bInfo = await this.$zillet.blockchain.getBlockChainInfo();
+    this.currentMiniEpoch = parseInt(bInfo.result.CurrentMiniEpoch);
   },
   methods: {
     ...mapActions(['sendTransaction']),
@@ -446,7 +474,6 @@ export default {
         [this.Account.address.toLowerCase()]
       );
       console.log(lastrewardcycle, last_withdraw_cycle_deleg);
-
       if (last_withdraw_cycle_deleg[myAddr][ssnAddr] < lastrewardcycle) {
         this.loading = false;
         this.showUnstakeModal = false;
@@ -463,14 +490,16 @@ export default {
         [this.Account.address.toLowerCase()]
       );
       console.log(buff_deposit_deleg);
-      const biggestBuffDeposit = 0;
+      let biggestBuffDeposit = 0;
       for (const key in buff_deposit_deleg[myAddr][ssnAddr]) {
         if (key > biggestBuffDeposit) {
           biggestBuffDeposit = key;
         }
       }
       if (!(lastrewardcycle > biggestBuffDeposit)) {
-        this.errorMsg = 'Wait for next withdrawal cycle first';
+        this.loading = false;
+        this.errorMsg = `You have buffered deposits in the selected node. 
+          Please wait for the next cycle before withdrawing the staked amount.`;
         return this.$notify({
           message: this.errorMsg,
           type: 'danger'
@@ -494,6 +523,14 @@ export default {
       ];
       await this.zilletContractTx(contractMethod, contractParams, txParams);
       this.showUnstakeModal = false;
+    },
+    async completeWithdrawal() {
+      this.loading = true;
+      this.actionType = 'completeWithdrawal';
+      let txParams = await this.createTxn();
+      const contractMethod = 'CompleteWithdrawal';
+      const contractParams = [];
+      this.zilletContractTx(contractMethod, contractParams, txParams);
     },
     async claimReward(ssn) {
       console.log(ssn);

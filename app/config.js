@@ -92,9 +92,9 @@ export default {
   ],
   STAKING: {
     testnet: {
-      proxy: 'zil1a66ptrg3rhy6eyqwe463dpvk9z0qhksz48afdt',
-      ssnlist: 'zil1s8dys7thjrxw3fgtz36lxukz9m7dmxhvm9545y',
-      gzil: 'zil10w2fwf5kdwqvjd2zyv6nr7da2d2z63g5dvtvsy'
+      proxy: 'zil1qht7zg0zqk5yhuw694s2ez3ysjqqllanrc6kvr',
+      ssnlist: 'zil1qhpdmmpwg3y3vppkzvxtf7dcfh5l0mjm7hemjh',
+      gzil: 'zil1zmatu4uka68ghtt4vk5h2tdfrwkrp6pcq0y2rm'
     }
   }
 };

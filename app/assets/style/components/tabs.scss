@@ -56,7 +56,7 @@ $content-selector: '~ .content > section';
     @apply pl-0 flex flex-row mb-2 justify-between items-end flex-wrap;
     li {
       box-sizing: border-box;
-      @apply flex-1 px-6 cursor-pointer;
+      @apply flex-1 px-2 cursor-pointer;
       text-align: center;
       width: #{100% / $tab-count};
       &:nth-child(1) {

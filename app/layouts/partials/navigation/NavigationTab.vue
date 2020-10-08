@@ -41,7 +41,10 @@
             <i class="eva eva-clock-outline font-semibold mr-2" />
             <span>Transactions</span>
             <span
+             
               v-if="pendingTx> 0"
+            
+              style="top: -3px;left: -3px;transform: scale(.75);"
               class="relative ml-1 bg-primary h-4 w-4 rounded-full
              text-xs text-white flex items-center justify-center">
               {{ pendingTx }}
@@ -68,6 +71,12 @@
             <i
               class="eva eva-gift-outline font-semibold mr-2" />
             <span>Staking</span>
+            <span
+              style="top: -3px;left: -3px;transform: scale(.75);"
+              class="relative ml-1 bg-primary h-4 w-8 rounded-full
+             text-xs text-white flex items-center justify-center">
+              New
+            </span>
           </label>
         </li>
       </ul>

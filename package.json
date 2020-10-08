@@ -1,6 +1,6 @@
 {
   "name": "zillet",
-  "version": "0.4.5",
+  "version": "0.5.0-alpha",
   "description": "Zillet is an open-source, client-side, tool for interacting with the Zilliqa blockchain",
   "author": "man15h <manish9461@gmail.com>",
   "private": true,

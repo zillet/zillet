@@ -41,7 +41,7 @@
               :loading="loading && selectedRow.name==scope.row.name"
               :disabled="loading"
               type="default"
-              class="rounded-full hover:bg-primary hover:text-gray-100 shadow ml-2 w-full"
+              class="rounded hover:bg-primary hover:text-gray-100 p-1 shadow ml-2 w-full"
               @click="claim(scope.row)">
               Claim
             </z-button>
