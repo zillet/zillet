@@ -95,6 +95,11 @@ export default {
       proxy: 'zil1qht7zg0zqk5yhuw694s2ez3ysjqqllanrc6kvr',
       ssnlist: 'zil1qhpdmmpwg3y3vppkzvxtf7dcfh5l0mjm7hemjh',
       gzil: 'zil1zmatu4uka68ghtt4vk5h2tdfrwkrp6pcq0y2rm'
+    },
+    mainnet: {
+      proxy: 'zil1g029nmzsf36r99vupp4s43lhs40fsscx3jjpuy',
+      ssnlist: 'zil10xw6l0l9lhg36f87g65m8v74r5dxphyxvv8qhz',
+      gzil: 'zil14pzuzq6v6pmmmrfjhczywguu0e97djepxt8g3e'
     }
   }
 };
