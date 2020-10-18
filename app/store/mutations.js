@@ -57,20 +57,7 @@ export const FETCHED_PRICE = (state, prices) => {
   if (prices.symbol == 'SGD') prices.symbol = 'XSGD';
   state.prices[prices.symbol] = prices.data;
 };
-export const SAVE_TRANSACTIONS = (state, data) => {
-  state.viewblockAccount.txs = data;
-  const nodeId = state.selectedNode.id == 1 ? 'address' : 'testnetAddress';
-  const zrc2 = state.zrc2;
-  for (let index = 0; index < state.viewblockAccount.txs.length; index++) {
-    let tx = state.viewblockAccount.txs[index];
-    tx = formatTransaction(tx, zrc2, nodeId);
-    const hash = tx.hash;
-    state.localTxns = state.localTxns.filter(function(obj) {
-      return obj.hash !== hash;
-    });
-  }
-  localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
-};
+
 export const saveTxn = (state, data) => {
   console.log(data);
   let txn = {
@@ -85,12 +72,13 @@ export const saveTxn = (state, data) => {
     extra: {},
     status: 'pending',
     version: data.version,
-    data: JSON.stringify(data.data)
+    data: data.data,
+    networkId: state.selectedNode.id
   };
-
   //
   if (data.via === 'zillet') {
     state.wallet.nonce = data.nonce;
+    txn.to = toBech32Address(txn.to);
     let localNonces;
     try {
       localNonces = JSON.parse(localStorage.getItem('_local_nonces')) || {};
@@ -106,12 +94,21 @@ export const saveTxn = (state, data) => {
   state.localTxns.push(txn);
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
-export const LOAD_LOCAL_TXN = (state, data) => {
+export const updateLocalTxn = state => {
   const fourHour = 4 * 60 * 60 * 1000;
-  state.localTxns = data.filter(function(item) {
-    return new Date() - new Date(item.timestamp) < fourHour;
-  });
-  localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
+  let localTxn = JSON.parse(localStorage.getItem('_local_txn'));
+  if (localTxn) {
+    localTxn = localTxn.filter(function(item) {
+      return new Date() - new Date(item.timestamp) < fourHour;
+    });
+    localStorage.setItem('_local_txn', JSON.stringify(localTxn));
+    state.localTxns = localTxn.filter(function(obj) {
+      return (
+        (obj.from == state.wallet.address || obj.to == state.wallet.address) &&
+        obj.networkId == state.selectedNode.id
+      );
+    });
+  }
 };
 export const saveAccessType = (state, id) => {
   state.accessType = id;

@@ -92,9 +92,8 @@
             <z-table-column
               field="value"
               label="Transfer Amount">
-              <div v-if="scope.row.receiptSuccess">
+              <div v-if="scope.row.receiptSuccess !==false">
                 <div
-                  v-if="scope.row.isContract" 
                   class="flex items-center justify-start">
                   <img
                     :src="getImages(scope.row.symbol)"
@@ -106,45 +105,20 @@
                     :class="{'text-green-600': scope.row.direction=='in'}"
                     class="zil ">
                     <span v-if="scope.row.direction=='in'">+</span>
-                    <span v-else>-</span>
+                    <span v-else-if="scope.row.direction=='out'">-</span>
                     <!-- TODO: Use zilliqa unit function -->
                     {{ 
                       scope.row.direction=='self'? '--' :
-                      (scope.row.value* Math.pow(10, -1*(scope.row.zrc && scope.row.zrc.decimals || 12)))
+                      (scope.row.value* Math.pow(10, -1*((scope.row.token && scope.row.token.decimals) || 12)))
                         | currency('', 2) 
                     }}
                   </span>
                   <div class="text-xs text-gray-700">
                     &nbsp; <span
-                      v-if="scope.row.symbol !='generic'"
-                      class="">{{ scope.row.symbol }}</span>
-                  <!-- <span
-                    v-if="scope.row.direction!='self'"
-                    class="usd">
-                    &nbsp; &asymp; &nbsp; {{ | currency('$', 2) }}
-                  </span> -->
-                  </div>
-                </div>
-                <div
-                  v-else
-                  class="flex items-center justify-start">
-                  <img
-                    :src="getImages('zil')"
-                    height="20"
-                    class="mr-2"
-                    width="20">
-                  <span
-                    :class="{'text-green-600': scope.row.direction=='in'}"
-                    class="zil ">
-                    <span v-if="scope.row.direction=='in'">+</span>
-                    <span v-else>-</span>
-                    <!-- TODO: Use zilliqa unit function -->
-                    {{ scope.row.direction=='self'? '--' :amountInZil(scope.row.value)| currency('', 2) }}
-                  </span>
-                  <div class="text-xs text-gray-700">
-                    &nbsp; <span class="font-semibold">ZIL</span>
+                             v-if="scope.row.symbol !='generic'"
+                             class="">{{ scope.row.symbol }}</span>
                     <span
-                      v-if="scope.row.direction!='self'"
+                      v-if="scope.row.direction!='self' && scope.row.symbol == 'ZIL'"
                       class="usd">
                       <!-- TODO: Use zilliqa unit function -->
                       &nbsp;  &nbsp; {{ amountInUsd(scope.row.value)| currency('$', 2) }}
@@ -190,7 +164,7 @@
 <script>
 /* eslint-disable vue/require-v-for-key */
 
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { units, BN, validation, isHex } from '@zilliqa-js/util';
 import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
@@ -267,11 +241,15 @@ export default {
   beforeMount() {
     try {
       this.localTxs = JSON.parse(localStorage.getItem('_local_txn'));
+      if (this.localTxs == null) {
+        this.localTxs = [];
+      } else {
+      }
     } catch (error) {}
-    console.log(this.localTxs);
     this.fetchTransactions();
   },
   methods: {
+    ...mapMutations(['updateLocalTxn']),
     getImages,
     openAddressOnVb,
     openTxOnVb,
@@ -290,25 +268,33 @@ export default {
         page: page,
         network: network
       });
-      const address = this.Account.address;
-
-      this.localTxs = this.localTxs.filter(function(obj) {
-        return obj.from == address || obj.to == address;
-      });
-      tx.docs = [...this.localTxs, ...tx.docs];
       for (let index = 0; index < tx.docs.length; index++) {
         const element = tx.docs[index];
-        this.formatTransactions(element);
+        tx.docs[index] = this.formatTransactions(element, true);
       }
-      this.txs = tx;
-      this.loading = false;
+      // Saving not confirmed local transactions
       localStorage.setItem('_local_txn', JSON.stringify(this.localTxs));
+      const address = this.Account.address;
+      const t = this;
+      this.localTxs = this.localTxs.filter(function(obj) {
+        return (
+          (obj.from == address || obj.to == address) &&
+          obj.networkId == t.selectedNode.id
+        );
+      });
+      for (let index = 0; index < this.localTxs.length; index++) {
+        const element = this.localTxs[index];
+        this.localTxs[index] = this.formatTransactions(element);
+      }
+      this.txs.docs = [...this.localTxs, ...tx.docs];
+      this.updateLocalTxn();
+      this.loading = false;
     },
     amountInZil(amount) {
       return units.fromQa(new BN(amount), units.Units.Zil);
     },
     amountInUsd(amount) {
-      return this.amountInZil(amount) * this.Prices.USD;
+      return amount * this.Prices.USD;
     },
     toBech32(address) {
       if (!validation.isBech32(address)) {
@@ -342,9 +328,7 @@ export default {
         return 'Sent';
       }
     },
-    formatTransactions(el) {
-      console.log(el);
-
+    formatTransactions(el, vb) {
       try {
         const data = JSON.parse(el.data);
         el.tag = data._tag;
@@ -368,26 +352,36 @@ export default {
           let zrc = this.zrc2.find(function(element) {
             return el.to == element[contractKey];
           });
+          el.value = Number(data.params[1].value);
+          el.to = toBech32Address(data.params[0].value);
+
+          if (el.amount) {
+            console.log(el, data, this.zrc2);
+          }
           if (zrc && zrc.decimals) {
-            el.value =
-              Number(data.params[1].value) * Math.pow(10, -zrc.decimals);
-            el.to = toBech32Address(data.params[0].value);
             el.token = zrc;
             el.symbol = zrc.symbol;
+          } else {
+            el.symbol = 'generic';
           }
-          el.symbol = 'generic';
+        } else if (data && data._tag) {
+          el.isContract = true;
+        } else {
+          throw Error();
         }
-        el.isContract = true;
-        this.localTxs = this.localTxs.filter(function(obj) {
-          return obj.hash !== el.hash;
-        });
       } catch (error) {
-        console.log(error);
         el.tag = '';
         el.symbol = 'ZIL';
         el.type = 'Transfer';
-        el.value = Number(el.value) * Math.pow(10, -12);
+        el.value = Number(el.value);
       }
+      if (vb) {
+        this.localTxs = this.localTxs.filter(function(obj) {
+          return obj.hash !== el.hash;
+        });
+      }
+
+      return el;
     },
     onCopy(e) {
       this.$notify({

@@ -584,7 +584,7 @@ export default {
   },
   methods: {
     ...mapActions(['sendTransaction', 'fetchTokenBalance']),
-    ...mapMutations(['updateBalance', 'saveTxn']),
+    ...mapMutations(['updateBalance', 'saveTxn', 'updateLocalTxn']),
     isNumber: isNumber,
     getImages,
     openTxOnVb,
@@ -993,6 +993,7 @@ export default {
         await this.fetchTokenBalance();
       }
       this.loading = false;
+      this.updateLocalTxn();
     },
     cancelTx() {
       this.loading = false;

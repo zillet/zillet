@@ -8,7 +8,7 @@
         name="tab-control">
       <input
         id="tab2"
-        :checked="$route.name=='new-transactions'"
+        :checked="$route.name=='transactions'"
         type="radio"
         name="tab-control">
       <input
@@ -34,7 +34,7 @@
         </li>
         <li
           title="Transactions"
-          @click="$emit('tabSelected', 'new-transactions')">
+          @click="$emit('tabSelected', 'transactions')">
           <label
             for="tab2"
             role="button">

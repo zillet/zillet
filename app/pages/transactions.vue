@@ -29,7 +29,7 @@
           Check on Viewblock.io
         </z-button>
       </div>
-      <div class="flex w-full">
+      <div class="w-full">
         <Loader v-if="loading" />
         <div
           v-else-if="!loading && !transactions.length"
@@ -45,100 +45,17 @@
           <template slot-scope="scope">
             <z-table-column
               label="Transaction ID"
-              field="hash"
-              sortable
-              class="font-semibold">
-              <a
-                :href="openTxOnVb(selectedNode, scope.row.hash)"
-                class="text-teal-700 font-semibold"
-                target="_blank">{{ formatTxHash(scope.row.hash) }}</a>
-              <!-- <a
-                :href="explorerLink(scope.row.hash)"
-                target="_blank">
-                <i class="eva eva-external-link-outline" />
-              </a> -->
-            </z-table-column>
-            
-            <z-table-column
-              field="value"
-              label="Transfer Amount">
-              <div
-                v-if="scope.row.type=='contract' && scope.row.eventType=='transfer'" 
-                class="flex items-center justify-start">
-                <img
-                  :src="getImages(scope.row.contractTransfer.symbol)"
-                  :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
-                  height="20"
-                  class="mr-2"
-                  width="20">
-                <span
-                  :class="{'text-green-600': scope.row.direction=='in'}"
-                  class="zil font-semibold">
-                  <span v-if="scope.row.direction=='in'">+</span>
-                  <span v-else>-</span>
-                  <!-- TODO: Use zilliqa unit function -->
-                  {{ 
-                    scope.row.direction=='self'? '--' :
-                    (scope.row.contractTransfer.amount* Math.pow(10, -1*(scope.row.contractTransfer.decimals || 18)))
-                      | currency('', 2) 
-                  }}
+              width="240"
+              field="hash">
+              <div 
+                class="flex flex-row justify-between">
+                <a
+                  :href="openTxOnVb(selectedNode, scope.row.hash)"
+                  class="text-teal-700 text-sm font-semibold"
+                  target="_blank">{{ formatTxHash(scope.row.hash) }}</a>
+                <span class="text-sm ">
+                  {{ scope.row.type }}
                 </span>
-                <div class="text-xs text-gray-700">
-                  &nbsp; <span class="font-semibold">{{ scope.row.contractTransfer.symbol }}</span>
-                  <!-- <span
-                    v-if="scope.row.direction!='self'"
-                    class="usd">
-                    &nbsp; &asymp; &nbsp; {{ | currency('$', 2) }}
-                  </span> -->
-                </div>
-              </div>
-              <div
-                v-else
-                class="flex items-center justify-start">
-                <img
-                  :src="getImages('zil')"
-                  height="20"
-                  class="mr-2"
-                  width="20">
-                <span
-                  :class="{'text-green-600': scope.row.direction=='in'}"
-                  class="zil font-semibold">
-                  <span v-if="scope.row.direction=='in'">+</span>
-                  <span v-else>-</span>
-                  <!-- TODO: Use zilliqa unit function -->
-                  {{ scope.row.direction=='self'? '--' :amountInZil(scope.row.value)| currency('', 2) }}
-                </span>
-                <div class="text-xs text-gray-700">
-                  &nbsp; <span class="font-semibold">ZIL</span>
-                  <span
-                    v-if="scope.row.direction!='self'"
-                    class="usd">
-                    <!-- TODO: Use zilliqa unit function -->
-                    &nbsp;  &nbsp; {{ amountInUsd(scope.row.value)| currency('$', 2) }}
-                  </span>
-                </div>
-              </div>
-            </z-table-column> 
-            <z-table-column
-              field="to"
-              label="From/To">
-              <div
-                v-clipboard:copy="`${scope.row.direction=='in' ? toBech32(scope.row.from):toBech32(scope.row.to)}`"
-                v-clipboard:success="onCopy"
-                v-clipboard:error="onError"
-                class="flex flex-row items-center justify-start
-                cursor-pointer text-sm font-semibold
-                 transaction__address bg-gray-200 hover:bg-gray-300 rounded px-2">
-                <jazzicon
-                  :diameter="18" 
-                  :address="scope.row.direction=='in' ? toBase16(scope.row.from):toBase16(scope.row.to)"
-                  class="mt-1 mr-2" />
-                <div v-if="(scope.row.direction=='in' ? scope.row.from:scope.row.to) in zilDomains">
-                  {{ zilDomains[(scope.row.direction=='in' ? scope.row.from:scope.row.to)] }}
-                </div>
-                <div v-else>
-                  {{ scope.row.direction=='in' ? toAddress(scope.row.from):toAddress(scope.row.to) }} 
-                </div>
               </div>
             </z-table-column>
             <z-table-column
@@ -173,6 +90,66 @@
               </div>
             </z-table-column>
             <z-table-column
+              field="value"
+              label="Transfer Amount">
+              <div v-if="scope.row.receiptSuccess !==false">
+                <div
+                  class="flex items-center justify-start">
+                  <img
+                    :src="getImages(scope.row.symbol)"
+                    :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
+                    height="20"
+                    class="mr-2"
+                    width="20">
+                  <span
+                    :class="{'text-green-600': scope.row.direction=='in'}"
+                    class="zil ">
+                    <span v-if="scope.row.direction=='in'">+</span>
+                    <span v-else-if="scope.row.direction=='out'">-</span>
+                    <!-- TODO: Use zilliqa unit function -->
+                    {{ 
+                      scope.row.direction=='self'? '--' :
+                      (scope.row.value* Math.pow(10, -1*((scope.row.token && scope.row.token.decimals) || 12)))
+                        | currency('', 2) 
+                    }}
+                  </span>
+                  <div class="text-xs text-gray-700">
+                    &nbsp; <span
+                             v-if="scope.row.symbol !='generic'"
+                             class="">{{ scope.row.symbol }}</span>
+                    <span
+                      v-if="scope.row.direction!='self' && scope.row.symbol == 'ZIL'"
+                      class="usd">
+                      <!-- TODO: Use zilliqa unit function -->
+                      &nbsp;  &nbsp; {{ amountInUsd(scope.row.value)| currency('$', 2) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </z-table-column> 
+            <z-table-column
+              field="to"
+              label="From/To">
+              <div
+                v-clipboard:copy="`${scope.row.direction=='in' ? toBech32(scope.row.from):toBech32(scope.row.to)}`"
+                v-clipboard:success="onCopy"
+                v-clipboard:error="onError"
+                class="flex flex-row items-center justify-start
+                cursor-pointer text-sm
+                 transaction__address bg-gray-200 hover:bg-gray-300 rounded px-2">
+                <jazzicon
+                  :diameter="18" 
+                  :address="scope.row.direction=='in' ? toBase16(scope.row.from):toBase16(scope.row.to)"
+                  class="mt-1 mr-2" />
+                <div v-if="(scope.row.direction=='in' ? scope.row.from:scope.row.to) in zilDomains">
+                  {{ zilDomains[(scope.row.direction=='in' ? scope.row.from:scope.row.to)] }}
+                </div>
+                <div v-else>
+                  {{ scope.row.direction=='in' ? toAddress(scope.row.from):toAddress(scope.row.to) }} 
+                </div>
+              </div>
+            </z-table-column>
+            <z-table-column
               field="timestamp"
               class="text-sm"
               label="Timestamp">
@@ -181,24 +158,19 @@
           </template>
         </z-table>
       </div>
-      <div
-        class="w-full">
-        <span
-          v-if="transactions.length > 24"
-          class="text-gray-700 pt-4 text-left text-sm italic text-left">
-          * These are only last 25 Transactions
-        </span>
-      </div>
     </div>
   </div>
 </template>
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+/* eslint-disable vue/require-v-for-key */
+
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { units, BN, validation, isHex } from '@zilliqa-js/util';
 import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
 import { getImages } from '@/utils';
 import { openAddressOnVb, openTxOnVb } from '@/utils';
+
 export default {
   name: 'Home',
   middleware: 'ifKeyExists',
@@ -206,29 +178,39 @@ export default {
   data() {
     return {
       loading: false,
-      requestParams: {
-        address: '',
-        type: '',
-        network: 'testnet',
-        page: ''
+      selectedTxn: '',
+      txs: {
+        docs: []
       },
-      selectedTxn: ''
+      localTxs: []
     };
   },
   computed: {
     ...mapGetters(['Account', 'Prices']),
     ...mapState({
-      viewTxns: state => state.viewblockAccount.txs,
       selectedNode: state => state.selectedNode,
-      localTxns: state => state.localTxns
+      zrc2: state => state.zrc2
     }),
     transactions() {
-      const address = this.Account.address;
-      let txn = this.localTxns.filter(function(obj) {
-        return obj.from == address || obj.to == address;
-      });
-      const tx = [...txn, ...this.viewTxns];
-      return this.orderBy(tx, 'timestamp', -1);
+      // const data = this.txs.docs;
+
+      // // this gives an object with dates as keys
+      // const groups = data.reduce((groups, tx) => {
+      //   const date = new Date(tx.timestamp).toISOString().split('T')[0];
+      //   if (!groups[date]) {
+      //     groups[date] = [];
+      //   }
+      //   groups[date].push(tx);
+      //   return groups;
+      // }, {});
+      // // Edit: to add it in the array format instead
+      // const groupArrays = Object.keys(groups).map(date => {
+      //   return {
+      //     date,
+      //     txs: groups[date]
+      //   };
+      // });
+      return this.orderBy([...this.txs.docs], 'timestamp', -1);
     },
     zilDomains() {
       try {
@@ -257,35 +239,62 @@ export default {
     }
   },
   beforeMount() {
+    try {
+      this.localTxs = JSON.parse(localStorage.getItem('_local_txn'));
+      if (this.localTxs == null) {
+        this.localTxs = [];
+      } else {
+      }
+    } catch (error) {}
     this.fetchTransactions();
   },
   methods: {
-    ...mapActions(['getTransactions']),
+    ...mapMutations(['updateLocalTxn']),
     getImages,
     openAddressOnVb,
     openTxOnVb,
-    async fetchTransactions() {
+    async fetchTransactions(page = 1) {
       this.loading = true;
-      this.requestParams.address = this.Account.address;
+      let network;
       if (this.selectedNode.id == 1) {
-        this.requestParams.network = 'mainnet';
+        network = 'mainnet';
       } else if (this.selectedNode.id == 333) {
-        this.requestParams.network = 'testnet';
+        network = 'testnet';
       } else {
         console.error('Can not fetch transaction from unknown network');
         return null;
       }
-      await this.getTransactions(this.requestParams);
+      let tx = await this.$viewblock.getAddressTxs(this.Account.address, {
+        page: page,
+        network: network
+      });
+      for (let index = 0; index < tx.docs.length; index++) {
+        const element = tx.docs[index];
+        tx.docs[index] = this.formatTransactions(element, true);
+      }
+      // Saving not confirmed local transactions
+      localStorage.setItem('_local_txn', JSON.stringify(this.localTxs));
+      const address = this.Account.address;
+      const t = this;
+      this.localTxs = this.localTxs.filter(function(obj) {
+        return (
+          (obj.from == address || obj.to == address) &&
+          obj.networkId == t.selectedNode.id
+        );
+      });
+      for (let index = 0; index < this.localTxs.length; index++) {
+        const element = this.localTxs[index];
+        this.localTxs[index] = this.formatTransactions(element);
+      }
+      this.txs.docs = [...this.localTxs, ...tx.docs];
+      this.updateLocalTxn();
       this.loading = false;
     },
-    txnStatus(dir) {
-      if (dir == 'in') {
-        return 'Received';
-      } else if (dir == 'self') {
-        return 'Self';
-      } else if (dir == 'out') {
-        return 'Sent';
-      }
+    amountInZil(amount) {
+      return units.fromQa(new BN(amount), units.Units.Zil);
+    },
+    amountInUsd(amount) {
+      return amount * this.Prices.USD;
     },
     toBech32(address) {
       if (!validation.isBech32(address)) {
@@ -310,18 +319,69 @@ export default {
       return `${txhash && txhash.substr(0, 6)}...${txhash &&
         txhash.substr(60)}`;
     },
-    toggleTxn(hash) {
-      if (hash == this.selectedTxn) {
-        this.selectedTxn = '';
-      } else {
-        this.selectedTxn = hash;
+    txnStatus(dir) {
+      if (dir == 'in') {
+        return 'Received';
+      } else if (dir == 'self') {
+        return 'Self';
+      } else if (dir == 'out') {
+        return 'Sent';
       }
     },
-    amountInZil(amount) {
-      return units.fromQa(new BN(amount), units.Units.Zil);
-    },
-    amountInUsd(amount) {
-      return this.amountInZil(amount) * this.Prices.USD;
+    formatTransactions(el, vb) {
+      try {
+        const data = JSON.parse(el.data);
+        el.tag = data._tag;
+        el.symbol = 'ZIL';
+        if (data._tag === 'WithdrawStakeRewards') {
+          el.type = 'Rewards Claimed';
+          el.value = el.events && el.events[0] && el.events[0].params.rewards;
+          el.direction = 'in';
+        } else if (data._tag === 'DelegateStake') {
+          el.type = 'Stake';
+        } else if (data._tag === 'CompleteWithdrawal') {
+          el.type = 'Withdraw Unstake';
+          el.value = el.events && el.events[0] && el.events[0].params.amount;
+          el.direction = 'in';
+        } else if (data._tag === 'WithdrawStakeAmt') {
+          el.type = 'Unstake';
+        } else if (data._tag === 'Transfer' || data._tag === 'proxyTransfer') {
+          el.type = 'Token Transfer';
+          const contractKey =
+            this.selectedNode.id == 1 ? 'address' : 'testnetAddress';
+          let zrc = this.zrc2.find(function(element) {
+            return el.to == element[contractKey];
+          });
+          el.value = Number(data.params[1].value);
+          el.to = toBech32Address(data.params[0].value);
+
+          if (el.amount) {
+            console.log(el, data, this.zrc2);
+          }
+          if (zrc && zrc.decimals) {
+            el.token = zrc;
+            el.symbol = zrc.symbol;
+          } else {
+            el.symbol = 'generic';
+          }
+        } else if (data && data._tag) {
+          el.isContract = true;
+        } else {
+          throw Error();
+        }
+      } catch (error) {
+        el.tag = '';
+        el.symbol = 'ZIL';
+        el.type = 'Transfer';
+        el.value = Number(el.value);
+      }
+      if (vb) {
+        this.localTxs = this.localTxs.filter(function(obj) {
+          return obj.hash !== el.hash;
+        });
+      }
+
+      return el;
     },
     onCopy(e) {
       this.$notify({
@@ -336,25 +396,15 @@ export default {
         message: `Failed to copy address`,
         type: 'danger'
       });
-    },
-    onErrorTxn(e) {
-      this.$notify({
-        icon: 'eva eva-close-circle-outline',
-        message: `Failed to copy address`,
-        type: 'danger'
-      });
     }
   }
 };
 </script>
+
 <style lang="scss" scoped>
 .transaction {
   @apply flex flex-col border rounded mb-2;
   @apply items-center w-full overflow-hidden cursor-pointer;
-  &.selected,
-  &:hover {
-    @apply shadow-md;
-  }
   &__top-row {
     @apply flex flex-row w-full px-4 py-3;
   }

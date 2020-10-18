@@ -1,6 +1,5 @@
 import { HTTPProvider } from '@zilliqa-js/core';
 
-import config from './../config';
 function setData(method, params) {
   return {
     id: '1',
@@ -13,19 +12,16 @@ function setData(method, params) {
 export async function nuxtClientInit({ commit, dispatch }, app) {
   try {
     const node = JSON.parse(localStorage.getItem('_selected_node'));
-    const localTxn = JSON.parse(localStorage.getItem('_local_txn'));
     if (node && node.url) {
       commit('SELECT_NODE', node);
-    }
-    if (localTxn) {
-      commit('LOAD_LOCAL_TXN', localTxn);
     }
     await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'ZIL' });
     await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'SGD' });
     await dispatch('getZrc2List');
+    commit('updateLocalTxn');
   } catch (error) {}
 }
-export function selectNode({ commit, getters, dispatch }, node) {
+export function selectNode({ commit, getters, dispatch, state }, node) {
   this.$zillet.setProvider(new HTTPProvider(node.url));
   commit('SELECT_NODE', node);
   if (getters.LoggedIn) {
@@ -106,12 +102,12 @@ export function checkNetworkStatus({}, url) {
   });
 }
 
-export function sendTransaction({ commit, dispatch, state }, tx) {
+export function sendTransaction({ commit, state }, tx) {
   return new Promise((resolve, reject) => {
     commit('LOADING');
     let data = JSON.stringify(setData('CreateTransaction', [tx]));
     this.$axios
-      .$post('', data)
+      .$post(state.selectNode.url, data)
       .then(res => {
         console.info(res);
         commit('SUCCESS');
