@@ -72,23 +72,23 @@ export const SAVE_TRANSACTIONS = (state, data) => {
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
 };
 export const saveTxn = (state, data) => {
+  console.log(data);
   let txn = {
+    ...data,
     direction: data.toAddr == state.wallet.address ? 'self' : 'out',
     timestamp: new Date(),
     hash: '0x' + data.TranID,
     from: state.wallet.address,
     to: data.toAddr,
-    value: data.amount,
+    value: data.amount.toString(),
     fee: data.gasLimit * data.gasPrice,
     extra: {},
     status: 'pending',
-    type: 'transfer',
-    version: data.version
+    version: data.version,
+    data: JSON.stringify(data.data)
   };
-  if (data.type == 'contract') {
-    txn = formatLocalTransaction(txn, data);
-  } else {
-  }
+
+  //
   if (data.via === 'zillet') {
     state.wallet.nonce = data.nonce;
     let localNonces;
@@ -112,19 +112,6 @@ export const LOAD_LOCAL_TXN = (state, data) => {
     return new Date() - new Date(item.timestamp) < fourHour;
   });
   localStorage.setItem('_local_txn', JSON.stringify(state.localTxns));
-};
-export const LOAD_ENCRYPTED_WALLETS = (state, jsonData) => {
-  state.encryptedWallets = jsonData;
-};
-export const SAVE_ENCRYPTED_WALLET = (state, wallet) => {
-  const found = state.encryptedWallets.some(
-    el => el.keystore.address === wallet.keystore.address
-  );
-  if (!found) state.encryptedWallets.push(wallet);
-  localStorage.setItem(
-    '_encrypted_wallets',
-    JSON.stringify(state.encryptedWallets)
-  );
 };
 export const saveAccessType = (state, id) => {
   state.accessType = id;

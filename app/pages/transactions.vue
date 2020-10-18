@@ -118,7 +118,7 @@
                   </span>
                 </div>
               </div>
-            </z-table-column>
+            </z-table-column> 
             <z-table-column
               field="to"
               label="From/To">

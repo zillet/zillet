@@ -91,36 +91,7 @@ export function getPrice({ commit }, { url, token, symbol }) {
       });
   });
 }
-export function getTransactions({ commit }, data) {
-  return new Promise((resolve, reject) => {
-    var address = data.address;
-    var network = data.network || 'mainnet';
-    var page = data.page || 1;
-    var type = data.type || 'all';
-    commit('LOADING');
-    this.$axios
-      .$get(`${config.VIEWBLOCK_URL}${address}/txs`, {
-        params: {
-          network: network,
-          page: page,
-          type: type
-        },
-        headers: {
-          'X-APIKEY':
-            '74da2e513cb0ce63ad6733f0d09a074b614ca9752a9e8201ab28678814fbc39a'
-        }
-      })
-      .then(resData => {
-        resolve(resData);
-        commit('SUCCESS');
-        commit('SAVE_TRANSACTIONS', resData);
-      })
-      .catch(err => {
-        commit('ERROR');
-        reject(err);
-      });
-  });
-}
+
 export function checkNetworkStatus({}, url) {
   return new Promise((resolve, reject) => {
     let data = JSON.stringify(setData('GetNetworkId', ['']));
