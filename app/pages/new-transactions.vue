@@ -44,8 +44,39 @@
           :loading="loading">
           <template slot-scope="scope">
             <z-table-column
+              width="20"
+              field="hash">
+              <div 
+                class="flex flex-row justify-between  p-1 text-sm rounded-full"
+                :class="{
+                  'bg-gray-700 text-white': scope.row.status =='pending',
+                  'bg-red-200':scope.row.receiptSuccess===false, 
+                  'bg-yellow-200':scope.row.direction=='out' && scope.row.receiptSuccess && !scope.row.isContract,
+                  'bg-gray-200':(scope.row.isContract && scope.row.receiptSuccess) || scope.row.direction=='self',
+                  'bg-green-200':scope.row.direction=='in'
+                }">
+                <i
+                  v-if="scope.row.receiptSuccess===false"
+                  class="eva eva-alert-triangle-outline" />
+                <i
+                  v-else-if="scope.row.status =='pending'"
+                  class="eva eva-loader-outline rotating" />
+                <i
+                  v-else-if="scope.row.isContract" 
+                  class="eva eva-code-outline" />
+                <i
+                  v-else-if="scope.row.direction=='out' && !scope.row.status"
+                  class="eva eva-arrow-upward-outline" />
+                <i
+                  v-else-if="scope.row.direction=='in'" 
+                  class="eva eva-arrow-downward-outline" />
+                <i
+                  v-else-if="scope.row.direction=='self'" 
+                  class="eva eva-radio-button-on-outline" />
+              </div>
+            </z-table-column>
+            <z-table-column
               label="Transaction ID"
-              width="240"
               field="hash">
               <div 
                 class="flex flex-row justify-between">
@@ -53,48 +84,15 @@
                   :href="openTxOnVb(selectedNode, scope.row.hash)"
                   class="text-teal-700 text-sm font-semibold"
                   target="_blank">{{ formatTxHash(scope.row.hash) }}</a>
-                <span class="text-sm ">
-                  {{ scope.row.type }}
-                </span>
-              </div>
-            </z-table-column>
-            <z-table-column
-              field="direcion"
-              label="Status">
-              <div class="transaction__status">
-                <span
-                  v-if="scope.row.receiptSuccess || scope.row.status=='pending'"
-                  :class="scope.row.direction">
-                  {{ txnStatus(scope.row.direction) }}
-                  <i
-                    v-if="scope.row.direction=='out' && !scope.row.status"
-                    class="eva eva-arrow-upward-outline font-bold ml-1" />
-                  <i
-                    v-else-if="scope.row.direction=='in'"
-                    class="eva eva-arrow-downward-outline font-bold ml-1" />
-                  <i
-                    v-else-if="scope.row.direction=='self'"
-                    class="eva eva-radio-button-on-outline ml-1 font-bold" />
-                  <i
-                    v-else-if="scope.row.status"
-                    class="eva eva-loader-outline rotating ml-1 font-bold" />
-                    
-                </span>
-                <span
-                  v-else
-                  class="failed">
-                  Failed
-                  <i
-                    class="eva eva-alert-triangle-outline ml-1 font-bold" />
-                </span>
               </div>
             </z-table-column>
             <z-table-column
               field="value"
               label="Transfer Amount">
-              <div v-if="scope.row.receiptSuccess !==false">
-                <div
-                  class="flex items-center justify-start">
+              <div
+                v-if="scope.row.receiptSuccess !==false"
+                class="flex items-center justify-between">
+                <div class="flex items-center justify-start">
                   <img
                     :src="getImages(scope.row.symbol)"
                     :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
@@ -106,17 +104,21 @@
                     class="zil ">
                     <span v-if="scope.row.direction=='in'">+</span>
                     <span v-else-if="scope.row.direction=='out'">-</span>
+                    <span v-else-if="scope.row.direction=='self'">--</span>
                     <!-- TODO: Use zilliqa unit function -->
-                    {{ 
-                      scope.row.direction=='self'? '--' :
-                      (scope.row.value* Math.pow(10, -1*((scope.row.token && scope.row.token.decimals) || 12)))
-                        | currency('', 2) 
-                    }}
+                    <span class="font-semibold">
+                      {{ 
+                        scope.row.direction=='self'? '...' :
+                        (scope.row.value* Math.pow(10, -1*((scope.row.token && scope.row.token.decimals) || 12)))
+                          | currency('', 2) 
+                      }}
+                    </span>
+                   
                   </span>
                   <div class="text-xs text-gray-700">
                     &nbsp; <span
                              v-if="scope.row.symbol !='generic'"
-                             class="">{{ scope.row.symbol }}</span>
+                             class="font-semibold">{{ scope.row.symbol }}</span>
                     <span
                       v-if="scope.row.direction!='self' && scope.row.symbol == 'ZIL'"
                       class="usd">
@@ -124,6 +126,16 @@
                       &nbsp;  &nbsp; {{ amountInUsd(scope.row.value)| currency('$', 2) }}
                     </span>
                   </div>
+                  <!-- <span v-if="scope.row.tag == 'WithdrawStakeRewards'">
+                    {{ 
+                      scope.row.direction=='self'? '--' :
+                      (scope.row.value* Math.pow(10, -1*15))
+                        | currency('', 4) 
+                    }}  gZIL
+                  </span> -->
+                </div>
+                <div class="text-sm text-right">
+                  {{ scope.row.type }}
                 </div>
               </div>
             </z-table-column> 
@@ -135,7 +147,7 @@
                 v-clipboard:success="onCopy"
                 v-clipboard:error="onError"
                 class="flex flex-row items-center justify-start
-                cursor-pointer text-sm
+                cursor-pointer text-sm font-semibold
                  transaction__address bg-gray-200 hover:bg-gray-300 rounded px-2">
                 <jazzicon
                   :diameter="18" 
@@ -316,8 +328,8 @@ export default {
         address.substr(35)}`;
     },
     formatTxHash(txhash) {
-      return `${txhash && txhash.substr(0, 6)}...${txhash &&
-        txhash.substr(60)}`;
+      return `${txhash && txhash.substr(0, 10)}...${txhash &&
+        txhash.substr(56)}`;
     },
     txnStatus(dir) {
       if (dir == 'in') {
@@ -364,7 +376,8 @@ export default {
           } else {
             el.symbol = 'generic';
           }
-        } else if (data && data._tag) {
+        }
+        if (data && data._tag) {
           el.isContract = true;
         } else {
           throw Error();
@@ -380,7 +393,6 @@ export default {
           return obj.hash !== el.hash;
         });
       }
-
       return el;
     },
     onCopy(e) {

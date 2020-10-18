@@ -307,10 +307,10 @@
                 truncate hover:text-primary cursor-pointer"
                 @click="openAddressOnVb(selectedNode, transaction.address)">
                 <div v-if="transaction.address == transaction.to">
-                  {{ `${transaction.address}` }}
+                  {{ `${transaction.address }` | truncate(20) }}
                 </div>
                 <div v-else>
-                  {{ `${transaction.to}` }} 
+                  {{ `${transaction.to}` | truncate(20) }} 
                   <span class="font-normal text-sm ml-3">({{ transaction.address | truncate(20) }})</span>
                 </div>
               </h3>
@@ -334,13 +334,13 @@
                 class="rounded"
                 width="18px">
               <h3
-                class="font-bold text-gray-900 text-lg ml-4 uppercase
+                class="font-bold text-gray-900 text-xl ml-4 uppercase
                 truncate">
                 {{ `${transaction.amount}` }}
-                <span class="text-gray-700 text-sm">{{ fromToken.symbol }}</span>
+                <span class="text-gray-700 font-normal text-base">{{ fromToken.symbol }}</span>
               </h3>
-              <span class="ml-8 text-sm font-semibold flex items-center">
-                + {{ transactionFee }} ZIL <span class="text-xs font-normal text-gray-700">(Transaction Fee)</span>
+              <span class="ml-8  flex items-center">
+                + {{ transactionFee }} ZIL <span class="text-sm font-normal text-gray-600">(Transaction Fee)</span>
               </span>
             </div>
           </div>
@@ -1036,6 +1036,7 @@ export default {
       }
     },
     txObserver(raw_tx, via, type) {
+      console.log(raw_tx);
       raw_tx.observed().on('track', trackInfo => {
         if (trackInfo.attempt === 0) {
           raw_tx.via = via;
@@ -1047,6 +1048,8 @@ export default {
           this.txnDone(raw_tx);
           this.saveTxn(raw_tx);
         }
+      });
+      raw_tx.observed().on('confirm', trackInfo => {
         console.log(trackInfo);
       });
     },

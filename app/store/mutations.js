@@ -72,13 +72,14 @@ export const saveTxn = (state, data) => {
     extra: {},
     status: 'pending',
     version: data.version,
-    data: data.data,
+    data: JSON.stringify(data.data),
     networkId: state.selectedNode.id
   };
   //
   if (data.via === 'zillet') {
     state.wallet.nonce = data.nonce;
     txn.to = toBech32Address(txn.to);
+    txn.data = data.data;
     let localNonces;
     try {
       localNonces = JSON.parse(localStorage.getItem('_local_nonces')) || {};
