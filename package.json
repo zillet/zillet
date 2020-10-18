@@ -5,7 +5,7 @@
   "author": "man15h <manish9461@gmail.com>",
   "private": true,
   "engines": {
-    "node": ">=10.0.0 <=12.16.3"
+    "node": "10.x"
   },
   "scripts": {
     "dev": "NUXT_HOST=0.0.0.0 NUXT_PORT=7000 nuxt",
