@@ -10,7 +10,7 @@
         Claim <b>ZIL</b> reward
       </div>
       <p class=" text-left my-4">
-        You have delegated your ZIL token to more than 1 delegator. 
+        You have delegated your ZIL to more than 1 delegator. 
         You need to claim your reward Individually.
       </p>
       <z-table

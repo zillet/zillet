@@ -65,8 +65,7 @@
         </li>
         <li
           title="Staking "
-          class="cursor-disabled opacity-50">
-          <!-- @click="$emit('tabSelected', 'staking')" -->
+          @click="$emit('tabSelected', 'staking')">
           <label
             for="tab4"
             role="button">
@@ -74,10 +73,10 @@
               class="eva eva-gift-outline font-semibold mr-2" />
             <span>Staking</span>
             <span
-              style="top: -3px;left: -3px;transform: scale(.75);"
+              style="top: -5px;left: -3px;transform: scale(.85);"
               class="relative ml-1 bg-primary h-4 w-8 rounded-full
              text-xs text-white flex items-center font-normal justify-center">
-              soon
+              New
             </span>
           </label>
         </li>

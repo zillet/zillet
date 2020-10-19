@@ -19,16 +19,51 @@
       <div class="py-16 flex items-center justify-center">
         <div
           class="card border rounded-lg b-1 bg-gray-0 flex mx-4  flex-col items-center justify-center"
-          style="max-width:250px; min-height:200px">
-          <img
-            :src="getImages('zil')"
-            height="32px" 
-            class="rounded"
-            width="32px"
-          >
-          <div class="text-3xl font-bold mt-2">
-            <span v-if="fetched">
+          style="max-width:300px;">
+          <!-- <div class="flex items-center justify-center">
+            <img
+              :src="getImages('zil')"
+              height="24px" 
+              class="rounded"
+              width="24px"
+            >
+            <span
+              v-if="fetched"
+              class="text-2xl font-bold ml-2">
               {{ totalReward*Math.pow(10,-12) | currency('', 2) }} 
+              <span class="text-base font-normal text-gray-700">
+                ZIL
+              </span>
+            </span>
+            <span
+              v-else
+              class="text-2xl font-bold ml-2">
+              ...
+            </span>
+            <span class="text-2xl font-semibold mx-2">
+              +
+            </span>
+            <img
+              :src="getImages('gzil')"
+              height="32px" 
+              class="rounded"
+              width="32px"
+            >
+          </div> -->
+          <div class="text-2xl font-bold mt-2">
+            <span
+              v-if="fetched">
+              {{ totalReward*Math.pow(10,-12) | currency('', 2) }} 
+              <span class="text-base font-normal text-gray-700">
+                ZIL
+              </span>
+              <span class="text-xl font-semibold mx-1">
+                +
+              </span>
+              {{ totalReward*Math.pow(10,-15) | currency('', 4) }} 
+              <span class="text-base font-normal text-gray-700">
+                gZIL
+              </span>
             </span>
             <span v-else>
               ...
@@ -51,30 +86,33 @@
         </div>
         <div
           class="card border rounded-lg b-1 bg-gray-0 flex mx-4 flex-row items-center justify-center"
-          style=" min-height:200px">
+        >
           <div class="flex-col flex items-center justify-center">
-            <img
+            <!-- <img
               :src="getImages('zil')"
               height="32px" 
               class="rounded"
               width="32px"
-            >
-            <div class="text-3xl font-bold mt-2">
+            > -->
+            <div class="text-2xl font-bold mt-2">
               <span v-if="fetched">
                 {{ totalZilStaked*Math.pow(10,-12) | currency('', 2) }} 
+                <span class="text-base font-normal text-gray-700">
+                  ZIL
+                </span>
               </span>
               <span v-else>
                 ...
               </span>
             </div>
             <div class="">
-              Staked <b>ZIL</b> tokens<span v-if="myStakes.length > 1">
-                delegated to {{ myStakes.length }}  seed nodes
+              <span v-if="myStakes.length > 1">
+                Delegated to {{ myStakes.length }}  seed nodes
               </span>.
             </div>
             <div class="flex flex-row items-center justify-between">
               <z-button
-                class="rounded py-2 mr-2 w-40 mb-0"
+                class="rounded py-2 mr-2 w-32 mb-0"
                 type="default"
                 size="medium"
                 :disabled="loading"
@@ -83,7 +121,16 @@
                 Unstake
               </z-button>
               <z-button
-                class="rounded py-2 shadow-md ml-2 w-40 mb-0"
+                class="rounded py-2 mr-2 mb-0 border-primary"
+                type="default"
+                size="medium"
+                :disabled="loading"
+                :loading="loading && actionType =='unstake'"
+                @click="showUnstakeModal=true">
+                Transfer Stake
+              </z-button>
+              <z-button
+                class="rounded py-2 shadow-md ml-2 w-40 mb-0 border-primary"
                 size="medium"
                 :disabled="loading"
                 :loading="loading && actionType =='stake'"
