@@ -255,47 +255,10 @@
       style="">
       <TokenBalance @tokenClicked="tokenClicked" />
     </div>
-    <z-modal
+    <Broadcasted
       :visible="isBroadcast"
-      @close="isBroadcast=false">
-      <h3 class="font-bold text-xl mb-8 mt-4">
-        Transaction Sent
-      </h3>
-      <div class="flex flex-col px-8">
-        <z-icon type="success" />
-        <span class="text-base leading-normal font-semibold">
-          {{ `0x${tranxId}` }}
-        </span>
-        <div
-          class="mt-4 mt-2 text-sm italic">
-          * Your balance will be updated after transaction got confirmed.
-        </div>
-        <div class="flex flex-row -mx-2">
-          <div class="w-1/2 px-2">
-            <z-button
-              class="w-full mt-8"
-              type="default"
-              rounded
-              @click="isBroadcast=false;">
-              Okay, Got it.
-            </z-button>
-          </div>
-          <div class="w-1/2 px-2">
-            <a
-              :href="openTxOnVb(selectedNode, `0x${tranxId}`)"
-              target="_blank"
-              rounded
-              class="w-full flex-1">
-              <z-button
-                rounded
-                class="mt-8 w-full">
-                Check on Explorer
-              </z-button>
-            </a>
-          </div>
-        </div>
-      </div>
-    </z-modal>
+      :tranx-id="tranxId"
+      @close="isBroadcast=false" />
     <z-modal
       :visible="showTransactionDetails"
       @close="showTransactionDetails=false">
@@ -344,10 +307,10 @@
                 truncate hover:text-primary cursor-pointer"
                 @click="openAddressOnVb(selectedNode, transaction.address)">
                 <div v-if="transaction.address == transaction.to">
-                  {{ `${transaction.address}` }}
+                  {{ `${transaction.address }` | truncate(20) }}
                 </div>
                 <div v-else>
-                  {{ `${transaction.to}` }} 
+                  {{ `${transaction.to}` | truncate(20) }} 
                   <span class="font-normal text-sm ml-3">({{ transaction.address | truncate(20) }})</span>
                 </div>
               </h3>
@@ -371,13 +334,13 @@
                 class="rounded"
                 width="18px">
               <h3
-                class="font-bold text-gray-900 text-lg ml-4 uppercase
+                class="font-bold text-gray-900 text-xl ml-4 uppercase
                 truncate">
                 {{ `${transaction.amount}` }}
-                <span class="text-gray-700 text-sm">{{ fromToken.symbol }}</span>
+                <span class="text-gray-700 font-normal text-base">{{ fromToken.symbol }}</span>
               </h3>
-              <span class="ml-8 text-sm font-semibold flex items-center">
-                + {{ transactionFee }} ZIL <span class="text-xs font-normal text-gray-700">(Transaction Fee)</span>
+              <span class="ml-8  flex items-center">
+                + {{ transactionFee }} ZIL <span class="text-sm font-normal text-gray-600">(Transaction Fee)</span>
               </span>
             </div>
           </div>
@@ -437,6 +400,8 @@ import { Zilliqa } from '@zilliqa-js/zilliqa';
 import ZilliqaHW from '@/utils/ledger';
 import { isNumber } from '@/utils/validation';
 import TokenBalance from '@/components/TokenBalance';
+import Broadcasted from '@/components/send/Broadcasted';
+
 import config from '@/config';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
@@ -447,7 +412,8 @@ export default {
   name: 'SendTransactionForm',
   middleware: 'ifKeyExists',
   components: {
-    TokenBalance
+    TokenBalance,
+    Broadcasted
   },
   mixins: [Vue2Filters.mixin],
   data() {
@@ -618,7 +584,7 @@ export default {
   },
   methods: {
     ...mapActions(['sendTransaction', 'fetchTokenBalance']),
-    ...mapMutations(['updateBalance', 'saveTxn']),
+    ...mapMutations(['updateBalance', 'saveTxn', 'updateLocalTxn']),
     isNumber: isNumber,
     getImages,
     openTxOnVb,
@@ -690,7 +656,6 @@ export default {
             toChecksumAddress(base16address),
             tokenAmount
           );
-          console.log(contractMethod, contractParams);
           sentTx = await contract.call(contractMethod, contractParams, {
             gasPrice,
             amount: new BN(0),
@@ -812,7 +777,6 @@ export default {
           gasLimit: txParams.gasLimit.toString(),
           signature
         };
-        console.log(signedTx);
         try {
           this.loading = true;
           const { result } = await this.sendTransaction(signedTx);
@@ -1028,6 +992,7 @@ export default {
         await this.fetchTokenBalance();
       }
       this.loading = false;
+      this.updateLocalTxn();
     },
     cancelTx() {
       this.loading = false;
@@ -1070,6 +1035,7 @@ export default {
       }
     },
     txObserver(raw_tx, via, type) {
+      console.log(raw_tx);
       raw_tx.observed().on('track', trackInfo => {
         if (trackInfo.attempt === 0) {
           raw_tx.via = via;
@@ -1081,6 +1047,8 @@ export default {
           this.txnDone(raw_tx);
           this.saveTxn(raw_tx);
         }
+      });
+      raw_tx.observed().on('confirm', trackInfo => {
         console.log(trackInfo);
       });
     },

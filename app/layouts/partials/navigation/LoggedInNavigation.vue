@@ -154,6 +154,10 @@ export default {
   },
   mounted() {
     this.fetchZilBalance();
+    this.$viewblock.subscribe(
+      { event: 'addressTx', param: this.Account.address },
+      console.log
+    );
   },
   methods: {
     ...mapMutations(['updateBalance']),

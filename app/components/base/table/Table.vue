@@ -5,7 +5,7 @@
     <table
       class="text-left w-full bc-table"
       style="border-collapse: separate;border-spacing: 0 1em;">
-      <thead>
+      <thead v-if="header">
         <tr>
           <th
             v-if="checkable"
@@ -50,7 +50,7 @@
         <template v-for="(row, index) in data">
           <tr
             :key="uniqueKey? row[uniqueKey] :index"
-            class="border hover:shadow-sm rounded mobile:p-4"
+            class="border  rounded mobile:p-4"
             @click="$emit('rowClicked', row, index)">
             <td
               v-if="checkable"
@@ -160,6 +160,10 @@ export default {
     columns: {
       type: Array,
       default: () => []
+    },
+    header: {
+      type: Boolean,
+      default: () => true
     },
     pagination: {
       type: Boolean,

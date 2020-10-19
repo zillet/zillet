@@ -1,6 +1,6 @@
 
 /* tab setting */
-$tab-count: 3;
+$tab-count: 4;
 $indicator-width: 5.33rem;
 $indicator-height: 3px;
 
@@ -38,7 +38,7 @@ $content-selector: '~ .content > section';
 }
 
 .tabs {
-  min-width: #{$tab-count * 11rem};
+  min-width: #{$tab-count * 10rem};
   @include mobile {
     min-width: calc(100% - 100px);
   }
@@ -56,7 +56,7 @@ $content-selector: '~ .content > section';
     @apply pl-0 flex flex-row mb-2 justify-between items-end flex-wrap;
     li {
       box-sizing: border-box;
-      @apply flex-1 px-6 cursor-pointer;
+      @apply flex-1 px-2 cursor-pointer;
       text-align: center;
       width: #{100% / $tab-count};
       &:nth-child(1) {

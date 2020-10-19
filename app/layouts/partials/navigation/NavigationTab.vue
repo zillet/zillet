@@ -16,6 +16,12 @@
         :checked="$route.name=='tokens'"
         type="radio"
         name="tab-control">
+      <input
+        id="tab4"
+        :checked="$route.name=='staking'"
+        type="radio"
+        class="cursor-disabled"
+        name="tab-control">
       <ul>
         <li
           title="Send Zilliqa"
@@ -36,7 +42,10 @@
             <i class="eva eva-clock-outline font-semibold mr-2" />
             <span>Transactions</span>
             <span
+             
               v-if="pendingTx> 0"
+            
+              style="top: -3px;left: -3px;transform: scale(.75);"
               class="relative ml-1 bg-primary h-4 w-4 rounded-full
              text-xs text-white flex items-center justify-center">
               {{ pendingTx }}
@@ -52,6 +61,24 @@
             <i
               class="eva eva-layers-outline font-semibold mr-2" />
             <span>Tokens</span>
+          </label>
+        </li>
+        <li
+          title="Staking "
+          class="cursor-disabled opacity-50">
+          <!-- @click="$emit('tabSelected', 'staking')" -->
+          <label
+            for="tab4"
+            role="button">
+            <i
+              class="eva eva-gift-outline font-semibold mr-2" />
+            <span>Staking</span>
+            <span
+              style="top: -3px;left: -3px;transform: scale(.75);"
+              class="relative ml-1 bg-primary h-4 w-8 rounded-full
+             text-xs text-white flex items-center font-normal justify-center">
+              soon
+            </span>
           </label>
         </li>
       </ul>

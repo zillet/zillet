@@ -1,7 +1,7 @@
 require('dotenv').config();
 const path = require('path');
 module.exports = {
-  mode: 'spa',
+  ssr: false,
   srcDir: 'app/',
   head: {
     titleTemplate: '%s | Zillet.io',
@@ -105,8 +105,12 @@ module.exports = {
   styleResources: {
     scss: ['~/assets/style/variables.scss', '~/assets/style/mixins.scss']
   },
+  axios: {
+    proxy: true // Can be also an object with default options
+  },
   proxy: {
-    '/zilliqa': 'https://api.viewblock.io/'
+    '/zilliqa': 'https://api.viewblock.io/',
+    '/zrc': 'https://raw.githubusercontent.com/'
   },
   build: {
     postcss: {
