@@ -777,7 +777,6 @@ export default {
           gasLimit: txParams.gasLimit.toString(),
           signature
         };
-        console.log(signedTx);
         try {
           this.loading = true;
           const { result } = await this.sendTransaction(signedTx);

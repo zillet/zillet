@@ -107,7 +107,7 @@ export function sendTransaction({ commit, state }, tx) {
     commit('LOADING');
     let data = JSON.stringify(setData('CreateTransaction', [tx]));
     this.$axios
-      .$post(state.selectNode.url, data)
+      .$post(state.selectedNode.url, data)
       .then(res => {
         console.info(res);
         commit('SUCCESS');

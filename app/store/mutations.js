@@ -78,7 +78,7 @@ export const saveTxn = (state, data) => {
   //
   if (data.via === 'zillet') {
     state.wallet.nonce = data.nonce;
-    txn.to = toBech32Address(txn.to);
+    txn.toAddr = toBech32Address(txn.toAddr);
     txn.data = data.data;
     let localNonces;
     try {

@@ -38,7 +38,7 @@
             :src="getImages(bal.symbol)"
             :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
             class="token__icon rounded">
-          <p class="ml-2 uppercase font-semibold">
+          <p class="ml-2 font-semibold">
             {{ bal.symbol }}
           </p>
           <!-- <i
@@ -49,7 +49,7 @@
           class="flex items-center hover:text-gray-900"
           @click="$emit('tokenClicked', bal)">
           <div class="flex  font-bold cursor-pointer">
-            {{ roundDown(bal.balance*Math.pow(10, -1*bal.decimals),2) | currency('', 2) }}
+            {{ roundDown(bal.balance*Math.pow(10, -1*bal.decimals),2) | currency('', bal.symbol =='gZIL' ? 4:2) }}
           </div>
           <div
             v-if="amountInUsd(bal) > 0"

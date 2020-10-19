@@ -127,6 +127,8 @@
         :visible="showStakeModal"
         :ssnlist="ssnlist"
         :loading="loading"
+        :min-stake="minStake"
+        :error-msg="errorMsg"
         @stake="stake"
         @close="showStakeModal=false" />
       <Unstake
@@ -199,6 +201,7 @@ export default {
       pendingWithdrawals: {},
       bnumReq: 50,
       currentMiniEpoch: 0,
+      minStake: 100,
       contractInstances: {
         proxy: {},
         ssnlist: {},
@@ -331,6 +334,12 @@ export default {
       } catch (error) {
         this.pendingWithdrawals = {};
       }
+      // Min amount for staking
+      const minDelegateAmount = await this.contractInstances.ssnlist.getSubState(
+        'mindelegstake',
+        []
+      );
+      this.minStake = minDelegateAmount.mindelegstake;
       // No. of confirmation needed for withdrawls
       const { bnum_req } = await this.contractInstances.ssnlist.getSubState(
         'bnum_req',
@@ -475,17 +484,12 @@ export default {
       this.actionType = 'stake';
       this.loading = true;
       let actualAmount = units.toQa(amount, units.Units.Zil);
-      const minDelegateAmount = await this.contractInstances.ssnlist.getSubState(
-        'mindelegstake',
-        []
-      );
-      if (
-        parseInt(actualAmount.toString()) <
-        parseInt(minDelegateAmount.mindelegstake)
-      ) {
+      if (parseInt(actualAmount.toString()) < parseInt(this.minStake)) {
+        this.errorMsg = `Stake amount should be greater then ${this.minStake *
+          Math.pow(10, -12)}`;
+        this.loading = false;
         return this.$notify({
-          message: `Stake amount should be greater then ${minDelegateAmount.mindelegstake *
-            Math.pow(10, -12)}`,
+          message: this.errorMsg,
           type: 'danger'
         });
       }
@@ -503,10 +507,13 @@ export default {
       if (this.accessType === 1004) {
         await this.zilpayContractTx(contractMethod, contractParams, txParams);
       } else if (this.accessType === 1006) {
-        this.ledgerContractTx(contractMethod, contractParams, txParams);
+        await this.ledgerContractTx(contractMethod, contractParams, txParams);
       } else {
-        this.zilletContractTx(contractMethod, contractParams, txParams);
+        await this.zilletContractTx(contractMethod, contractParams, txParams);
       }
+      this.loading = false;
+      this.showStakeModal = false;
+      this.errorMsg = '';
     },
     async unstake(amount, ssnAddr) {
       console.log(`Unstaking ${amount} ZILs`);

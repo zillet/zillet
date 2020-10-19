@@ -51,7 +51,7 @@
 
                   :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
                   class="token__icon rounded h-6 w-6">
-                <p class="ml-2 uppercase font-semibold">
+                <p class="ml-2 font-semibold">
                   {{ scope.row.symbol }}
                 </p>
                 <i
@@ -75,7 +75,7 @@
               class="font-semibold">
               <div class="flex items-center ">
                 <div class="flex  font-bold ">
-                  {{ roundDown(scope.row.balance*Math.pow(10, -1*scope.row.decimals),2) | currency('', 2) }}
+                  {{ roundDown(scope.row.balance*Math.pow(10, -1*scope.row.decimals),2) | currency('', 6) }}
                 </div>
                 <div
                   v-if="amountInUsd(scope.row) > 0"

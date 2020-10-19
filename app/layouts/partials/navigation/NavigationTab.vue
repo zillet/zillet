@@ -20,6 +20,7 @@
         id="tab4"
         :checked="$route.name=='staking'"
         type="radio"
+        class="cursor-disabled"
         name="tab-control">
       <ul>
         <li
@@ -63,8 +64,9 @@
           </label>
         </li>
         <li
-          title="Staking"
-          @click="$emit('tabSelected', 'staking')">
+          title="Staking "
+          class="cursor-disabled opacity-50">
+          <!-- @click="$emit('tabSelected', 'staking')" -->
           <label
             for="tab4"
             role="button">
@@ -75,7 +77,7 @@
               style="top: -3px;left: -3px;transform: scale(.75);"
               class="relative ml-1 bg-primary h-4 w-8 rounded-full
              text-xs text-white flex items-center font-normal justify-center">
-              New
+              soon
             </span>
           </label>
         </li>

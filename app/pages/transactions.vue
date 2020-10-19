@@ -53,7 +53,7 @@
                   'bg-red-200':scope.row.receiptSuccess===false, 
                   'bg-yellow-200':scope.row.direction=='out' && scope.row.receiptSuccess && !scope.row.isContract,
                   'bg-gray-200':(scope.row.isContract && scope.row.receiptSuccess) || scope.row.direction=='self',
-                  'bg-green-200':scope.row.direction=='in'
+                  'bg-green-200':scope.row.direction=='in' && !scope.row.isContract
                 }">
                 <i
                   v-if="scope.row.receiptSuccess===false"
@@ -62,7 +62,7 @@
                   v-else-if="scope.row.status =='pending'"
                   class="eva eva-loader-outline rotating" />
                 <i
-                  v-else-if="scope.row.isContract" 
+                  v-else-if="scope.row.isContract && scope.row.tag !='Transfer' && scope.row.tag !='proxyTransfer'" 
                   class="eva eva-code-outline" />
                 <i
                   v-else-if="scope.row.direction=='out' && !scope.row.status"
@@ -362,13 +362,15 @@ export default {
           const contractKey =
             this.selectedNode.id == 1 ? 'address' : 'testnetAddress';
           let zrc = this.zrc2.find(function(element) {
-            return el.to == element[contractKey];
+            return (
+              el.toAddr == element[contractKey] || el.to == element[contractKey]
+            );
           });
           el.value = Number(data.params[1].value);
           el.to = toBech32Address(data.params[0].value);
 
           if (el.amount) {
-            console.log(el, data, this.zrc2);
+            console.log(el, data, zrc);
           }
           if (zrc && zrc.decimals) {
             el.token = zrc;

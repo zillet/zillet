@@ -56,8 +56,9 @@
             <p class="text-gray-800 font-bold pl-2">
               {{ selectedSeedNode.name }}
             </p>
-            <p class="text-gray-800 pr-2">
-              {{ selectedSeedNode.address }}
+            <p class="text-gray-800 pr-6 text-sm">
+              <b class="text-base">{{ selectedSeedNode.commision | currency('', 2) }} %</b>
+              (Commission rate )
             </p>
           </div>
           <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -93,22 +94,31 @@
               class="flex flex-column items-center justify-between text-left px-4 py-3 
               text-sm cursor-pointer hover:bg-grey-lightest"
               @click="fromTokenChange(n, false)">
-              <p class="text-gray-800 font-bold pl-2">
+              <p class="text-gray-800 pl-2">
                 {{ n.name }}
               </p>
-              <p class="text-gray-800 pr-2">
-                {{ n.address }}
+              <p class="text-gray-800 pr-2 font-semibold">
+                {{ n.commision | currency('', 2) }} %
               </p>
             </div>
           </div>
         </transition>
       </div>
       <p class="italic text-left text-sm mt-4">
-        * Select a node in order to delegate to someone else.
+        * Minimum staking amount is <b>{{ minStake *Math.pow(10, -12) }} ZIL</b>.
       </p>
+      <div
+        v-if="errorMsg"
+        class="bg-red-100 text-red-700 rounded my-4  px-4 p-2  text-left flex flex-row items-center">
+        <i
+          class="eva eva-alert-triangle-outline  text-xl mr-4" />
+        <div class="text-sm">
+          {{ errorMsg }}
+        </div>
+      </div>
       <div class="flex flex-row items-center justify-between">
         <z-button
-          class="rounded-full py-2 mr-2 w-40"
+          class="rounded py-2 mr-2 w-40"
           type="default"
           :disabled="loading"
           size="medium"
@@ -118,7 +128,7 @@
         <z-button
           size="medium"
           :loading="loading"
-          class="rounded-full py-2 shadow-md ml-2 w-full"
+          class="rounded py-2 shadow-md ml-2 w-full"
           @click="$emit('stake', amount, selectedSeedNode.address)">
           Stake
         </z-button>
@@ -147,6 +157,14 @@ export default {
     loading: {
       default: false,
       type: Boolean
+    },
+    errorMsg: {
+      type: String,
+      default: ''
+    },
+    minStake: {
+      default: 100,
+      type: [Number, String]
     }
   },
   data() {
@@ -164,7 +182,8 @@ export default {
       for (const key in this.ssnlist) {
         list.push({
           address: key,
-          name: this.ssnlist[key].arguments[3]
+          name: this.ssnlist[key].arguments[3],
+          commision: this.ssnlist[key].arguments[7] * Math.pow(10, -7)
         });
       }
       return list;
@@ -189,6 +208,7 @@ export default {
   mounted() {},
   methods: {
     fromTokenChange(node) {
+      console.log(node);
       this.selectedSeedNode = node;
       this.seedNodeDropDown = false;
     },
