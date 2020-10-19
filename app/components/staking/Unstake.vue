@@ -18,7 +18,7 @@
             class=" text-sm cursor-pointer"
             @click="fillMax"
           >
-            <b class="text-teal-600">{{ Number(selectedSeedNode.amount*Math.pow(10,-12)).toFixed(4) }}</b>  Delegated  
+            <b class="text-teal-600">{{ Number(selectedSeedNode.amount*Math.pow(10,-12)).toFixed(4) }}</b> ZIL  Available   
           </div>
         </div>
         <div class="flex flex-row">
@@ -38,8 +38,9 @@
           </z-button>
         </div>
       </div>
+
       <div v-if="myStakes.length > 1">
-        <p class="text-sm text-left my-2">
+        <p class=" text-left my-2">
           It Looks like you have delegted ZILs to {{ myStakes.length }} different seed nodes. Please select a seed node where you
           want to undelegate your amount. 
         </p>
@@ -54,8 +55,8 @@
             class="fixed inset-0"
             @click="seedNodeDropDown = false" />
           <span
-            class="flex flex-row items-center cursor-pointer justify-between focus:outline-none bg-white text-gray-900 
-                  h-10 px-4 py-2 rounded border border-gray-200 w-full"
+            class="flex flex-row items-center cursor-pointer justify-between focus:outline-none bg-gray-100 text-gray-900 
+                  h-10 px-4 py-2 rounded border border-gray-400 w-full"
             @click="seedNodeDropDown=true">
             <div class="flex flex-column items-center justify-between w-full">
               <p class="text-gray-800 font-bold pl-2">
@@ -112,7 +113,7 @@
       <div
         class="bg-gray-100 text-gray-700 rounded my-4 p-2 px-4  text-left flex flex-row items-center">
         <i class="eva eva-info-outline text-xl mr-4" />
-        <div class="text-sm">
+        <div>
           After Unstake you have to wait for at least <strong>{{ bnumReq }}</strong> confirmation in 
           order to make the withdrawal
         </div>
@@ -122,7 +123,7 @@
         class="bg-red-100 text-red-700 rounded my-4  px-4 p-2  text-left flex flex-row items-center">
         <i
           class="eva eva-alert-triangle-outline  text-xl mr-4" />
-        <div class="text-sm">
+        <div>
           {{ errorMsg }}
         </div>
       </div>
@@ -203,11 +204,15 @@ export default {
   watch: {
     myStakes: {
       handler(newValue, oldValue) {
-        let obj = newValue.find(o => o.name.toLowerCase() == 'zillet');
-        if (obj) {
-          this.selectedSeedNode = obj;
+        if (newValue.length) {
+          this.selectedSeedNode = newValue[0];
         }
       }
+    }
+  },
+  mounted() {
+    if (this.myStakes.length) {
+      this.selectedSeedNode = this.myStakes[0];
     }
   },
   methods: {

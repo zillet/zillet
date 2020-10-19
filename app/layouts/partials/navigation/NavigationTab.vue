@@ -42,12 +42,10 @@
             <i class="eva eva-clock-outline font-semibold mr-2" />
             <span>Transactions</span>
             <span
-             
               v-if="pendingTx> 0"
-            
-              style="top: -3px;left: -3px;transform: scale(.75);"
-              class="relative ml-1 bg-primary h-4 w-4 rounded-full
-             text-xs text-white flex items-center justify-center">
+              style="top: -5px;left: -3px;transform: scale(.85);"
+              class="relative ml-1 bg-primary h-4 w-8 rounded-full
+             text-xs text-white flex items-center font-normal justify-center">
               {{ pendingTx }}
             </span>
           </label>

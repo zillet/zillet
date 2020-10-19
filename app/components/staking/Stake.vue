@@ -16,9 +16,9 @@
           </div>
           <div
             class=" text-sm cursor-pointer"
-            @click="amount=(Balance.zil && Number(Balance.zil).toFixed(4) - 20)"
+            @click="amount=roundDown((Balance.zil && Number(Balance.zil).toFixed(4) - 50), 4)"
           >
-            <b class="text-teal-600">{{ Balance.zil && Number(Balance.zil).toFixed(4) - 20 }}</b>  Availble 
+            <b class="text-teal-600">{{ roundDown((Balance.zil && Number(Balance.zil).toFixed(4) - 50), 4) }}</b>  Availble 
           </div>
         </div>
         <div class="flex flex-row">
@@ -33,7 +33,7 @@
             type="default"
             style="height:3rem; left:-3px"
             class="m-0 relative bg-white border-gray-400 rounded-r"
-            @click="amount=(Balance.zil && Number(Balance.zil).toFixed(4) - 20)">
+            @click="amount=roundDown((Balance.zil && Number(Balance.zil).toFixed(4) - 50), 4)">
             Max
           </z-button>
         </div>
@@ -94,8 +94,10 @@
               class="flex flex-column items-center justify-between text-left px-4 py-3 
               text-sm cursor-pointer hover:bg-grey-lightest"
               @click="fromTokenChange(n, false)">
-              <p class="text-gray-800 pl-2">
-                {{ n.name }}
+              <p class="text-gray-800 pl-2 flex items-center">
+                {{ n.name }} <i
+                  v-if="n.name.toLowerCase() =='zillet'"
+                  class="eva eva-star-outline ml-2 text-primary" />
               </p>
               <p class="text-gray-800 pr-2 font-semibold">
                 {{ n.commision | currency('', 2) }} %
@@ -141,6 +143,7 @@
 import { mapState, mapGetters } from 'vuex';
 import Vue2Filters from 'vue2-filters';
 import { isNumber } from '@/utils/validation';
+import { roundDown } from '@/utils';
 
 export default {
   name: 'AddToken',
@@ -205,10 +208,15 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    let obj = this.formattedList.find(o => o.name.toLowerCase() === 'zillet');
+    if (obj) {
+      this.selectedSeedNode = obj;
+    }
+  },
   methods: {
+    roundDown,
     fromTokenChange(node) {
-      console.log(node);
       this.selectedSeedNode = node;
       this.seedNodeDropDown = false;
     },
