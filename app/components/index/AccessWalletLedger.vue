@@ -41,7 +41,7 @@
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { fromBech32Address } from '@zilliqa-js/crypto';
-import config from '@/config';
+import config from '@/config.json';
 import * as util from '@zilliqa-js/util';
 import ZilliqaHW from '@/utils/ledger';
 import AccountIndex from '@/components/ledger/AccountIndex';

@@ -53,7 +53,7 @@ import { mapActions, mapMutations } from 'vuex';
 import { decryptPrivateKey } from '@zilliqa-js/crypto';
 import { fromBech32Address } from '@zilliqa-js/crypto';
 import { dapp } from 'dapp-wallet-util';
-import config from '@/config';
+import config from '@/config.json';
 export default {
   name: 'Keystore',
   props: {

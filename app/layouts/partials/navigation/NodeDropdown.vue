@@ -102,7 +102,7 @@
 import { mapActions, mapState } from 'vuex';
 import { bytes } from '@zilliqa-js/util';
 
-import config from '@/config';
+import config from '@/config.json';
 export default {
   name: 'NodeDropdown',
   data() {

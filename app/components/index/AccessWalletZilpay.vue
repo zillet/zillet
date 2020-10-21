@@ -35,7 +35,7 @@
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { decryptPrivateKey } from '@zilliqa-js/crypto';
-import config from '@/config';
+import config from '@/config.json';
 export default {
   name: 'Keystore',
   props: {
