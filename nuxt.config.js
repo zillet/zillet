@@ -101,6 +101,10 @@ module.exports = {
       }
     ]
   ],
+  axios: {
+    baseURL: process.env.API_BASE_URL || 'https://zillet.io/',
+    browserBaseURL: process.env.API_BROWSER_BASE_URL || 'https://zillet.io/'
+  },
   loading: { color: '#3B8070' },
   styleResources: {
     scss: ['~/assets/style/variables.scss', '~/assets/style/mixins.scss']
