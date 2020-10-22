@@ -77,9 +77,9 @@ module.exports = {
   plugins: [
     '@/plugins/qrcode',
     '@/plugins/global',
-    '@/plugins/axios',
     '@/plugins/notify',
     '@/plugins/zillet',
+    '@/plugins/axios',
     '@/plugins/nuxtClientInit',
     '@/plugins/clipboard',
     '@/plugins/jazzicon',
@@ -101,16 +101,22 @@ module.exports = {
       }
     ]
   ],
+  axios: {
+    baseURL: process.env.API_BASE_URL || 'https://zillet.io/',
+    browserBaseURL: process.env.API_BROWSER_BASE_URL || 'https://zillet.io/'
+  },
   loading: { color: '#3B8070' },
   styleResources: {
     scss: ['~/assets/style/variables.scss', '~/assets/style/mixins.scss']
   },
-  axios: {
-    proxy: true // Can be also an object with default options
-  },
   proxy: {
     '/zilliqa': 'https://api.viewblock.io/',
-    '/zrc': 'https://raw.githubusercontent.com/'
+    '/zrc2': {
+      target: 'https://raw.githubusercontent.com/',
+      pathRewrite: {
+        '^/zrc2/': '/'
+      }
+    }
   },
   build: {
     postcss: {

@@ -402,7 +402,7 @@ import { isNumber } from '@/utils/validation';
 import TokenBalance from '@/components/TokenBalance';
 import Broadcasted from '@/components/send/Broadcasted';
 
-import config from '@/config';
+import config from '@/config.json';
 const lookupMap = new Map([
   ['amount', 'Amount should be a number'],
   ['gasLimit', 'Gas Limit should be a number'],

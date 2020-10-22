@@ -221,7 +221,7 @@
   </div>
 </template>
 <script>
-import config from '@/config';
+import config from '@/config.json';
 import { mapGetters, mapActions, mapState, mapMutations } from 'vuex';
 import { getImages } from '@/utils';
 import { BN, Long, validation, units } from '@zilliqa-js/util';
