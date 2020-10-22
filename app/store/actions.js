@@ -56,12 +56,14 @@ export function getContract({ commit }, contractAddress) {
 export function getZrc2List({ commit }) {
   return new Promise((resolve, reject) => {
     this.$axios
-      .$get('https://zrc2.zillet.io/zrc2.json')
+      .get('/zrc2/zillet/zrc2-tokens/master/zrc2.json')
       .then(resData => {
-        commit('UPDATE_ZRC2_LIST', resData);
+        commit('UPDATE_ZRC2_LIST', resData.data);
         resolve(resData);
       })
       .catch(err => {
+        commit('ERROR');
+        commit('UPDATE_ZRC2_LIST', []);
         reject(err);
       });
   });
@@ -81,6 +83,7 @@ export function getPrice({ commit }, { url, token, symbol }) {
         resolve(resData);
       })
       .catch(err => {
+        commit('ERROR');
         reject(err);
       });
   });
@@ -128,28 +131,33 @@ export function fetchTokenBalance({ commit, state, getters }) {
       const networkType = state.selectedNode.id == 1 ? 'mainet' : 'testnet';
       const address =
         getters.Account.address && getters.Account.address.toLowerCase();
-      state.zrc2.forEach(async (element, index) => {
-        let deployedContract;
-        if (networkType == 'mainet') {
-          deployedContract = t.$zillet.contracts.at(element.address);
-        } else {
-          deployedContract = t.$zillet.contracts.at(element.testnetAddress);
-        }
-        let bal = await deployedContract.getSubState('balances', [address]);
-        let tokenBal = 0;
-        if (bal && bal.balances) {
-          tokenBal = bal.balances[address];
-        }
-        balances.push({
-          ...element,
-          balance: tokenBal
+      if (state.zrc2.length == 0) {
+        commit('SUCCESS');
+        resolve(balances);
+      } else {
+        state.zrc2.forEach(async (element, index) => {
+          let deployedContract;
+          if (networkType == 'mainet') {
+            deployedContract = t.$zillet.contracts.at(element.address);
+          } else {
+            deployedContract = t.$zillet.contracts.at(element.testnetAddress);
+          }
+          let bal = await deployedContract.getSubState('balances', [address]);
+          let tokenBal = 0;
+          if (bal && bal.balances) {
+            tokenBal = bal.balances[address];
+          }
+          balances.push({
+            ...element,
+            balance: tokenBal
+          });
+          if (index == state.zrc2.length - 1) {
+            commit('UPDATE_BALANCE', balances);
+            commit('SUCCESS');
+            resolve(balances);
+          }
         });
-        if (index == state.zrc2.length - 1) {
-          commit('UPDATE_BALANCE', balances);
-          commit('SUCCESS');
-          resolve(balances);
-        }
-      });
+      }
     } catch (error) {
       commit('ERROR');
       reject(error);
