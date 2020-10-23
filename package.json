@@ -4,6 +4,9 @@
   "description": "Zillet is an open-source, client-side, tool for interacting with the Zilliqa blockchain",
   "author": "man15h <manish9461@gmail.com>",
   "private": true,
+   "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
