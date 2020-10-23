@@ -1,11 +1,11 @@
 <template>
   <z-modal
     :visible="visible"
-    custom-class="overflow-visible"
+    custom-class="overflow-visible md:overflow-auto"
     @close="$emit('close')">
     <div 
-      style="min-width:450px" 
-      class="mx-4">
+      style="max-width:450px"
+      class="w-full px-2">
       <div class="font-semibold text-2xl mb-6 text-gray-800">
         Unstake <b>ZIL</b>
       </div>
@@ -41,7 +41,7 @@
 
       <div v-if="myStakes.length > 1">
         <p class=" text-left my-2">
-          It Looks like you have delegted ZILs to {{ myStakes.length }} different seed nodes. Please select a seed node where you
+          It looks like you have delegted ZILs to {{ myStakes.length }} different seed nodes. Please select a seed node where you
           want to undelegate your amount. 
         </p>
         <div class="flex flex-row items-center justify-between">

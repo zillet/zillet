@@ -25,7 +25,7 @@
     <div
       class="h-full px-6 overflow-auto"
       style="max-height:18rem">
-      <Loader v-if="loading || fetching" />
+      <Loader v-if="(loading || fetching ) && !sortTokenBalances.length" />
       <div
         v-for="bal in sortTokenBalances"
         v-else-if="sortTokenBalances.length"

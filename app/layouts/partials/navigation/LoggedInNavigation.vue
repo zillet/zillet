@@ -66,7 +66,7 @@
             <span
               class="text-xs italic text-left inline-block ml-2
             font-semibold align-middle text-gray-700 font-normal
-            underline cursor-pointer hover:text-teal-500"
+            select-none underline cursor-pointer hover:text-teal-500"
               @click="fetchBalance(Account.address)">
               <i
                 class="eva eva-sync-outline relative font-bold"
@@ -78,7 +78,6 @@
       </div>
       <div class="divider" />
       <NavigationTab
-        class="mt-4 px-4"
         @tabSelected="changeRoute" />
     </div>
     <z-modal
@@ -131,7 +130,8 @@ export default {
   data() {
     return {
       showQr: false,
-      copied: false
+      copied: false,
+      tId: null
     };
   },
   computed: {
@@ -143,17 +143,17 @@ export default {
   watch: {
     'Account.address': {
       handler(newValue, oldValue) {
-        this.fetchZilBalance(newValue);
+        this.fetchBalance(newValue);
       }
     },
     'selectedNode.url': {
       handler(newValue, oldValue) {
-        this.fetchZilBalance();
+        this.fetchBalance();
       }
     }
   },
   mounted() {
-    this.fetchZilBalance();
+    this.fetchBalance();
   },
   methods: {
     ...mapMutations(['updateBalance']),
@@ -161,7 +161,6 @@ export default {
     openAddressOnVb,
     async fetchZilBalance() {
       try {
-        this.$nuxt.$loading.start();
         const balance = await this.$zillet.blockchain.getBalance(
           this.Account.address
         );
@@ -170,7 +169,6 @@ export default {
         } else {
           this.updateBalance({ balance: 0, nonce: 0 });
         }
-        this.$nuxt.$loading.finish();
       } catch (error) {
         console.error(error);
         return this.$notify({
@@ -181,10 +179,18 @@ export default {
       }
     },
     async fetchBalance() {
-      this.$nuxt.$loading.start();
-      await this.fetchZilBalance();
-      await this.fetchTokenBalance();
-      this.$nuxt.$loading.finish();
+      if (this.tId) {
+        clearInterval(this.tId);
+      }
+      if (this.Account.address) {
+        this.$nuxt.$loading.start();
+        await this.fetchZilBalance();
+        await this.fetchTokenBalance();
+        this.$nuxt.$loading.finish();
+        this.tId = setTimeout(() => {
+          this.fetchBalance();
+        }, 60000);
+      }
     },
     onCopy(e) {
       const t = this;

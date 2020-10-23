@@ -6,7 +6,7 @@
           Staking
         </h3>
         <span
-          class="text-xs italic text-left inline-block ml-2
+          class="text-xs italic text-left inline-block ml-2  select-none 
             font-semibold align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
           @click="init()">
@@ -15,6 +15,20 @@
             style="top:2px" />
           Refresh
         </span>
+      </div>
+      <div
+        class="bg-gray-200  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
+        <div class="flex items-center">
+          <i class="eva eva-info-outline text-xl mr-4" />
+          <div>
+            New to staking and need help? 
+            <a
+              class="text-primary"
+              href="https://support.zillet.io/staking-on-zillet"
+              target="_blank">Click here to learn about staking on Zillet</a>
+          </div>
+        </div>
+        <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
       </div>
       <div
         v-if="totalPendingWithdrawls > 0"
@@ -52,7 +66,7 @@
         </div>
       </div>
       <div
-        class="py-16 flex items-center justify-center"
+        class="py-8 flex items-center justify-center"
         :class="{'pt-0': totalPendingWithdrawls > 1}">
         <div
           class="card border rounded-lg b-1 bg-gray-0 flex   flex-col items-center justify-center"
@@ -186,7 +200,7 @@
         :min-stake="minStake"
         :error-msg="errorMsg"
         @stake="stake"
-        @close="showStakeModal=false" />
+        @close="showStakeModal=false; errorMsg=''" />
       <TransferStake
         :key="`transfer${showTransferStakeModal}`"
         :visible="showTransferStakeModal"
@@ -195,7 +209,7 @@
         :my-stakes="myStakes"
         :error-msg="errorMsg"
         @transfer="transfer"
-        @close="showTransferStakeModal=false" />
+        @close="showTransferStakeModal=false; errorMsg=''" />
       <Unstake
         :key="`unstake${showUnstakeModal}`"
         :visible="showUnstakeModal"
@@ -204,7 +218,7 @@
         :error-msg="errorMsg"
         :bnum-req="bnumReq"
         @unstake="unstake"
-        @close="showUnstakeModal=false" />
+        @close="showUnstakeModal=false; errorMsg=''" />
       <RewardClaim
         :key="`reward${showRewardClaimModal}`"
         :visible="showRewardClaimModal"
@@ -212,7 +226,7 @@
         :loading="loading"
         :error-msg="errorMsg"
         @claim="claimReward"
-        @close="showRewardClaimModal=false" />
+        @close="showRewardClaimModal=false; errorMsg=''" />
       <Broadcasted
         :visible="isBroadcast"
         :tranx-id="tranxId"
@@ -271,6 +285,7 @@ export default {
       currentMiniEpoch: 0,
       minStake: 100,
       allState: {},
+      tId: null,
       contractInstances: {
         proxy: {},
         ssnlist: {},
@@ -337,8 +352,17 @@ export default {
       return total;
     }
   },
+  watch: {
+    'selectedNode.id': {
+      handler(newValue, oldValue) {
+        this.init();
+      }
+    }
+  },
   async mounted() {
+    this.fetched = false;
     await this.init();
+    this.fetched = true;
   },
   methods: {
     ...mapActions(['sendTransaction']),
@@ -348,19 +372,22 @@ export default {
       this.allState = await this.contractInstances.ssnlist.getState();
     },
     async init() {
-      this.fetched = false;
-      const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
+      if (this.tId) {
+        clearInterval(this.tId);
+      }
+      this.$nuxt.$loading.start();
+      const networkType = this.selectedNode.id == 1 ? 'mainnet' : 'testnet';
       const address =
         this.Account.address && this.Account.address.toLowerCase();
-      if (networkType == 'mainet') {
+      if (networkType == 'mainnet') {
         this.contractInstances.proxy = this.$zillet.contracts.at(
-          STAKING.testnet.proxy
+          STAKING.mainnet.proxy
         );
         this.contractInstances.ssnlist = this.$zillet.contracts.at(
-          STAKING.testnet.ssnlist
+          STAKING.mainnet.ssnlist
         );
         this.contractInstances.gzil = this.$zillet.contracts.at(
-          STAKING.testnet.gzil
+          STAKING.mainnet.gzil
         );
       } else {
         this.contractInstances.proxy = this.$zillet.contracts.at(
@@ -397,11 +424,14 @@ export default {
           });
         }
         this.myStakes = delegations;
+      } else {
+        this.myStakes = [];
       }
-
       // Pending withdrawals
       if (this.allState.withdrawal_pending[address]) {
         this.pendingWithdrawals = this.allState.withdrawal_pending[address];
+      } else {
+        this.pendingWithdrawals = {};
       }
       // Min amount for staking
       this.minStake = this.allState.mindelegstake;
@@ -409,7 +439,12 @@ export default {
       this.bnumReq = parseInt(this.allState.bnum_req);
       const bInfo = await this.$zillet.blockchain.getBlockChainInfo();
       this.currentMiniEpoch = parseInt(bInfo.result.CurrentMiniEpoch);
-      this.fetched = true;
+      this.$nuxt.$loading.finish();
+      if (this.Account.address) {
+        this.tId = setTimeout(() => {
+          this.init();
+        }, 60000);
+      }
     },
     async updateWallet() {
       let balance = await this.$zillet.blockchain.getBalance(
@@ -583,12 +618,17 @@ export default {
       this.showStakeModal = false;
       this.errorMsg = '';
     },
-    async unstake(amount, ssnAddr) {
-      console.log(`Unstaking ${amount} ZILs`);
-      this.errorMsg = '';
-      this.loading = true;
-      await this.updateState();
+    validateAmountRemove(amount, ssnAddr) {
       const myAddr = this.Account.address.toLowerCase();
+      if (!(amount > 0)) {
+        this.loading = false;
+        this.errorMsg = 'Amount should be greater than 0.';
+        this.$notify({
+          message: this.errorMsg,
+          type: 'danger'
+        });
+        throw Error(this.errorMsg);
+      }
       if (
         this.allState.last_withdraw_cycle_deleg[myAddr][ssnAddr] <
         this.allState.lastrewardcycle
@@ -596,10 +636,11 @@ export default {
         this.loading = false;
         this.showUnstakeModal = false;
         this.errorMsg = 'You need to claim your rewards first.';
-        return this.$notify({
+        this.$notify({
           message: this.errorMsg,
           type: 'danger'
         });
+        throw Error(this.errorMsg);
       }
       let biggestBuffDeposit = 0;
       for (const key in this.allState.buff_deposit_deleg[myAddr][ssnAddr]) {
@@ -611,12 +652,24 @@ export default {
         this.loading = false;
         this.errorMsg = `You have buffered deposits in the selected node. 
           Please wait for the next cycle before withdrawing the staked amount.`;
-        return this.$notify({
+        this.$notify({
           message: this.errorMsg,
           type: 'danger'
         });
+        throw Error(this.errorMsg);
       }
+    },
+    async unstake(amount, ssnAddr) {
+      this.errorMsg = '';
+      this.loading = true;
       this.actionType = 'unstake';
+      await this.updateState();
+      try {
+        this.validateAmountRemove(amount, ssnAddr);
+      } catch (error) {
+        console.warn(error);
+        return;
+      }
       let txParams = await this.createTxn();
       const contractMethod = 'WithdrawStakeAmt';
       let actualAmount = units.toQa(amount, units.Units.Zil);
@@ -692,32 +745,14 @@ export default {
     async transfer(fromNode, toNode, amount) {
       console.log(`Transfaring staked...`);
       this.actionType = 'transfer';
-      let biggestBuffDeposit = 0;
-      const myAddr = this.Account.address.toLowerCase();
-      for (const key in this.allState.buff_deposit_deleg[myAddr][
-        fromNode.address
-      ]) {
-        if (key > biggestBuffDeposit) {
-          biggestBuffDeposit = key;
-        }
-      }
-      if (!(this.allState.lastrewardcycle > biggestBuffDeposit)) {
-        this.errorMsg = `You have buffered deposits in the selected node. 
-          Please wait for the next cycle before withdrawing the staked amount.`;
-        return this.$notify({
-          message: this.errorMsg,
-          type: 'danger'
-        });
-      }
-      if (fromNode.address === toNode.address) {
-        this.loading = false;
-        this.errorMsg = `You can not transfer your amount to same seed node operator. selector other node.`;
-        return this.$notify({
-          message: this.errorMsg,
-          type: 'danger'
-        });
-      }
       this.loading = true;
+      await this.updateState();
+      try {
+        this.validateAmountRemove(amount, fromNode.address);
+      } catch (error) {
+        console.warn(error);
+        return;
+      }
       let txParams = await this.createTxn();
       const contractMethod = 'ReDelegateStake';
       let actualAmount = units.toQa(amount, units.Units.Zil);
@@ -728,7 +763,7 @@ export default {
           value: `${toChecksumAddress(fromNode.address)}`
         },
         {
-          vname: '"to_ssn"',
+          vname: 'to_ssn',
           type: 'ByStr20',
           value: `${toChecksumAddress(toNode.address)}`
         },

@@ -1,98 +1,69 @@
 <template>
-  <div class="flex flex-row justify-between w-full">
-    <div class="tabs">
-      <input
-        id="tab1"
-        :checked="$route.name=='send'"
-        type="radio"
-        name="tab-control">
-      <input
-        id="tab2"
-        :checked="$route.name=='transactions'"
-        type="radio"
-        name="tab-control">
-      <input
-        id="tab3"
-        :checked="$route.name=='tokens'"
-        type="radio"
-        name="tab-control">
-      <input
-        id="tab4"
-        :checked="$route.name=='staking'"
-        type="radio"
-        class="cursor-disabled"
-        name="tab-control">
-      <ul>
-        <li
-          title="Send Zilliqa"
-          @click="$emit('tabSelected', 'send')">
-          <label
-            for="tab1"
-            role="button">
-            <i class="eva eva-diagonal-arrow-right-up-outline font-semibold mr-2" />
-            <span>Send </span>
-          </label>
-        </li>
-        <li
-          title="Transactions"
-          @click="$emit('tabSelected', 'transactions')">
-          <label
-            for="tab2"
-            role="button">
-            <i class="eva eva-clock-outline font-semibold mr-2" />
-            <span>Transactions</span>
-            <span
-              v-if="pendingTx> 0"
-              style="top: -5px;left: -3px;transform: scale(.85);"
-              class="relative ml-1 bg-primary h-4 w-8 rounded-full
+  <div class="flex flex-row justify-start w-full bg-gray-200">
+    <a
+      href="javascript:void(0)"
+      class="flex-1 py-3 max-w-xss px-4 text-gray-800 font-semibold border-b-4 border-gray-500
+      flex items-center"
+      :class="{'border-primary text-primary': $route.name=='send'}"
+      @click="$emit('tabSelected', 'send')">
+      <i class="eva eva-diagonal-arrow-right-up-outline font-semibold mr-2" />
+      <span>Send </span>
+    </a>
+    <a
+      href="javascript:void(0)"
+      class="flex-1 py-3 max-w-xss px-4 text-gray-800  font-semibold border-b-4 border-gray-500
+      flex items-center"
+      :class="{'border-primary text-primary': $route.name=='transactions'}"
+      @click="$emit('tabSelected', 'transactions')">
+      <i class="eva eva-clock-outline font-semibold mr-2" />
+      <span>Transactions</span>
+      <span
+        v-if="pendingTx> 0"
+        style="top: -5px;left: -3px;transform: scale(.85);"
+        class="relative ml-1 bg-primary h-4 w-8 rounded-full
              text-xs text-white flex items-center font-normal justify-center">
-              {{ pendingTx }}
-            </span>
-          </label>
-        </li>
-        <li
-          title="Wallet Info"
-          @click="$emit('tabSelected', 'tokens')">
-          <label
-            for="tab3"
-            role="button">
-            <i
-              class="eva eva-layers-outline font-semibold mr-2" />
-            <span>Tokens</span>
-          </label>
-        </li>
-        <li
-          title="Staking "
-          @click="$emit('tabSelected', 'staking')">
-          <label
-            for="tab4"
-            role="button">
-            <i
-              class="eva eva-gift-outline font-semibold mr-2" />
-            <span>Staking</span>
-            <span
-              style="top: -5px;left: -3px;transform: scale(.85);"
-              class="relative ml-1 bg-primary h-4 w-8 rounded-full
+        {{ pendingTx }}
+      </span>
+    </a>
+    <a
+      href="javascript:void(0)"
+      class="flex-1 py-3 max-w-xss px-4 text-gray-800  font-semibold border-b-4 border-gray-500
+      flex items-center"
+      :class="{'border-primary text-primary': $route.name=='tokens'}"
+
+      @click="$emit('tabSelected', 'tokens')">
+      <i
+        class="eva eva-layers-outline font-semibold mr-2" />
+      <span>Tokens</span>
+    </a>
+    <a
+      href="javascript:void(0)"
+      class="flex-1 py-3 max-w-xss px-4 text-gray-800  font-semibold border-b-4 border-gray-500
+      flex items-center"
+      :class="{'border-primary text-primary': $route.name=='staking'}"
+
+      @click="$emit('tabSelected', 'staking')">
+      <i
+        class="eva eva-gift-outline font-semibold mr-2" />
+      <span>Staking</span>
+      <span
+        style="top: -5px;left: -3px;transform: scale(.85);"
+        class="relative ml-1 bg-primary h-4 w-8 rounded-full
              text-xs text-white flex items-center font-normal justify-center">
-              New
-            </span>
-          </label>
-        </li>
-      </ul>
-      <div
-        v-if=" $route.name!='info'"
-        class="slider">
-        <div class="indicator" />
-      </div>
-    </div>
-    <div
-      class="wallet-info-btn"
-      :class="{'selected': $route.name=='info'}"
+        New
+      </span>
+    </a>
+    <a
+      href="javascript:void(0)"
+      :class="{'border-primary text-primary': $route.name=='info'}"
+      
+      class="flex-1 flex-grow py-3 px-4 text-gray-800 font-semibold border-b-4 border-gray-500
+      flex items-center justify-end"
       @click="$emit('tabSelected', 'info')">
       <i
         class="eva eva-alert-circle-outline  font-semibold mr-2" />
       <span>  Wallet Info</span>
-    </div>
+    </a>
   </div>
 </template>
 <script>
@@ -136,5 +107,8 @@ export default {
       @apply text-primary;
     }
   }
+}
+.max-w-xss {
+  max-width: 10rem;
 }
 </style>

@@ -4,8 +4,8 @@
     custom-class="overflow-visible"
     @close="$emit('close')">
     <div 
-      style="min-width:450px" 
-      class="mx-4">
+      style="max-width:450px" 
+      class="w-full px-2">
       <div class="font-semibold text-2xl mb-6 text-gray-800">
         Transfer Stake
       </div>
@@ -166,8 +166,14 @@
           </z-button>
         </div>
       </div>
-      <p class="italic text-left text-sm mt-4">
-        * Minimum staking amount is <b>{{ 0 *Math.pow(10, -12) }} ZIL</b>.
+      <p class="italic text-left flex flex-row flex-wrap text-sm mt-2">
+        * Redelegate to other SSN is instant.
+        <ZLink
+          to="/staking-on-zillet#what-are-the-benefits-of-delegating"
+          class="text-left"
+          external>
+          Who should you re-delegate your ZILs to?
+        </ZLink>
       </p>
       <div
         v-if="errorMsg"

@@ -357,6 +357,8 @@ export default {
           el.direction = 'in';
         } else if (data._tag === 'WithdrawStakeAmt') {
           el.type = 'Unstake';
+        } else if (data._tag === 'ReDelegateStake') {
+          el.type = 'Transfer Stake';
         } else if (data._tag === 'Transfer' || data._tag === 'proxyTransfer') {
           el.type = 'Token Transfer';
           const contractKey =

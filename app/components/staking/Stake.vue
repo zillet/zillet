@@ -5,7 +5,7 @@
     @close="$emit('close')">
     <div 
       style="min-width:450px" 
-      class="mx-4">
+      class="px-2 w-full">
       <div class="font-semibold text-2xl mb-6 text-gray-800">
         Stake <b>ZIL</b>
       </div>
@@ -16,9 +16,9 @@
           </div>
           <div
             class=" text-sm cursor-pointer"
-            @click="amount=roundDown((Balance.zil && Number(Balance.zil).toFixed(4) - 50), 4)"
+            @click="amount=(avlAmount > 0 ? avlAmount : 0)"
           >
-            <b class="text-teal-600">{{ roundDown((Balance.zil && Number(Balance.zil).toFixed(4) - 50), 4) }}</b>  Availble 
+            <b class="text-teal-600">{{ avlAmount > 0 ? avlAmount : 0 }}</b>  ZIL  Availble 
           </div>
         </div>
         <div class="flex flex-row">
@@ -33,7 +33,7 @@
             type="default"
             style="height:3rem; left:-3px"
             class="m-0 relative bg-white border-gray-400 rounded-r"
-            @click="amount=roundDown((Balance.zil && Number(Balance.zil).toFixed(4) - 50), 4)">
+            @click="amount=(avlAmount > 0 ? avlAmount : 0)">
             Max
           </z-button>
         </div>
@@ -106,9 +106,19 @@
           </div>
         </transition>
       </div>
-      <p class="italic text-left text-sm mt-4">
-        * Minimum staking amount is <b>{{ minStake *Math.pow(10, -12) }} ZIL</b>.
-      </p>
+      <ZLink
+        to="/staking-on-zillet#what-are-the-benefits-of-delegating"
+        class="my-2 text-right italic text-sm"
+        external>
+        Who should you delegate your ZILs to?
+      </ZLink>
+      <div
+        class="bg-gray-100 text-gray-700 rounded my-2 p-2 px-4  text-left flex flex-row items-center">
+        <i class="eva eva-info-outline text-xl mr-4" />
+        <div>
+          Minimum staking amount is <b>{{ minStake *Math.pow(10, -12) }} ZIL</b>.
+        </div>
+      </div>
       <div
         v-if="errorMsg"
         class="bg-red-100 text-red-700 rounded my-4  px-4 p-2  text-left flex flex-row items-center">
@@ -190,6 +200,12 @@ export default {
         });
       }
       return list;
+    },
+    avlAmount() {
+      return this.roundDown(
+        this.Balance.zil && Number(this.Balance.zil).toFixed(4) - 50,
+        4
+      );
     },
     validateCryptoAmount() {
       if (!isNumber(this.amount)) {
