@@ -18,7 +18,7 @@
             class=" text-sm cursor-pointer"
             @click="amount=(avlAmount > 0 ? avlAmount : 0)"
           >
-            <b class="text-teal-600">{{ avlAmount > 0 ? avlAmount : 0 }}</b>  ZIL  Availble 
+            <b class="text-teal-600">{{ avlAmount > 0 ? avlAmount : 0 }}</b>  ZIL Availble 
           </div>
         </div>
         <div class="flex flex-row">

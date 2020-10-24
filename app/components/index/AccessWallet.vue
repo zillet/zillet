@@ -2,7 +2,16 @@
   <MainContainer full-width>
     <template v-slot:title>
       How would you like to access your wallet?
+      <div class="font-normal text-base mt-4">
+        Do not have a wallet?
+        <nuxt-link
+          :to="{name: 'create'}"
+          class="link font-semibold">
+          Create A New Wallet
+        </nuxt-link>
+      </div>
     </template>
+    
     <div
       v-for="method in accessMethods"
       :key="method.id"
@@ -57,14 +66,6 @@
         always check that you are on correct URL.
         <span class="font-semibold">You are responsible for your security</span>.
       </p>
-    </template>
-    <template v-slot:footer>
-      Do not have a wallet?
-      <nuxt-link
-        :to="{name: 'create'}"
-        class="link font-semibold">
-        Create A New Wallet
-      </nuxt-link>
     </template>
   </MainContainer>
 </template>

@@ -359,6 +359,12 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    console.log(`destroying staking ... ${this.tId}`);
+    if (this.tId) {
+      clearInterval(this.tId);
+    }
+  },
   async mounted() {
     this.fetched = false;
     await this.init();
@@ -440,7 +446,7 @@ export default {
       const bInfo = await this.$zillet.blockchain.getBlockChainInfo();
       this.currentMiniEpoch = parseInt(bInfo.result.CurrentMiniEpoch);
       this.$nuxt.$loading.finish();
-      if (this.Account.address) {
+      if (this.Account.address && this.$route.name == 'staking') {
         this.tId = setTimeout(() => {
           this.init();
         }, 60000);

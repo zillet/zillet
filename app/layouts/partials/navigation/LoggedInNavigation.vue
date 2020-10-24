@@ -185,7 +185,9 @@ export default {
       if (this.Account.address) {
         this.$nuxt.$loading.start();
         await this.fetchZilBalance();
-        await this.fetchTokenBalance();
+        if (this.$route.name == 'send' || this.$route.name == 'tokens') {
+          await this.fetchTokenBalance();
+        }
         this.$nuxt.$loading.finish();
         this.tId = setTimeout(() => {
           this.fetchBalance();

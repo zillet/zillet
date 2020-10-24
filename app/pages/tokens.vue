@@ -24,7 +24,7 @@
         </z-button>
       </div>
       <div class="flex w-full">
-        <Loader v-if="loading || fetching" />
+        <Loader v-if="(loading || fetching) && !tokenBalances.length" />
         <div
           v-else-if="!loading && !tokenBalances.length"
           style="min-height:16rem"
@@ -89,6 +89,13 @@
               width="150"
               field="Actions"
               class="font-semibold">
+              <z-button
+                rounded
+                size="small"
+                class="py-1"
+                @click="sendToken(scope.row)">
+                Send
+              </z-button>
               <div
                 v-if="scope.row.local"
                 class="flex items-center hover:text-red-600 cursor-pointer"
@@ -218,6 +225,12 @@ export default {
         console.log(error);
         console.log(error);
       }
+    },
+    sendToken(row) {
+      this.$router.push({
+        name: 'send',
+        query: { symbol: row.symbol && row.symbol.toLowerCase() }
+      });
     }
   }
 };

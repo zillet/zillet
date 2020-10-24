@@ -59,7 +59,6 @@ export const FETCHED_PRICE = (state, prices) => {
 };
 
 export const saveTxn = (state, data) => {
-  console.log(data);
   let txn = {
     ...data,
     direction: data.toAddr == state.wallet.address ? 'self' : 'out',

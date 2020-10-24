@@ -2,9 +2,9 @@
   <div class="flex flex-row justify-start w-full bg-gray-200">
     <a
       href="javascript:void(0)"
-      class="flex-1 py-3 max-w-xss px-4 text-gray-800 font-semibold border-b-4 border-gray-500
+      class="flex-1 py-3 max-w-xss px-4 text-gray-800 font-semibold border-b-4  border-gray-500
       flex items-center"
-      :class="{'border-primary text-primary': $route.name=='send'}"
+      :class="{'border-primary text-primary border rounded-t': $route.name=='send'}"
       @click="$emit('tabSelected', 'send')">
       <i class="eva eva-diagonal-arrow-right-up-outline font-semibold mr-2" />
       <span>Send </span>
@@ -13,7 +13,7 @@
       href="javascript:void(0)"
       class="flex-1 py-3 max-w-xss px-4 text-gray-800  font-semibold border-b-4 border-gray-500
       flex items-center"
-      :class="{'border-primary text-primary': $route.name=='transactions'}"
+      :class="{'border-primary text-primary border rounded-t': $route.name=='transactions'}"
       @click="$emit('tabSelected', 'transactions')">
       <i class="eva eva-clock-outline font-semibold mr-2" />
       <span>Transactions</span>
@@ -29,7 +29,7 @@
       href="javascript:void(0)"
       class="flex-1 py-3 max-w-xss px-4 text-gray-800  font-semibold border-b-4 border-gray-500
       flex items-center"
-      :class="{'border-primary text-primary': $route.name=='tokens'}"
+      :class="{'border-primary text-primary border rounded-t': $route.name=='tokens'}"
 
       @click="$emit('tabSelected', 'tokens')">
       <i
@@ -40,7 +40,7 @@
       href="javascript:void(0)"
       class="flex-1 py-3 max-w-xss px-4 text-gray-800  font-semibold border-b-4 border-gray-500
       flex items-center"
-      :class="{'border-primary text-primary': $route.name=='staking'}"
+      :class="{'border-primary text-primary border rounded-t': $route.name=='staking'}"
 
       @click="$emit('tabSelected', 'staking')">
       <i
@@ -55,7 +55,7 @@
     </a>
     <a
       href="javascript:void(0)"
-      :class="{'border-primary text-primary': $route.name=='info'}"
+      :class="{'border-primary text-primary border rounded-t': $route.name=='info'}"
       
       class="flex-1 flex-grow py-3 px-4 text-gray-800 font-semibold border-b-4 border-gray-500
       flex items-center justify-end"
