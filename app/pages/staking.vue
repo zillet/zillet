@@ -6,7 +6,7 @@
           Staking
         </h3>
         <span
-          class="text-xs italic text-left inline-block ml-2
+          class="text-xs italic text-left inline-block ml-2  select-none 
             font-semibold align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
           @click="init()">
@@ -16,19 +16,105 @@
           Refresh
         </span>
       </div>
-      <div class="py-16 flex items-center justify-center">
+      <div
+        class="bg-gray-200  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
+        <div class="flex items-center">
+          <i class="eva eva-info-outline text-xl mr-4" />
+          <div>
+            New to staking and need help? 
+            <a
+              class="text-primary"
+              href="https://support.zillet.io/staking-on-zillet"
+              target="_blank">Click here to learn about staking on Zillet</a>
+          </div>
+        </div>
+        <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
+      </div>
+      <div
+        v-if="totalPendingWithdrawls > 0"
+        class="card border border-primary rounded-lg b-1 my-8 mb-4 bg-gray-0 flex  p-4 
+        flex-row  items-center justify-between"
+      >
+        <div class="flex-col text-left">
+          <div>
+            <span class="text-2xl font-bold">{{ avlWithdrawals*Math.pow(10, -12) }} </span>/ 
+            {{ totalPendingWithdrawls*Math.pow(10, -12) }}
+            ZIL
+          </div>
+          <div class="">
+            Available for withdrawal
+          </div>
+        </div>
+        <div class="flex-col text-left">
+          <div>
+            <span class="text-2xl font-bold">{{ confNeeded > -1 ? confNeeded: '...' }} </span>/ 
+            {{ bnumReq }}
+          </div>
+          <div class="">
+            Min block confirmation needed
+          </div>
+        </div>
+        <div class="flex flex-row items-center justify-between">
+          <z-button
+            class="rounded py-2 shadow-md ml-2 w-full "
+            size="medium"
+            :disabled="loading || avlWithdrawals < 1"
+            :loading="loading && actionType =='completeWithdrawal'"
+            @click="completeWithdrawal()">
+            Withdraw
+          </z-button>
+        </div>
+      </div>
+      <div
+        class="py-8 flex items-center justify-center"
+        :class="{'pt-0': totalPendingWithdrawls > 1}">
         <div
-          class="card border rounded-lg b-1 bg-gray-0 flex mx-4  flex-col items-center justify-center"
-          style="max-width:250px; min-height:200px">
-          <img
-            :src="getImages('zil')"
-            height="32px" 
-            class="rounded"
-            width="32px"
-          >
-          <div class="text-3xl font-bold mt-2">
-            <span v-if="fetched">
+          class="card border rounded-lg b-1 bg-gray-0 flex   flex-col items-center justify-center"
+          style="max-width:300px;">
+          <!-- <div class="flex items-center justify-center">
+            <img
+              :src="getImages('zil')"
+              height="24px" 
+              class="rounded"
+              width="24px"
+            >
+            <span
+              v-if="fetched"
+              class="text-2xl font-bold ml-2">
               {{ totalReward*Math.pow(10,-12) | currency('', 2) }} 
+              <span class="text-base font-normal text-gray-700">
+                ZIL
+              </span>
+            </span>
+            <span
+              v-else
+              class="text-2xl font-bold ml-2">
+              ...
+            </span>
+            <span class="text-2xl font-semibold mx-2">
+              +
+            </span>
+            <img
+              :src="getImages('gzil')"
+              height="32px" 
+              class="rounded"
+              width="32px"
+            >
+          </div> -->
+          <div class="text-2xl font-bold mt-2">
+            <span
+              v-if="fetched">
+              {{ totalReward*Math.pow(10,-12) | currency('', 2) }} 
+              <span class="text-base font-normal text-gray-700">
+                ZIL
+              </span>
+              <span class="text-xl font-semibold mx-1">
+                +
+              </span>
+              {{ totalReward*Math.pow(10,-15) | currency('', 4) }} 
+              <span class="text-base font-normal text-gray-700">
+                gZIL
+              </span>
             </span>
             <span v-else>
               ...
@@ -36,7 +122,7 @@
           </div>
           
           <div class="">
-            Unclaimed <b>ZIL</b> Reward.
+            Unclaimed Reward.
           </div>
           <div class="flex flex-row items-center justify-between">
             <z-button
@@ -50,31 +136,32 @@
           </div>
         </div>
         <div
-          class="card border rounded-lg b-1 bg-gray-0 flex mx-4 flex-row items-center justify-center"
-          style=" min-height:200px">
+          class="card border rounded-lg b-1 bg-gray-0 flex ml-4 flex-row items-center justify-center"
+        >
           <div class="flex-col flex items-center justify-center">
-            <img
+            <!-- <img
               :src="getImages('zil')"
               height="32px" 
               class="rounded"
               width="32px"
-            >
-            <div class="text-3xl font-bold mt-2">
+            > -->
+            <div class="text-2xl font-bold mt-2">
               <span v-if="fetched">
                 {{ totalZilStaked*Math.pow(10,-12) | currency('', 2) }} 
+                <span class="text-base font-normal text-gray-700">
+                  ZIL
+                </span>
               </span>
               <span v-else>
                 ...
               </span>
             </div>
-            <div class="">
-              Staked <b>ZIL</b> tokens<span v-if="myStakes.length > 1">
-                delegated to {{ myStakes.length }}  seed nodes
-              </span>.
-            </div>
+            <span>
+              Delegated to {{ myStakes.length }}  seed nodes
+            </span>
             <div class="flex flex-row items-center justify-between">
               <z-button
-                class="rounded py-2 mr-2 w-40 mb-0"
+                class="rounded py-2 mr-2 w-32 mb-0"
                 type="default"
                 size="medium"
                 :disabled="loading"
@@ -83,7 +170,17 @@
                 Unstake
               </z-button>
               <z-button
-                class="rounded py-2 shadow-md ml-2 w-40 mb-0"
+                v-if="delegratedToOthers"
+                class="rounded py-2 mr-2 mb-0 border-primary"
+                type="default"
+                size="medium"
+                :disabled="loading"
+                :loading="loading && actionType =='transfer'"
+                @click="showTransferStakeModal=true">
+                Transfer Stake
+              </z-button>
+              <z-button
+                class="rounded py-2 shadow-md ml-2 w-40 mb-0 border-primary"
                 size="medium"
                 :disabled="loading"
                 :loading="loading && actionType =='stake'"
@@ -92,61 +189,44 @@
               </z-button>
             </div>
           </div>
-          <div
-            v-if="totalPendingWithdrawls > 0"
-            class="flex-col flex items-center justify-center ml-4 border-dashed border-solid border-l-2 border-gray-500 pl-4"
-          >
-            <img
-              :src="getImages('zil')"
-              height="32px" 
-              class="rounded"
-              width="32px"
-            >
-            <div class="mt-2">
-              <span class="text-3xl font-bold">{{ avlWithdrawals*Math.pow(10, -12) }} </span>/ 
-              {{ totalPendingWithdrawls*Math.pow(10, -12) }}
-            </div>
-            <div class="">
-              Available for withdrawal
-            </div>
-            <div class="flex flex-row items-center justify-between">
-              <z-button
-                class="rounded py-2 shadow-md ml-2 w-full mb-0"
-                size="medium"
-                :disabled="loading || avlWithdrawals < 1"
-                :loading="loading && actionType =='completeWithdrawal'"
-                @click="completeWithdrawal()">
-                Withdraw
-              </z-button>
-            </div>
-          </div>
         </div>
       <!-- {{ ssnlist }} -->
       </div>
       <Stake
+        :key="`stake${showStakeModal}`"
         :visible="showStakeModal"
         :ssnlist="ssnlist"
         :loading="loading"
         :min-stake="minStake"
         :error-msg="errorMsg"
         @stake="stake"
-        @close="showStakeModal=false" />
+        @close="showStakeModal=false; errorMsg=''" />
+      <TransferStake
+        :key="`transfer${showTransferStakeModal}`"
+        :visible="showTransferStakeModal"
+        :ssnlist="ssnlist"
+        :loading="loading"
+        :my-stakes="myStakes"
+        :error-msg="errorMsg"
+        @transfer="transfer"
+        @close="showTransferStakeModal=false; errorMsg=''" />
       <Unstake
+        :key="`unstake${showUnstakeModal}`"
         :visible="showUnstakeModal"
         :my-stakes="myStakes"
         :loading="loading"
         :error-msg="errorMsg"
         :bnum-req="bnumReq"
-        :deposit-amt-deleg="depositAmtDeleg"
         @unstake="unstake"
-        @close="showUnstakeModal=false" />
+        @close="showUnstakeModal=false; errorMsg=''" />
       <RewardClaim
+        :key="`reward${showRewardClaimModal}`"
         :visible="showRewardClaimModal"
         :my-stakes="myStakes"
         :loading="loading"
         :error-msg="errorMsg"
         @claim="claimReward"
-        @close="showRewardClaimModal=false" />
+        @close="showRewardClaimModal=false; errorMsg=''" />
       <Broadcasted
         :visible="isBroadcast"
         :tranx-id="tranxId"
@@ -171,6 +251,7 @@ import {
 import Stake from '@/components/staking/Stake.vue';
 import Unstake from '@/components/staking/Unstake.vue';
 import RewardClaim from '@/components/staking/RewardClaim.vue';
+import TransferStake from '@/components/staking/TransferStake.vue';
 
 import Broadcasted from '@/components/send/Broadcasted';
 
@@ -182,15 +263,16 @@ export default {
     Stake,
     Broadcasted,
     Unstake,
-    RewardClaim
+    RewardClaim,
+    TransferStake
   },
   data() {
     return {
-      depositAmtDeleg: {},
       isBroadcast: false,
       actionType: '',
       tranxId: '',
       showStakeModal: false,
+      showTransferStakeModal: false,
       showUnstakeModal: false,
       showRewardClaimModal: false,
       ssnlist: {},
@@ -202,6 +284,8 @@ export default {
       bnumReq: 50,
       currentMiniEpoch: 0,
       minStake: 100,
+      allState: {},
+      tId: null,
       contractInstances: {
         proxy: {},
         ssnlist: {},
@@ -225,53 +309,91 @@ export default {
     },
     totalPendingWithdrawls() {
       let total = 0;
-      const pWith = this.pendingWithdrawals[this.Account.address.toLowerCase()];
+      const pWith = this.pendingWithdrawals;
       for (const key in pWith) {
-        total = total + pWith[key];
+        total = Number(total) + Number(pWith[key]);
       }
       return total;
     },
+    delegratedToOthers() {
+      const found = this.myStakes.some(el => el.name.toLowerCase() != 'zillet');
+      return found;
+    },
     avlWithdrawals() {
       let total = 0;
-      const pWith = this.pendingWithdrawals[this.Account.address.toLowerCase()];
+      const pWith = this.pendingWithdrawals;
+
       for (const key in pWith) {
         if (this.currentMiniEpoch - parseInt(key) > this.bnumReq) {
-          total = total + pWith[key];
+          total = Number(total) + Number(pWith[key]);
         }
       }
       return total;
+    },
+    confNeeded() {
+      let min = 0;
+      const pWith = this.pendingWithdrawals;
+
+      Object.entries(pWith).forEach(([key, value], index) => {
+        if (index == 0) {
+          min = this.currentMiniEpoch - parseInt(key);
+        } else if (min > this.currentMiniEpoch - parseInt(key)) {
+          min = this.currentMiniEpoch - parseInt(key);
+        }
+      });
+      return min;
     },
     totalReward() {
       let total = 0;
       for (let index = 0; index < this.myStakes.length; index++) {
         const element = this.myStakes[index];
-        console.log(element.myReward);
         total = total + parseFloat(element.myReward);
       }
       return total;
     }
   },
+  watch: {
+    'selectedNode.id': {
+      handler(newValue, oldValue) {
+        this.init();
+      }
+    }
+  },
+  beforeDestroy() {
+    console.log(`destroying staking ... ${this.tId}`);
+    if (this.tId) {
+      clearInterval(this.tId);
+    }
+  },
   async mounted() {
+    this.fetched = false;
     await this.init();
+    this.fetched = true;
   },
   methods: {
     ...mapActions(['sendTransaction']),
     ...mapMutations(['updateBalance', 'saveTxn']),
     getImages,
+    async updateState() {
+      this.allState = await this.contractInstances.ssnlist.getState();
+    },
     async init() {
-      this.fetched = false;
-      const networkType = this.selectedNode.id == 1 ? 'mainet' : 'testnet';
+      if (this.tId) {
+        clearInterval(this.tId);
+      }
+      this.$nuxt.$loading.start();
+      const networkType = this.selectedNode.id == 1 ? 'mainnet' : 'testnet';
       const address =
         this.Account.address && this.Account.address.toLowerCase();
-      if (networkType == 'mainet') {
+      if (networkType == 'mainnet') {
         this.contractInstances.proxy = this.$zillet.contracts.at(
-          STAKING.testnet.proxy
+          STAKING.mainnet.proxy
         );
         this.contractInstances.ssnlist = this.$zillet.contracts.at(
-          STAKING.testnet.ssnlist
+          STAKING.mainnet.ssnlist
         );
         this.contractInstances.gzil = this.$zillet.contracts.at(
-          STAKING.testnet.gzil
+          STAKING.mainnet.gzil
         );
       } else {
         this.contractInstances.proxy = this.$zillet.contracts.at(
@@ -284,71 +406,51 @@ export default {
           STAKING.testnet.gzil
         );
       }
+      await this.updateState();
       // Fetching SSN list
-      const { ssnlist } = await this.contractInstances.ssnlist.getSubState(
-        'ssnlist',
-        []
-      );
-      this.ssnlist = ssnlist;
+      this.ssnlist = this.allState.ssnlist;
       // Total amount delegated by user
-      try {
-        const {
-          deposit_amt_deleg
-        } = await this.contractInstances.ssnlist.getSubState(
-          'deposit_amt_deleg',
-          [address]
-        );
-        this.depositAmtDeleg = deposit_amt_deleg;
-      } catch (error) {}
-
-      // Calculating rewards
-      const myStakes = this.depositAmtDeleg[this.Account.address.toLowerCase()];
-      const delegations = [];
-      for (const key in myStakes) {
-        const ssn = this.ssnlist[key].arguments;
-        const myReward = await get_rewards(
-          this.contractInstances.ssnlist,
-          key.toLowerCase(), // Delegated to
-          this.Account.address.toLowerCase()
-        );
-        delegations.push({
-          name: ssn[3],
-          stakingUrl: ssn[4],
-          commision: ssn[7] * Math.pow(10, -7),
-          address: key,
-          amount: myStakes[key],
-          myReward: myReward.toString()
-        });
+      if (this.allState.deposit_amt_deleg[address]) {
+        const myStakes = this.allState.deposit_amt_deleg[address];
+        const delegations = [];
+        for (const key in myStakes) {
+          const ssn = this.ssnlist[key].arguments;
+          const myReward = await get_rewards(
+            this.allState,
+            key.toLowerCase(), // Delegated to
+            address
+          );
+          delegations.push({
+            name: ssn[3],
+            stakingUrl: ssn[4],
+            commision: ssn[7] * Math.pow(10, -7),
+            address: key,
+            amount: myStakes[key],
+            myReward: myReward.toString()
+          });
+        }
+        this.myStakes = delegations;
+      } else {
+        this.myStakes = [];
       }
-      this.myStakes = delegations;
-
       // Pending withdrawals
-      try {
-        const {
-          withdrawal_pending
-        } = await this.contractInstances.ssnlist.getSubState(
-          'withdrawal_pending',
-          [address]
-        );
-        this.pendingWithdrawals = withdrawal_pending;
-      } catch (error) {
+      if (this.allState.withdrawal_pending[address]) {
+        this.pendingWithdrawals = this.allState.withdrawal_pending[address];
+      } else {
         this.pendingWithdrawals = {};
       }
       // Min amount for staking
-      const minDelegateAmount = await this.contractInstances.ssnlist.getSubState(
-        'mindelegstake',
-        []
-      );
-      this.minStake = minDelegateAmount.mindelegstake;
+      this.minStake = this.allState.mindelegstake;
       // No. of confirmation needed for withdrawls
-      const { bnum_req } = await this.contractInstances.ssnlist.getSubState(
-        'bnum_req',
-        []
-      );
-      this.bnumReq = parseInt(bnum_req);
+      this.bnumReq = parseInt(this.allState.bnum_req);
       const bInfo = await this.$zillet.blockchain.getBlockChainInfo();
       this.currentMiniEpoch = parseInt(bInfo.result.CurrentMiniEpoch);
-      this.fetched = true;
+      this.$nuxt.$loading.finish();
+      if (this.Account.address && this.$route.name == 'staking') {
+        this.tId = setTimeout(() => {
+          this.init();
+        }, 60000);
+      }
     },
     async updateWallet() {
       let balance = await this.$zillet.blockchain.getBalance(
@@ -405,19 +507,26 @@ export default {
       this.saveTxn(sentTx);
     },
     async zilpayContractTx(contractMethod, contractParams, txParams) {
-      const zilliqa = window.zilPay;
-      const contractAddress = this.contractInstances.proxy.address;
-      const contract = zilliqa.contracts.at(contractAddress);
-      let sentTx = await contract.call(
-        contractMethod,
-        contractParams,
-        txParams
-      );
-      this.txnDone(sentTx);
-      sentTx.type = 'contract';
-      sentTx.via = 'zilpay';
-      this.saveTxn(sentTx);
-      this.loading = false;
+      try {
+        const zilliqa = window.zilPay;
+        const contractAddress = this.contractInstances.proxy.address;
+        const contract = zilliqa.contracts.at(contractAddress);
+        let sentTx = await contract.call(
+          contractMethod,
+          contractParams,
+          txParams
+        );
+        this.txnDone(sentTx);
+        sentTx.type = 'contract';
+        sentTx.via = 'zilpay';
+        this.saveTxn(sentTx);
+        this.loading = false;
+      } catch (error) {
+        return this.$notify({
+          message: error,
+          type: 'danger'
+        });
+      }
     },
     async ledgerContractTx(contractMethod, contractParams, txParams) {
       const transport = await ZilliqaHW.create();
@@ -515,54 +624,58 @@ export default {
       this.showStakeModal = false;
       this.errorMsg = '';
     },
-    async unstake(amount, ssnAddr) {
-      console.log(`Unstaking ${amount} ZILs`);
-      this.errorMsg = '';
-      this.loading = true;
+    validateAmountRemove(amount, ssnAddr) {
       const myAddr = this.Account.address.toLowerCase();
-      const {
-        lastrewardcycle
-      } = await this.contractInstances.ssnlist.getSubState(
-        'lastrewardcycle',
-        []
-      );
-      const {
-        last_withdraw_cycle_deleg
-      } = await this.contractInstances.ssnlist.getSubState(
-        'last_withdraw_cycle_deleg',
-        [this.Account.address.toLowerCase()]
-      );
-      if (last_withdraw_cycle_deleg[myAddr][ssnAddr] < lastrewardcycle) {
+      if (!(amount > 0)) {
         this.loading = false;
-        this.showUnstakeModal = false;
-        this.errorMsg = 'You need to claim your rewards first.';
-        return this.$notify({
+        this.errorMsg = 'Amount should be greater than 0.';
+        this.$notify({
           message: this.errorMsg,
           type: 'danger'
         });
+        throw Error(this.errorMsg);
       }
-      const {
-        buff_deposit_deleg
-      } = await this.contractInstances.ssnlist.getSubState(
-        'buff_deposit_deleg',
-        [this.Account.address.toLowerCase()]
-      );
+      if (
+        this.allState.last_withdraw_cycle_deleg[myAddr][ssnAddr] <
+        this.allState.lastrewardcycle
+      ) {
+        this.loading = false;
+        this.showUnstakeModal = false;
+        this.errorMsg = 'You need to claim your rewards first.';
+        this.$notify({
+          message: this.errorMsg,
+          type: 'danger'
+        });
+        throw Error(this.errorMsg);
+      }
       let biggestBuffDeposit = 0;
-      for (const key in buff_deposit_deleg[myAddr][ssnAddr]) {
+      for (const key in this.allState.buff_deposit_deleg[myAddr][ssnAddr]) {
         if (key > biggestBuffDeposit) {
           biggestBuffDeposit = key;
         }
       }
-      if (!(lastrewardcycle > biggestBuffDeposit)) {
+      if (!(this.allState.lastrewardcycle > biggestBuffDeposit)) {
         this.loading = false;
         this.errorMsg = `You have buffered deposits in the selected node. 
           Please wait for the next cycle before withdrawing the staked amount.`;
-        return this.$notify({
+        this.$notify({
           message: this.errorMsg,
           type: 'danger'
         });
+        throw Error(this.errorMsg);
       }
+    },
+    async unstake(amount, ssnAddr) {
+      this.errorMsg = '';
+      this.loading = true;
       this.actionType = 'unstake';
+      await this.updateState();
+      try {
+        this.validateAmountRemove(amount, ssnAddr);
+      } catch (error) {
+        console.warn(error);
+        return;
+      }
       let txParams = await this.createTxn();
       const contractMethod = 'WithdrawStakeAmt';
       let actualAmount = units.toQa(amount, units.Units.Zil);
@@ -585,7 +698,9 @@ export default {
       } else {
         this.zilletContractTx(contractMethod, contractParams, txParams);
       }
+      this.loading = false;
       this.showUnstakeModal = false;
+      this.errorMsg = '';
     },
     async completeWithdrawal() {
       this.loading = true;
@@ -596,10 +711,12 @@ export default {
       if (this.accessType === 1004) {
         await this.zilpayContractTx(contractMethod, contractParams, txParams);
       } else if (this.accessType === 1006) {
-        this.ledgerContractTx(contractMethod, contractParams, txParams);
+        await this.ledgerContractTx(contractMethod, contractParams, txParams);
       } else {
-        this.zilletContractTx(contractMethod, contractParams, txParams);
+        await this.zilletContractTx(contractMethod, contractParams, txParams);
       }
+      this.loading = false;
+      this.errorMsg = '';
     },
     async claimReward(ssn) {
       console.log(`Claiming reward...`);
@@ -620,14 +737,58 @@ export default {
         if (this.accessType === 1004) {
           await this.zilpayContractTx(contractMethod, contractParams, txParams);
         } else if (this.accessType === 1006) {
-          this.ledgerContractTx(contractMethod, contractParams, txParams);
+          await this.ledgerContractTx(contractMethod, contractParams, txParams);
         } else {
-          this.zilletContractTx(contractMethod, contractParams, txParams);
+          await this.zilletContractTx(contractMethod, contractParams, txParams);
         }
         this.showRewardClaimModal = false;
+        this.loading = false;
+        this.errorMsg = '';
       } else {
         this.showRewardClaimModal = true;
       }
+    },
+    async transfer(fromNode, toNode, amount) {
+      console.log(`Transfaring staked...`);
+      this.actionType = 'transfer';
+      this.loading = true;
+      await this.updateState();
+      try {
+        this.validateAmountRemove(amount, fromNode.address);
+      } catch (error) {
+        console.warn(error);
+        return;
+      }
+      let txParams = await this.createTxn();
+      const contractMethod = 'ReDelegateStake';
+      let actualAmount = units.toQa(amount, units.Units.Zil);
+      const contractParams = [
+        {
+          vname: 'ssnaddr',
+          type: 'ByStr20',
+          value: `${toChecksumAddress(fromNode.address)}`
+        },
+        {
+          vname: 'to_ssn',
+          type: 'ByStr20',
+          value: `${toChecksumAddress(toNode.address)}`
+        },
+        {
+          vname: 'amount',
+          type: 'Uint128',
+          value: `${actualAmount}`
+        }
+      ];
+      if (this.accessType === 1004) {
+        await this.zilpayContractTx(contractMethod, contractParams, txParams);
+      } else if (this.accessType === 1006) {
+        await this.ledgerContractTx(contractMethod, contractParams, txParams);
+      } else {
+        await this.zilletContractTx(contractMethod, contractParams, txParams);
+      }
+      this.showTransferStakeModal = false;
+      this.loading = false;
+      this.errorMsg = '';
     }
   }
 };

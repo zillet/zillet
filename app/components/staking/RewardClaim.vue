@@ -1,7 +1,6 @@
 <template>
   <z-modal
     :visible="visible"
-    custom-class="overflow-visible"
     @close="$emit('close')">
     <div 
       style="max-width:550px" 
@@ -10,7 +9,7 @@
         Claim <b>ZIL</b> reward
       </div>
       <p class=" text-left my-4">
-        You have delegated your ZIL token to more than 1 delegator. 
+        You have delegated your ZIL to  {{ myStakes.length }} delegator. 
         You need to claim your reward Individually.
       </p>
       <z-table
@@ -24,17 +23,20 @@
             {{ scope.row.name }}
           </z-table-column>
           <z-table-column
-            label="Amount Staked"
+            label="Amount Staked (ZIL)"
             field="amount">
-            {{ scope.row.amount*Math.pow(10, -12) | currency('', 2) }} ZIL
+            {{ scope.row.amount*Math.pow(10, -12) | currency('', 2) }}
           </z-table-column>
           <z-table-column
-            label="Rewards"
+            label="Rewards (ZIL + gZIL)"
+            class="font-semibold"
             field="myReward">
-            {{ scope.row.myReward*Math.pow(10, -12) | currency('', 4) }} ZIL
+            {{ scope.row.myReward*Math.pow(10, -12) | currency('', 4) }} +               
+            {{ scope.row.myReward*Math.pow(10,-15) | currency('', 4) }} 
           </z-table-column>
           <z-table-column
-            label="Actions"
+            label="Action"
+            width="150"
             field="commission">
             <z-button
               size="small"
@@ -43,7 +45,7 @@
               type="default"
               class="rounded hover:bg-primary hover:text-gray-100 p-1 shadow ml-2 w-full"
               @click="claim(scope.row)">
-              Claim
+              Claim Reward
             </z-button>
           </z-table-column>
         </template>

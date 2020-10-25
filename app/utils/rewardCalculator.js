@@ -7,8 +7,7 @@ const KEY_STAKE_SSN_PER_CYCLE = 'stake_ssn_per_cycle';
 const KEY_LAST_WITHDRAW_CYCLE = 'last_withdraw_cycle_deleg';
 const KEY_DELEG_PER_CYCLE = 'deleg_stake_per_cycle';
 
-async function get_rewards(ssnContract, ssnaddr, delegator) {
-  const allState = await ssnContract.getState();
+async function get_rewards(allState, ssnaddr, delegator) {
   const reward_list = await get_reward_cycle_list(allState, ssnaddr, delegator);
   const delegate_per_cycle = await combine_buff_direct(
     allState,

@@ -575,7 +575,13 @@ export default {
         new BN(minGasPrice.result),
         'li'
       );
+      const symbol = this.$route.query && this.$route.query.symbol;
+      const token = this.tokenBySymbol(symbol);
+      if (token) {
+        this.fromTokenChange(token);
+      }
     } catch (error) {
+      console.error(error);
       this.$notify({
         message: `Something went wrong ${error}`,
         type: 'danger'
@@ -972,10 +978,10 @@ export default {
         tx.type = 'normal';
       } else {
         tx.type = 'contract';
-        tx.contractAddress = getContractAddress(
-          this.selectedNode.id,
-          this.fromToken
-        );
+        const key = this.selectedNode.id == 1 ? 'address' : 'testnetAddress';
+
+        tx.contractAddress = this.fromToken[key];
+        console.log(this.fromToken, tx.contractAddress);
         tx.contractMethod = 'Transfer';
       }
       // Making transactions
@@ -1095,10 +1101,13 @@ export default {
       }
       this.fromTokenDropDown = false;
     },
-    contractBySymbol(symbol) {
-      return this.tokens.find(element => {
-        return element.symbol == symbol;
-      });
+    tokenBySymbol(symbol) {
+      if (symbol) {
+        return this.tokens.find(element => {
+          return element.symbol.toLowerCase() == symbol.toLowerCase();
+        });
+      }
+      return;
     },
     tokenClicked(token) {
       this.fromTokenChange(token);

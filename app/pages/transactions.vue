@@ -30,7 +30,7 @@
         </z-button>
       </div>
       <div class="w-full">
-        <Loader v-if="loading" />
+        <Loader v-if="loading && !transactions.length" />
         <div
           v-else-if="!loading && !transactions.length"
           style="min-height:16rem"
@@ -191,6 +191,7 @@ export default {
     return {
       loading: false,
       selectedTxn: '',
+      tId: null,
       txs: {
         docs: []
       },
@@ -250,6 +251,12 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    console.log(`destroying transactions ... ${this.tId}`);
+    if (this.tId) {
+      clearInterval(this.tId);
+    }
+  },
   beforeMount() {
     try {
       this.localTxs = JSON.parse(localStorage.getItem('_local_txn'));
@@ -266,6 +273,9 @@ export default {
     openAddressOnVb,
     openTxOnVb,
     async fetchTransactions(page = 1) {
+      if (this.tId) {
+        clearInterval(this.tId);
+      }
       this.loading = true;
       let network;
       if (this.selectedNode.id == 1) {
@@ -301,6 +311,11 @@ export default {
       this.txs.docs = [...this.localTxs, ...tx.docs];
       this.updateLocalTxn();
       this.loading = false;
+      if (this.Account.address && this.$route.name == 'transactions') {
+        this.tId = setTimeout(() => {
+          this.fetchTransactions();
+        }, 60000);
+      }
     },
     amountInZil(amount) {
       return units.fromQa(new BN(amount), units.Units.Zil);
@@ -357,6 +372,8 @@ export default {
           el.direction = 'in';
         } else if (data._tag === 'WithdrawStakeAmt') {
           el.type = 'Unstake';
+        } else if (data._tag === 'ReDelegateStake') {
+          el.type = 'Transfer Stake';
         } else if (data._tag === 'Transfer' || data._tag === 'proxyTransfer') {
           el.type = 'Token Transfer';
           const contractKey =
