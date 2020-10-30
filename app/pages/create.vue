@@ -51,7 +51,7 @@
           <p
             v-if="walletType==='json'"
             class="text-gray-700 -mt-1 text-left text-sm italic text-left">
-            Password should be atleast 8 chracter long
+            Password should be at least 8 characters long
           </p>
           <p
             v-else
@@ -169,7 +169,7 @@ export default {
         this.walletType === 'json'
       ) {
         return this.$notify({
-          message: `Password should be atleast 8 chracter long`,
+          message: `Password should be at least 8 characters long`,
           type: 'danger'
         });
       }
