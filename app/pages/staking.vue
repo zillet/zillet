@@ -481,6 +481,12 @@ export default {
       await this.updateWallet();
       const minGasPrice = await this.$zillet.blockchain.getMinimumGasPrice();
       const nonce = this.Account.nonce + 1;
+      console.log(this.Account.balance * Math.pow(10, -12));
+      if (this.Account.balance * Math.pow(10, -12) < 50) {
+        throw Error(
+          'Account balance is low, Balance should be atleast 100 ZIL'
+        );
+      }
       let txParams = {
         version: VERSION,
         nonce: nonce,
@@ -602,7 +608,17 @@ export default {
           type: 'danger'
         });
       }
-      let txParams = await this.createTxn();
+      let txParams = {};
+      try {
+        txParams = await this.createTxn();
+      } catch (error) {
+        this.loading = false;
+        this.showStakeModal = false;
+        return this.$notify({
+          message: `${error}`,
+          type: 'danger'
+        });
+      }
       txParams.amount = new BN(actualAmount);
       const contractMethod = 'DelegateStake';
       const contractParams = [
@@ -676,7 +692,17 @@ export default {
         console.warn(error);
         return;
       }
-      let txParams = await this.createTxn();
+      let txParams = {};
+      try {
+        txParams = await this.createTxn();
+      } catch (error) {
+        this.loading = false;
+        this.showUnstakeModal = false;
+        return this.$notify({
+          message: `${error}`,
+          type: 'danger'
+        });
+      }
       const contractMethod = 'WithdrawStakeAmt';
       let actualAmount = units.toQa(amount, units.Units.Zil);
       const contractParams = [
@@ -705,7 +731,16 @@ export default {
     async completeWithdrawal() {
       this.loading = true;
       this.actionType = 'completeWithdrawal';
-      let txParams = await this.createTxn();
+      let txParams = {};
+      try {
+        txParams = await this.createTxn();
+      } catch (error) {
+        this.loading = false;
+        return this.$notify({
+          message: `${error}`,
+          type: 'danger'
+        });
+      }
       const contractMethod = 'CompleteWithdrawal';
       const contractParams = [];
       if (this.accessType === 1004) {
@@ -725,7 +760,17 @@ export default {
         const ssnAddr =
           this.myStakes.length === 1 ? this.myStakes[0].address : ssn;
         this.loading = true;
-        let txParams = await this.createTxn();
+        let txParams;
+        try {
+          txParams = await this.createTxn();
+        } catch (error) {
+          this.loading = false;
+          this.showRewardClaimModal = false;
+          return this.$notify({
+            message: `${error}`,
+            type: 'danger'
+          });
+        }
         const contractMethod = 'WithdrawStakeRewards';
         const contractParams = [
           {
@@ -759,7 +804,17 @@ export default {
         console.warn(error);
         return;
       }
-      let txParams = await this.createTxn();
+      let txParams = {};
+      try {
+        txParams = await this.createTxn();
+      } catch (error) {
+        this.loading = false;
+        this.showTransferStakeModal = false;
+        return this.$notify({
+          message: `${error}`,
+          type: 'danger'
+        });
+      }
       const contractMethod = 'ReDelegateStake';
       let actualAmount = units.toQa(amount, units.Units.Zil);
       const contractParams = [

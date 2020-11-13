@@ -311,11 +311,11 @@ export default {
       this.txs.docs = [...this.localTxs, ...tx.docs];
       this.updateLocalTxn();
       this.loading = false;
-      if (this.Account.address && this.$route.name == 'transactions') {
-        this.tId = setTimeout(() => {
-          this.fetchTransactions();
-        }, 60000);
-      }
+      // if (this.Account.address && this.$route.name == 'transactions') {
+      //   this.tId = setTimeout(() => {
+      //     this.fetchTransactions();
+      //   }, 60000);
+      // }
     },
     amountInZil(amount) {
       return units.fromQa(new BN(amount), units.Units.Zil);
