@@ -157,7 +157,7 @@
               </span>
             </div>
             <span>
-              Delegated to {{ myStakes.length }}  seed nodes
+              Delegated to {{ myStakes.length > 0 ? myStakes.length : '...' }}  seed nodes
             </span>
             <div class="flex flex-row items-center justify-between">
               <z-button
@@ -170,7 +170,6 @@
                 Unstake
               </z-button>
               <z-button
-                v-if="delegratedToOthers"
                 class="rounded py-2 mr-2 mb-0 border-primary"
                 type="default"
                 size="medium"
@@ -284,8 +283,13 @@ export default {
       bnumReq: 50,
       currentMiniEpoch: 0,
       minStake: 100,
-      allState: {},
       tId: null,
+      lastrewardcycle: 0,
+      last_withdraw_cycle_deleg: {},
+      direct_deposit_deleg: {},
+      buff_deposit_deleg: {},
+      stake_ssn_per_cycle: {},
+      deleg_stake_per_cycle: {},
       contractInstances: {
         proxy: {},
         ssnlist: {},
@@ -367,6 +371,21 @@ export default {
   },
   async mounted() {
     this.fetched = false;
+    console.log(localStorage.getItem('__lastrewardcycle'));
+    this.lastrewardcycle = localStorage.getItem('__lastrewardcycle') || 0;
+    try {
+      this.last_withdraw_cycle_deleg =
+        JSON.parse(localStorage.getItem('__last_withdraw_cycle_deleg')) || {};
+      this.direct_deposit_deleg =
+        JSON.parse(localStorage.getItem('__direct_deposit_deleg')) || {};
+      this.stake_ssn_per_cycle =
+        JSON.parse(localStorage.getItem('__stake_ssn_per_cycle')) || {};
+      this.buff_deposit_deleg =
+        JSON.parse(localStorage.getItem('__buff_deposit_deleg')) || {};
+      this.deleg_stake_per_cycle =
+        JSON.parse(localStorage.getItem('__deleg_stake_per_cycle')) || {};
+    } catch (error) {}
+
     await this.init();
     this.fetched = true;
   },
@@ -374,9 +393,6 @@ export default {
     ...mapActions(['sendTransaction']),
     ...mapMutations(['updateBalance', 'saveTxn']),
     getImages,
-    async updateState() {
-      this.allState = await this.contractInstances.ssnlist.getState();
-    },
     async init() {
       if (this.tId) {
         clearInterval(this.tId);
@@ -406,17 +422,26 @@ export default {
           STAKING.testnet.gzil
         );
       }
-      await this.updateState();
       // Fetching SSN list
-      this.ssnlist = this.allState.ssnlist;
+      const { ssnlist } = await this.contractInstances.ssnlist.getSubState(
+        'ssnlist',
+        []
+      );
+      this.ssnlist = ssnlist;
+      const {
+        deposit_amt_deleg
+      } = await this.contractInstances.ssnlist.getSubState(
+        'deposit_amt_deleg',
+        [address]
+      );
+      this.depositAmtDeleg = deposit_amt_deleg;
       // Total amount delegated by user
-      if (this.allState.deposit_amt_deleg[address]) {
-        const myStakes = this.allState.deposit_amt_deleg[address];
+      if (this.depositAmtDeleg[address]) {
+        const myStakes = this.depositAmtDeleg[address];
         const delegations = [];
         for (const key in myStakes) {
           const ssn = this.ssnlist[key].arguments;
-          const myReward = await get_rewards(
-            this.allState,
+          const myReward = await this.fetchReward(
             key.toLowerCase(), // Delegated to
             address
           );
@@ -434,22 +459,126 @@ export default {
         this.myStakes = [];
       }
       // Pending withdrawals
-      if (this.allState.withdrawal_pending[address]) {
-        this.pendingWithdrawals = this.allState.withdrawal_pending[address];
-      } else {
+      try {
+        const {
+          withdrawal_pending
+        } = await this.contractInstances.ssnlist.getSubState(
+          'withdrawal_pending',
+          [address]
+        );
+        this.pendingWithdrawals = withdrawal_pending;
+      } catch (error) {
         this.pendingWithdrawals = {};
       }
       // Min amount for staking
-      this.minStake = this.allState.mindelegstake;
+      try {
+        const {
+          mindelegstake
+        } = await this.contractInstances.ssnlist.getSubState('mindelegstake');
+        this.minStake = mindelegstake;
+      } catch (error) {}
       // No. of confirmation needed for withdrawls
-      this.bnumReq = parseInt(this.allState.bnum_req);
+      const { bnum_req } = await this.contractInstances.ssnlist.getSubState(
+        'bnum_req',
+        []
+      );
+      this.bnumReq = parseInt(bnum_req);
       const bInfo = await this.$zillet.blockchain.getBlockChainInfo();
       this.currentMiniEpoch = parseInt(bInfo.result.CurrentMiniEpoch);
       this.$nuxt.$loading.finish();
       if (this.Account.address && this.$route.name == 'staking') {
         this.tId = setTimeout(() => {
           this.init();
-        }, 60000);
+        }, 600000);
+      }
+    },
+    async fetchReward(ssnaddr, delegator) {
+      const {
+        lastrewardcycle
+      } = await this.contractInstances.ssnlist.getSubState(
+        'lastrewardcycle',
+        []
+      );
+      if (Number(this.lastrewardcycle) < Number(lastrewardcycle)) {
+        const {
+          last_withdraw_cycle_deleg
+        } = await this.contractInstances.ssnlist.getSubState(
+          'last_withdraw_cycle_deleg',
+          [delegator]
+        );
+        this.last_withdraw_cycle_deleg = last_withdraw_cycle_deleg;
+        const {
+          direct_deposit_deleg
+        } = await this.contractInstances.ssnlist.getSubState(
+          'direct_deposit_deleg',
+          [delegator]
+        );
+        this.direct_deposit_deleg = direct_deposit_deleg;
+        const {
+          buff_deposit_deleg
+        } = await this.contractInstances.ssnlist.getSubState(
+          'buff_deposit_deleg',
+          [delegator]
+        );
+        this.buff_deposit_deleg = buff_deposit_deleg;
+        const {
+          stake_ssn_per_cycle
+        } = await this.contractInstances.ssnlist.getSubState(
+          'stake_ssn_per_cycle',
+          []
+        );
+        this.stake_ssn_per_cycle = stake_ssn_per_cycle;
+        const {
+          deleg_stake_per_cycle
+        } = await this.contractInstances.ssnlist.getSubState(
+          'deleg_stake_per_cycle',
+          [delegator]
+        );
+        this.deleg_stake_per_cycle = deleg_stake_per_cycle;
+
+        localStorage.setItem(
+          '__last_withdraw_cycle_deleg',
+          JSON.stringify(last_withdraw_cycle_deleg)
+        );
+        localStorage.setItem(
+          '__direct_deposit_deleg',
+          JSON.stringify(direct_deposit_deleg)
+        );
+        localStorage.setItem(
+          '__stake_ssn_per_cycle',
+          JSON.stringify(stake_ssn_per_cycle)
+        );
+        localStorage.setItem(
+          '__buff_deposit_deleg',
+          JSON.stringify(buff_deposit_deleg)
+        );
+        localStorage.setItem(
+          '__deleg_stake_per_cycle',
+          JSON.stringify(deleg_stake_per_cycle)
+        );
+        this.lastrewardcycle = lastrewardcycle;
+        localStorage.setItem('__lastrewardcycle', lastrewardcycle);
+        return get_rewards(
+          ssnaddr,
+          delegator,
+          this.lastrewardcycle,
+          this.last_withdraw_cycle_deleg,
+          this.direct_deposit_deleg,
+          this.buff_deposit_deleg,
+          this.stake_ssn_per_cycle,
+          this.deleg_stake_per_cycle
+        );
+      } else {
+        return get_rewards(
+          ssnaddr,
+          delegator,
+          this.lastrewardcycle,
+          this.last_withdraw_cycle_deleg,
+          this.direct_deposit_deleg,
+          this.buff_deposit_deleg,
+          this.stake_ssn_per_cycle,
+          this.deleg_stake_per_cycle
+        );
       }
     },
     async updateWallet() {
@@ -638,7 +767,7 @@ export default {
       this.showStakeModal = false;
       this.errorMsg = '';
     },
-    validateAmountRemove(amount, ssnAddr) {
+    async validateAmountRemove(amount, ssnAddr) {
       const myAddr = this.Account.address.toLowerCase();
       if (!(amount > 0)) {
         this.loading = false;
@@ -649,10 +778,19 @@ export default {
         });
         throw Error(this.errorMsg);
       }
-      if (
-        this.allState.last_withdraw_cycle_deleg[myAddr][ssnAddr] <
-        this.allState.lastrewardcycle
-      ) {
+      const {
+        last_withdraw_cycle_deleg
+      } = await this.contractInstances.ssnlist.getSubState(
+        'last_withdraw_cycle_deleg',
+        [myAddr]
+      );
+      const {
+        lastrewardcycle
+      } = await this.contractInstances.ssnlist.getSubState(
+        'lastrewardcycle',
+        []
+      );
+      if (last_withdraw_cycle_deleg[myAddr][ssnAddr] < lastrewardcycle) {
         this.loading = false;
         this.showUnstakeModal = false;
         this.errorMsg = 'You need to claim your rewards first.';
@@ -662,13 +800,19 @@ export default {
         });
         throw Error(this.errorMsg);
       }
+      const {
+        buff_deposit_deleg
+      } = await this.contractInstances.ssnlist.getSubState(
+        'buff_deposit_deleg',
+        [myAddr]
+      );
       let biggestBuffDeposit = 0;
-      for (const key in this.allState.buff_deposit_deleg[myAddr][ssnAddr]) {
+      for (const key in buff_deposit_deleg[myAddr][ssnAddr]) {
         if (key > biggestBuffDeposit) {
           biggestBuffDeposit = key;
         }
       }
-      if (!(this.allState.lastrewardcycle > biggestBuffDeposit)) {
+      if (!(lastrewardcycle > biggestBuffDeposit)) {
         this.loading = false;
         this.errorMsg = `You have buffered deposits in the selected node. 
           Please wait for the next cycle before withdrawing the staked amount.`;
@@ -683,9 +827,8 @@ export default {
       this.errorMsg = '';
       this.loading = true;
       this.actionType = 'unstake';
-      await this.updateState();
       try {
-        this.validateAmountRemove(amount, ssnAddr);
+        await this.validateAmountRemove(amount, ssnAddr);
       } catch (error) {
         console.warn(error);
         return;
@@ -795,9 +938,8 @@ export default {
       console.log(`Transfaring staked...`);
       this.actionType = 'transfer';
       this.loading = true;
-      await this.updateState();
       try {
-        this.validateAmountRemove(amount, fromNode.address);
+        await this.validateAmountRemove(amount, fromNode.address);
       } catch (error) {
         console.warn(error);
         return;

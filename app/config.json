@@ -1,6 +1,6 @@
 {
   "MULTIPLIER":12,
-  "MINIMUM_GAS_PRICE":2000,
+  "MINIMUM_GAS_PRICE":3000,
   "NODES":[
      {
         "name":"Zilliqa Mainnet",

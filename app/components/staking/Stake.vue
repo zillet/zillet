@@ -40,7 +40,7 @@
       </div>
       <div class="flex flex-row items-center justify-between">
         <div class="tracking-wide text-sm font-semibold mb-2">
-          Delegting to
+          Delegating to
         </div>
       </div>
       <div class="relative">

@@ -39,8 +39,8 @@
       <tbody v-if="loading">
         <tr>
           <td>
-            <vov-loader
-              style="height:500px" />
+            <Loader
+              style="height:200px" />
           </td>
         </tr>
       </tbody>
