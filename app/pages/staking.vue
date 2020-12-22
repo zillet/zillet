@@ -500,85 +500,122 @@ export default {
         []
       );
       if (Number(this.lastrewardcycle) < Number(lastrewardcycle)) {
-        const {
-          last_withdraw_cycle_deleg
-        } = await this.contractInstances.ssnlist.getSubState(
-          'last_withdraw_cycle_deleg',
-          [delegator]
-        );
-        this.last_withdraw_cycle_deleg = last_withdraw_cycle_deleg;
-        const {
-          direct_deposit_deleg
-        } = await this.contractInstances.ssnlist.getSubState(
-          'direct_deposit_deleg',
-          [delegator]
-        );
-        this.direct_deposit_deleg = direct_deposit_deleg;
-        const {
-          buff_deposit_deleg
-        } = await this.contractInstances.ssnlist.getSubState(
-          'buff_deposit_deleg',
-          [delegator]
-        );
-        this.buff_deposit_deleg = buff_deposit_deleg;
-        const {
-          stake_ssn_per_cycle
-        } = await this.contractInstances.ssnlist.getSubState(
-          'stake_ssn_per_cycle',
-          []
-        );
-        this.stake_ssn_per_cycle = stake_ssn_per_cycle;
-        const {
-          deleg_stake_per_cycle
-        } = await this.contractInstances.ssnlist.getSubState(
-          'deleg_stake_per_cycle',
-          [delegator]
-        );
-        this.deleg_stake_per_cycle = deleg_stake_per_cycle;
-
-        localStorage.setItem(
-          '__last_withdraw_cycle_deleg',
-          JSON.stringify(last_withdraw_cycle_deleg)
-        );
-        localStorage.setItem(
-          '__direct_deposit_deleg',
-          JSON.stringify(direct_deposit_deleg)
-        );
-        localStorage.setItem(
-          '__stake_ssn_per_cycle',
-          JSON.stringify(stake_ssn_per_cycle)
-        );
-        localStorage.setItem(
-          '__buff_deposit_deleg',
-          JSON.stringify(buff_deposit_deleg)
-        );
-        localStorage.setItem(
-          '__deleg_stake_per_cycle',
-          JSON.stringify(deleg_stake_per_cycle)
-        );
+        try {
+          const {
+            last_withdraw_cycle_deleg
+          } = await this.contractInstances.ssnlist.getSubState(
+            'last_withdraw_cycle_deleg',
+            [delegator]
+          );
+          this.last_withdraw_cycle_deleg = last_withdraw_cycle_deleg;
+          localStorage.setItem(
+            '__last_withdraw_cycle_deleg',
+            JSON.stringify(last_withdraw_cycle_deleg)
+          );
+        } catch (error) {
+          console.error(error);
+        }
+        try {
+          const {
+            direct_deposit_deleg
+          } = await this.contractInstances.ssnlist.getSubState(
+            'direct_deposit_deleg',
+            [delegator]
+          );
+          this.direct_deposit_deleg = direct_deposit_deleg;
+          localStorage.setItem(
+            '__direct_deposit_deleg',
+            JSON.stringify(direct_deposit_deleg)
+          );
+        } catch (error) {
+          console.error(error);
+        }
+        try {
+          const {
+            buff_deposit_deleg
+          } = await this.contractInstances.ssnlist.getSubState(
+            'buff_deposit_deleg',
+            [delegator]
+          );
+          this.buff_deposit_deleg = buff_deposit_deleg;
+          localStorage.setItem(
+            '__buff_deposit_deleg',
+            JSON.stringify(buff_deposit_deleg)
+          );
+        } catch (error) {
+          console.error(error);
+        }
+        try {
+          const {
+            stake_ssn_per_cycle
+          } = await this.contractInstances.ssnlist.getSubState(
+            'stake_ssn_per_cycle',
+            []
+          );
+          this.stake_ssn_per_cycle = stake_ssn_per_cycle;
+          localStorage.setItem(
+            '__stake_ssn_per_cycle',
+            JSON.stringify(stake_ssn_per_cycle)
+          );
+        } catch (error) {
+          console.error(error);
+        }
+        try {
+          const {
+            deleg_stake_per_cycle
+          } = await this.contractInstances.ssnlist.getSubState(
+            'deleg_stake_per_cycle',
+            [delegator]
+          );
+          this.deleg_stake_per_cycle = deleg_stake_per_cycle;
+          localStorage.setItem(
+            '__deleg_stake_per_cycle',
+            JSON.stringify(deleg_stake_per_cycle)
+          );
+        } catch (error) {
+          console.error(error);
+        }
         this.lastrewardcycle = lastrewardcycle;
-        localStorage.setItem('__lastrewardcycle', lastrewardcycle);
-        return get_rewards(
-          ssnaddr,
-          delegator,
-          this.lastrewardcycle,
-          this.last_withdraw_cycle_deleg,
-          this.direct_deposit_deleg,
-          this.buff_deposit_deleg,
-          this.stake_ssn_per_cycle,
-          this.deleg_stake_per_cycle
-        );
+        if (
+          this.last_withdraw_cycle_deleg != null &&
+          this.direct_deposit_deleg != null &&
+          this.buff_deposit_deleg != null &&
+          this.stake_ssn_per_cycle != null &&
+          this.deleg_stake_per_cycle != null
+        ) {
+          localStorage.setItem('__lastrewardcycle', lastrewardcycle);
+        }
+        try {
+          const reward = await get_rewards(
+            ssnaddr,
+            delegator,
+            this.lastrewardcycle,
+            this.last_withdraw_cycle_deleg,
+            this.direct_deposit_deleg,
+            this.buff_deposit_deleg,
+            this.stake_ssn_per_cycle,
+            this.deleg_stake_per_cycle
+          );
+          return reward;
+        } catch (error) {
+          return 0;
+        }
       } else {
-        return get_rewards(
-          ssnaddr,
-          delegator,
-          this.lastrewardcycle,
-          this.last_withdraw_cycle_deleg,
-          this.direct_deposit_deleg,
-          this.buff_deposit_deleg,
-          this.stake_ssn_per_cycle,
-          this.deleg_stake_per_cycle
-        );
+        try {
+          const reward = await get_rewards(
+            ssnaddr,
+            delegator,
+            this.lastrewardcycle,
+            this.last_withdraw_cycle_deleg,
+            this.direct_deposit_deleg,
+            this.buff_deposit_deleg,
+            this.stake_ssn_per_cycle,
+            this.deleg_stake_per_cycle
+          );
+          return reward;
+        } catch (error) {
+          return 0;
+        }
       }
     },
     async updateWallet() {
