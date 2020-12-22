@@ -10,6 +10,13 @@
         "id":1
      },
      {
+         "name":"Zillet SSN (Mainnet)",
+         "url":"https://ssn.zillet.io",
+         "explorer":"https://viewblock.io/zilliqa/",
+         "version":65537,
+         "id":1
+      },
+     {
         "name":"Zilliqa Testnet",
         "url":"https://dev-api.zilliqa.com",
         "explorer":"https://viewblock.io/zilliqa/",

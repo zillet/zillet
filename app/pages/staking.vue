@@ -117,7 +117,7 @@
               </span>
             </span>
             <span v-else>
-              ...
+              <Loader class="my-2" />
             </span>
           </div>
           
@@ -153,7 +153,7 @@
                 </span>
               </span>
               <span v-else>
-                ...
+                <Loader class="my-2" />
               </span>
             </div>
             <span>
@@ -466,7 +466,7 @@ export default {
           'withdrawal_pending',
           [address]
         );
-        this.pendingWithdrawals = withdrawal_pending;
+        this.pendingWithdrawals = withdrawal_pending[address];
       } catch (error) {
         this.pendingWithdrawals = {};
       }
