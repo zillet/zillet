@@ -7,12 +7,12 @@
         </h3>
         <span
           class="text-xs italic text-left inline-block ml-2  select-none 
-            font-semibold align-middle text-gray-700 font-normal
+             align-middle text-gray-700 font-normal
             underline cursor-pointer hover:text-teal-500"
           @click="init()">
           <i
             class="eva eva-sync-outline relative font-bold"
-            style="top:2px" />
+            style="top: 2px" />
           Refresh
         </span>
       </div>
@@ -70,7 +70,7 @@
         :class="{'pt-0': totalPendingWithdrawls > 1}">
         <div
           class="card border rounded-lg b-1 bg-gray-0 flex   flex-col items-center justify-center"
-          style="max-width:300px;">
+          style="max-width: 300px;">
           <!-- <div class="flex items-center justify-center">
             <img
               :src="getImages('zil')"
@@ -290,6 +290,7 @@ export default {
       buff_deposit_deleg: {},
       stake_ssn_per_cycle: {},
       deleg_stake_per_cycle: {},
+      fetchedRewardCal: false,
       contractInstances: {
         proxy: {},
         ssnlist: {},
@@ -423,11 +424,26 @@ export default {
         );
       }
       // Fetching SSN list
-      const { ssnlist } = await this.contractInstances.ssnlist.getSubState(
-        'ssnlist',
-        []
-      );
-      this.ssnlist = ssnlist;
+      this.contractInstances.ssnlist.getSubState('ssnlist', []).then(res => {
+        this.ssnlist = res.ssnlist;
+      });
+      // Pending withdrawals
+      this.contractInstances.ssnlist
+        .getSubState('withdrawal_pending', [address])
+        .then(res => {
+          this.pendingWithdrawals = res.withdrawal_pending[address];
+        });
+      // Min amount for staking
+      this.contractInstances.ssnlist.getSubState('mindelegstake').then(res => {
+        this.minStake = res.mindelegstake;
+      });
+      // No. of confirmation needed for withdrawls
+      this.contractInstances.ssnlist.getSubState('bnum_req', []).then(res => {
+        this.bnumReq = parseInt(res.bnum_req);
+      });
+      this.$zillet.blockchain.getBlockChainInfo().then(res => {
+        this.currentMiniEpoch = parseInt(res.result.CurrentMiniEpoch);
+      });
       const {
         deposit_amt_deleg
       } = await this.contractInstances.ssnlist.getSubState(
@@ -437,6 +453,7 @@ export default {
       this.depositAmtDeleg = deposit_amt_deleg;
       // Total amount delegated by user
       if (this.depositAmtDeleg[address]) {
+        this.fetchedRewardCal = false;
         const myStakes = this.depositAmtDeleg[address];
         const delegations = [];
         for (const key in myStakes) {
@@ -458,33 +475,6 @@ export default {
       } else {
         this.myStakes = [];
       }
-      // Pending withdrawals
-      try {
-        const {
-          withdrawal_pending
-        } = await this.contractInstances.ssnlist.getSubState(
-          'withdrawal_pending',
-          [address]
-        );
-        this.pendingWithdrawals = withdrawal_pending[address];
-      } catch (error) {
-        this.pendingWithdrawals = {};
-      }
-      // Min amount for staking
-      try {
-        const {
-          mindelegstake
-        } = await this.contractInstances.ssnlist.getSubState('mindelegstake');
-        this.minStake = mindelegstake;
-      } catch (error) {}
-      // No. of confirmation needed for withdrawls
-      const { bnum_req } = await this.contractInstances.ssnlist.getSubState(
-        'bnum_req',
-        []
-      );
-      this.bnumReq = parseInt(bnum_req);
-      const bInfo = await this.$zillet.blockchain.getBlockChainInfo();
-      this.currentMiniEpoch = parseInt(bInfo.result.CurrentMiniEpoch);
       this.$nuxt.$loading.finish();
       if (this.Account.address && this.$route.name == 'staking') {
         this.tId = setTimeout(() => {
@@ -499,7 +489,16 @@ export default {
         'lastrewardcycle',
         []
       );
-      if (Number(this.lastrewardcycle) < Number(lastrewardcycle)) {
+      let currentTime = new Date().getTime();
+      let lastClaimedAt = localStorage.getItem('__rewards_claimed_at') || 0;
+      var seconds = parseInt((currentTime - lastClaimedAt) / 1000);
+      console.log(seconds);
+      if (
+        (Number(this.lastrewardcycle) < Number(lastrewardcycle) ||
+          (seconds > 120 && seconds < 2400)) &&
+        this.fetchedRewardCal === false
+      ) {
+        this.fetchedRewardCal = true;
         try {
           const {
             last_withdraw_cycle_deleg
@@ -965,6 +964,7 @@ export default {
           await this.zilletContractTx(contractMethod, contractParams, txParams);
         }
         this.showRewardClaimModal = false;
+        localStorage.setItem('__rewards_claimed_at', new Date().getTime());
         this.loading = false;
         this.errorMsg = '';
       } else {

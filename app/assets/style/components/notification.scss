@@ -1,107 +1,116 @@
 .list-move {
-    transition: transform 0.3s, opacity 0.4s;
+  transition: transform 0.3s, opacity 0.4s;
 }
 
 .list-item {
-    display: inline-block;
-    @apply mr-3;
+  display: inline-block;
+
+  @apply mr-3;
 }
 
 .list-enter-active,
 .list-leave-active {
-    transition: opacity 0.4s;
+  transition: opacity 0.4s;
 }
 
 .list-enter,
 .list-leave-to {
-    @apply opacity-0;
+  @apply opacity-0;
 }
 
 .vue-notifyjs {
-    button.close {
-        -webkit-appearance: none;
-        @apply p-0 cursor-pointer bg-transparent border-0;
+  button.close {
+    -webkit-appearance: none;
+
+    @apply p-0 cursor-pointer bg-transparent border-0;
+  }
+
+  .close {
+    @apply float-right text-xl font-bold leading-none opacity-25;
+
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+  }
+
+  .alert {
+    box-shadow: rgba(0, 0, 0, 0.06) 0 3px 6px 0, rgba(50, 50, 93, 0.02) 0 0 1px 0, rgba(59, 59, 92, 0.08) 0 5px 10px 0;
+    margin: 10px;
+
+    @apply m-3 py-4 px-5 rounded-lg text-sm z-50 inline-block;
+    @apply fixed cursor-pointer text-center font-semibold;
+
+    background: rgb(255, 255, 255);
+    transition: all 0.5s ease-in-out;
+    color: rgb(12, 12, 13);
+
+    &.center {
+      @apply top-0 right-0 my-0 mx-auto;
     }
 
-    .close {
-        @apply float-right text-xl font-bold leading-none opacity-25;
-        color: #000;
-        text-shadow: 0 1px 0 #fff;
-        filter: alpha(opacity=20);
+    &.left {
+      left: 20px;
     }
 
-    .alert {
-        box-shadow: rgba(0, 0, 0, 0.06) 0px 3px 6px 0px, rgba(50, 50, 93, 0.02) 0px 0px 1px 0px, rgba(59, 59, 92, 0.08) 0px 5px 10px 0px;
-        margin: 10px;
-        @apply m-3 py-4 px-5 rounded-lg text-sm z-50 inline-block;
-        @apply fixed cursor-pointer text-center font-semibold;
-        background: rgb(255, 255, 255);
-        transition: all 0.5s ease-in-out;
-        color: rgb(12, 12, 13);
-
-        &.center {
-            @apply top-0 right-0 my-0 mx-auto;
-        }
-
-        &.left {
-            left: 20px;
-        }
-
-        &.right {
-            right: 20px;
-        }
-
-        &[data-notify="container"] {
-            @apply pt-3 pr-3 pb-3 pl-5 rounded;
-            width: 18rem;
-        }
+    &.right {
+      right: 20px;
     }
 
-    .alert.alert-success {
-        @apply text-green-600;
-    }
+    &[data-notify="container"] {
+      @apply pt-3 pr-3 pb-3 pl-5 rounded;
 
-    .alert.alert-danger {
-        @apply text-red-600;
+      width: 18rem;
     }
+  }
 
-    .alert.alert-warning {
-        @apply text-yellow-600;
-    }
+  .alert.alert-success {
+    @apply text-green-600;
+  }
 
-    .alert.alert-primary {
-        @apply text-primary;
-    }
+  .alert.alert-danger {
+    @apply text-red-600;
+  }
 
-    .alert i {
-        @apply text-xl;
-    }
+  .alert.alert-warning {
+    @apply text-yellow-600;
+  }
 
-    .alert .close {
-        @apply text-white;
-        opacity: .9;
-        line-height: 0;
-        outline: 0;
-    }
+  .alert.alert-primary {
+    @apply text-primary;
+  }
 
-    .alert span[data-notify="icon"] {
-        @apply text-xl block absolute -mt-3;
-        left: 19px;
-        top: 50%;
-    }
+  .alert i {
+    @apply text-xl;
+  }
 
-    .alert button.close {
-        @apply absolute -mt-3 w-6 h-6 p-1;
-        right: 10px;
-        top: 50%;
-    }
+  .alert .close {
+    @apply text-white;
 
-    .alert .close~span {
-        display: block;
-        max-width: 89%;
-    }
+    opacity: 0.9;
+    line-height: 0;
+    outline: 0;
+  }
 
-    .alert.alert-with-icon {
-        padding-left: 65px;
-    }
+  .alert span[data-notify="icon"] {
+    @apply text-xl block absolute -mt-3;
+
+    left: 19px;
+    top: 50%;
+  }
+
+  .alert button.close {
+    @apply absolute -mt-3 w-6 h-6 p-1;
+
+    right: 10px;
+    top: 50%;
+  }
+
+  .alert .close ~ span {
+    display: block;
+    max-width: 89%;
+  }
+
+  .alert.alert-with-icon {
+    padding-left: 65px;
+  }
 }

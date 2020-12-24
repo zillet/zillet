@@ -14,7 +14,6 @@ export default {
 .spinner {
   width: 40px;
   height: 40px;
-
   position: relative;
   margin: 100px auto;
 }
@@ -29,7 +28,6 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-
   -webkit-animation: sk-bounce 2s infinite ease-in-out;
   animation: sk-bounce 2s infinite ease-in-out;
 }
@@ -44,6 +42,7 @@ export default {
   100% {
     -webkit-transform: scale(0);
   }
+
   50% {
     -webkit-transform: scale(1);
   }
@@ -55,6 +54,7 @@ export default {
     transform: scale(0);
     -webkit-transform: scale(0);
   }
+
   50% {
     transform: scale(1);
     -webkit-transform: scale(1);

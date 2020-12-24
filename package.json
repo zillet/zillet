@@ -1,12 +1,9 @@
 {
   "name": "zillet",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Zillet is an open-source, client-side, tool for interacting with the Zilliqa blockchain",
   "author": "man15h <manish9461@gmail.com>",
   "private": true,
-  "engines": {
-    "node": "10.x"
-  },
   "scripts": {
     "dev": "NUXT_HOST=0.0.0.0 NUXT_PORT=7000 nuxt",
     "build": "nuxt build",
