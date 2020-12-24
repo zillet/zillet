@@ -423,38 +423,58 @@ export default {
           STAKING.testnet.gzil
         );
       }
-      // Fetching SSN list
-      this.contractInstances.ssnlist.getSubState('ssnlist', []).then(res => {
-        this.ssnlist = res.ssnlist;
-      });
+
       // Pending withdrawals
       this.contractInstances.ssnlist
         .getSubState('withdrawal_pending', [address])
         .then(res => {
-          this.pendingWithdrawals = res.withdrawal_pending[address];
+          if (
+            res &&
+            res.withdrawal_pending &&
+            res.withdrawal_pending[address]
+          ) {
+            this.pendingWithdrawals = res.withdrawal_pending[address];
+          }
         });
       // Min amount for staking
       this.contractInstances.ssnlist.getSubState('mindelegstake').then(res => {
-        this.minStake = res.mindelegstake;
+        if (res && res.mindelegstake) {
+          this.minStake = res.mindelegstake;
+        }
       });
       // No. of confirmation needed for withdrawls
       this.contractInstances.ssnlist.getSubState('bnum_req', []).then(res => {
-        this.bnumReq = parseInt(res.bnum_req);
+        if (res && res.bnum_req) {
+          this.bnumReq = parseInt(res.bnum_req);
+        }
       });
       this.$zillet.blockchain.getBlockChainInfo().then(res => {
-        this.currentMiniEpoch = parseInt(res.result.CurrentMiniEpoch);
+        if (res && res.result && res.result.CurrentMiniEpoch) {
+          this.currentMiniEpoch = parseInt(res.result.CurrentMiniEpoch);
+        }
       });
-      const {
-        deposit_amt_deleg
-      } = await this.contractInstances.ssnlist.getSubState(
-        'deposit_amt_deleg',
-        [address]
+      // Fetching SSN list
+      const { ssnlist } = await this.contractInstances.ssnlist.getSubState(
+        'ssnlist',
+        []
       );
-      this.depositAmtDeleg = deposit_amt_deleg;
+      this.ssnlist = ssnlist;
+      let depositAmtDeleg = {};
+      try {
+        const {
+          deposit_amt_deleg
+        } = await this.contractInstances.ssnlist.getSubState(
+          'deposit_amt_deleg',
+          [address]
+        );
+        depositAmtDeleg = deposit_amt_deleg;
+      } catch (error) {
+        console.log('No ZIL delegated');
+      }
       // Total amount delegated by user
-      if (this.depositAmtDeleg[address]) {
+      if (depositAmtDeleg[address]) {
         this.fetchedRewardCal = false;
-        const myStakes = this.depositAmtDeleg[address];
+        const myStakes = depositAmtDeleg[address];
         const delegations = [];
         for (const key in myStakes) {
           const ssn = this.ssnlist[key].arguments;
