@@ -2,6 +2,13 @@
   "MULTIPLIER":12,
   "MINIMUM_GAS_PRICE":3000,
   "NODES":[
+      {
+         "name":"Zillet SSN (Mainnet)",
+         "url":"https://ssn.zillet.io",
+         "explorer":"https://viewblock.io/zilliqa/",
+         "version":65537,
+         "id":1
+      },
      {
         "name":"Zilliqa Mainnet",
         "url":"https://api.zilliqa.com",
@@ -9,13 +16,6 @@
         "version":65537,
         "id":1
      },
-     {
-         "name":"Zillet SSN (Mainnet)",
-         "url":"https://ssn.zillet.io",
-         "explorer":"https://viewblock.io/zilliqa/",
-         "version":65537,
-         "id":1
-      },
      {
         "name":"Zilliqa Testnet",
         "url":"https://dev-api.zilliqa.com",
