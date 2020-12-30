@@ -11,7 +11,7 @@
             @click="fetchTransactions()">
             <i
               class="eva eva-sync-outline relative font-bold"
-              style="top:2px" />
+              style="top: 2px" />
             Refresh
           </span>
         </h3>
@@ -33,7 +33,7 @@
         <Loader v-if="loading && !transactions.length" />
         <div
           v-else-if="!loading && !transactions.length"
-          style="min-height:16rem"
+          style="min-height: 16rem"
           class="w-full flex flex-col justify-center items-center">
           No transaction found.
         </div>
@@ -277,6 +277,9 @@ export default {
         clearInterval(this.tId);
       }
       this.loading = true;
+      this.txs = {
+        docs: []
+      };
       let network;
       if (this.selectedNode.id == 1) {
         network = 'mainnet';
@@ -286,10 +289,16 @@ export default {
         console.error('Can not fetch transaction from unknown network');
         return null;
       }
-      let tx = await this.$viewblock.getAddressTxs(this.Account.address, {
-        page: page,
-        network: network
-      });
+      let tx = await this.$axios.$get(
+        `https://viewblock.zillet.io/txs/${this.Account.address}/txs`,
+        {
+          params: {
+            page: page,
+            network: network
+          }
+        }
+      );
+      console.log(tx);
       for (let index = 0; index < tx.docs.length; index++) {
         const element = tx.docs[index];
         tx.docs[index] = this.formatTransactions(element, true);
@@ -436,19 +445,25 @@ export default {
 .transaction {
   @apply flex flex-col border rounded mb-2;
   @apply items-center w-full overflow-hidden cursor-pointer;
+
   &__top-row {
     @apply flex flex-row w-full px-4 py-3;
   }
+
   &__bottom-row {
     @apply flex flex-row w-full px-4 py-3 text-left;
+
     span {
       @apply leading-normal;
+
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     i {
       @apply ml-2 text-gray-800 p-1 text-base border rounded-full cursor-pointer;
+
       &:hover {
         @apply shadow-md;
       }
@@ -458,73 +473,97 @@ export default {
   &__hash {
     width: 2rem;
   }
+
   &__token {
     @apply flex flex-row items-center;
+
     flex: 1;
     max-width: 20%;
     min-width: 6.6rem;
   }
+
   &__status {
     flex: 1;
     max-width: 20%;
     min-width: 7rem;
+
     @apply flex items-center;
+
     span {
       @apply flex items-center;
       @apply rounded-lg relative;
+
       padding: 2px 12px;
       color: rgba(12, 12, 13, 0.6);
+
       @apply tracking-wide text-gray-800 text-xs font-semibold;
+
       &.in {
         background: rgba(0, 153, 77, 0.2);
       }
+
       &.out {
         background: rgba(250, 188, 45, 0.2);
       }
+
       &.self {
         background: rgba(101, 127, 230, 0.2);
       }
+
       &.failed {
         background: rgba(230, 101, 101, 0.2);
       }
     }
   }
+
   &__amount {
     flex: 1;
     min-width: 15rem;
+
     @apply flex flex-row my-1 items-center;
+
     .zil {
       @apply leading-normal text-gray-900 font-semibold;
     }
+
     .usd {
       @apply tracking-wide text-gray-700 text-sm;
     }
   }
+
   &__address {
     flex: 1;
     width: 20%;
     min-width: 10rem;
+
     @apply flex justify-end;
+
     span {
       @apply flex flex-row items-center rounded-lg cursor-pointer;
       @apply bg-gray-200;
-      padding: 0px 8px;
+
+      padding: 0 8px;
+
       @apply tracking-wide text-gray-700 text-sm font-semibold;
+
       &:hover {
         @apply bg-gray-300;
       }
     }
   }
+
   &__time {
     flex: 1;
     width: 20%;
     min-width: 10rem;
+
     @apply flex justify-end text-sm items-center;
   }
 }
 
 .divider {
   @apply bg-gray-300 w-full;
+
   height: 1px;
 }
 </style>

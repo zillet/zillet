@@ -55,8 +55,12 @@ export function getContract({ commit }, contractAddress) {
 }
 export function getZrc2List({ commit }) {
   return new Promise((resolve, reject) => {
+    let location =
+      (window && window.location && window.location.origin) ||
+      `https://zrc2.zillet.io`;
+
     this.$axios
-      .get('/zrc2/zrc2.json')
+      .get(location + '/zrc2/zrc2.json')
       .then(resData => {
         commit('UPDATE_ZRC2_LIST', resData.data);
         resolve(resData);

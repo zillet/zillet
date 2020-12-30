@@ -116,6 +116,12 @@ module.exports = {
       pathRewrite: {
         '^/zrc2/': '/'
       }
+    },
+    '/txs': {
+      target: 'https://viewblock.zillet.io/',
+      pathRewrite: {
+        '^/txs/': '/'
+      }
     }
   },
   build: {

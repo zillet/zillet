@@ -11,7 +11,7 @@
             @click="fetchTokenBalance()">
             <i
               class="eva eva-sync-outline relative font-bold"
-              style="top:2px" />
+              style="top: 2px" />
             Refresh
           </span>
         </h3>
@@ -26,8 +26,8 @@
       <div class="flex w-full">
         <Loader v-if="(loading || fetching) && !tokenBalances.length" />
         <div
-          v-else-if="!loading && !tokenBalances.length"
-          style="min-height:16rem"
+          v-else-if="!loading && !fetching && !tokenBalances.length"
+          style="min-height: 16rem"
           class="w-full flex flex-col justify-center items-center">
           No transaction found.
         </div>
@@ -56,7 +56,7 @@
                 </p>
                 <i
                   class="hide eva eva-alert-circle-outline text-primary relative font-semibold pl-2"
-                  style="top:4px" />
+                  style="top: 4px" />
               </div>
             </z-table-column>
             <z-table-column
@@ -117,7 +117,7 @@
       :visible="removeTokenConfirmation"
       @close="removeTokenConfirmation=false">
       <div 
-        style="max-width:400px" 
+        style="max-width: 400px" 
         class="mx-4 ">
         <h3 class="font-semibold text-2xl mb-6 text-gray-800">
           Removing {{ selectedToken.symbol }}
@@ -241,6 +241,7 @@ export default {
   height: 20px;
   width: 20px;
 }
+
 .hide {
   display: none;
 }
