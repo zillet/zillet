@@ -26,7 +26,7 @@
       </div>
       <div class="right">
         <a
-          href="//t.me/burgersingh"
+          href="//t.me/zillet_wallet"
           target="_blank"
           rel="noopener noreferrer">
           Report Issue

@@ -823,8 +823,9 @@ export default {
       this.showStakeModal = false;
       this.errorMsg = '';
     },
-    async validateAmountRemove(amount, ssnAddr) {
+    async validateAmountRemove(amount, ssnAddr, action) {
       const myAddr = this.Account.address.toLowerCase();
+      const amountInQa = units.toQa(amount, units.Units.Zil);
       if (!(amount > 0)) {
         this.loading = false;
         this.errorMsg = 'Amount should be greater than 0.';
@@ -833,6 +834,33 @@ export default {
           type: 'danger'
         });
         throw Error(this.errorMsg);
+      }
+      if (action === 'transfer') {
+        const ssn = this.myStakes.find(el => el.address === ssnAddr);
+        const leftOverQa = ssn.amount - amountInQa;
+        if (new BN(amountInQa).gt(new BN(ssn.amount))) {
+          this.loading = false;
+          this.errorMsg =
+            'Invalid Transfer Amount You only have ' +
+            amount +
+            ' ZIL to transfer.';
+          this.$notify({
+            message: this.errorMsg,
+            type: 'danger'
+          });
+          throw Error(this.errorMsg);
+        } else if (leftOverQa > 0 && leftOverQa <= this.minStake) {
+          this.loading = false;
+          this.errorMsg =
+            'Invalid Transfer Amount please leave at least ' +
+            this.minStake * Math.pow(10, -12) +
+            ' ZIL (min. stake amount) or transfer ALL.';
+          this.$notify({
+            message: this.errorMsg,
+            type: 'danger'
+          });
+          throw Error(this.errorMsg);
+        }
       }
       const {
         last_withdraw_cycle_deleg
@@ -992,11 +1020,11 @@ export default {
       }
     },
     async transfer(fromNode, toNode, amount) {
-      console.log(`Transfaring staked...`);
+      console.log(`Transfaring staked...`, amount);
       this.actionType = 'transfer';
       this.loading = true;
       try {
-        await this.validateAmountRemove(amount, fromNode.address);
+        await this.validateAmountRemove(amount, fromNode.address, 'transfer');
       } catch (error) {
         console.warn(error);
         return;

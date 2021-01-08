@@ -1,6 +1,6 @@
 {
   "MULTIPLIER":12,
-  "MINIMUM_GAS_PRICE":3000,
+  "MINIMUM_GAS_PRICE":5000,
   "NODES":[
       {
          "name":"Zillet SSN (Mainnet)",
