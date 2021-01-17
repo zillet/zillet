@@ -52,16 +52,16 @@ export default {
         const torusdirectsdk = new TorusSdk({
           baseUrl:
             process.env.TORUS_SW_URL ||
-            window.location.origin + '/serviceworker',
-          GOOGLE_CLIENT_ID:
+            window.location.origin + '/serviceworker'
+        });
+        await torusdirectsdk.init();
+        const loginDetails = await torusdirectsdk.triggerLogin({
+          typeOfLogin: 'google',
+          verifier: 'google-zillet',
+          clientId:
             process.env.GOOGLE_CLIENT_ID ||
             '718832386865-i96lcpfvpacl0a0gfa6nc0ap5bjqei8i.apps.googleusercontent.com'
         });
-        await torusdirectsdk.init();
-        const loginDetails = await torusdirectsdk.triggerLogin(
-          'google',
-          'google-zillet'
-        );
         this.loading = false;
         this.$zillet.wallet.addByPrivateKey(loginDetails.privateKey);
         this.importAccount(this.$zillet.wallet.defaultAccount);
