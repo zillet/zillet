@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row justify-start w-full bg-gray-200">
+  <div class="flex flex-row justify-start w-full bg-gray-200 mobile:flex-wrap">
     <a
       href="javascript:void(0)"
       class="flex-1 py-3 max-w-xss px-4 text-gray-800 font-semibold border-b-4  border-gray-500

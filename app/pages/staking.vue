@@ -33,7 +33,7 @@
       <div
         v-if="totalPendingWithdrawls > 0"
         class="card border border-primary rounded-lg b-1 my-8 mb-4 bg-gray-0 flex  p-4 
-        flex-row  items-center justify-between"
+        flex-row  items-center justify-between mobile:flex-col"
       >
         <div class="flex-col text-left">
           <div>
@@ -66,10 +66,10 @@
         </div>
       </div>
       <div
-        class="py-8 flex items-center justify-center"
+        class="py-8 flex items-center justify-center mobile:flex-wrap"
         :class="{'pt-0': totalPendingWithdrawls > 1}">
         <div
-          class="card border rounded-lg b-1 bg-gray-0 flex   flex-col items-center justify-center"
+          class="card border rounded-lg b-1 bg-gray-0 flex mobile:mb-4  flex-col items-center justify-center"
           style="max-width: 300px;">
           <!-- <div class="flex items-center justify-center">
             <img
@@ -159,7 +159,7 @@
             <span>
               Delegated to {{ myStakes.length > 0 ? myStakes.length : '...' }}  seed nodes
             </span>
-            <div class="flex flex-row items-center justify-between">
+            <div class="flex flex-row items-center justify-between mobile:flex-wrap mobile:justify-center">
               <z-button
                 class="rounded py-2 mr-2 w-32 mb-0"
                 type="default"

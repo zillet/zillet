@@ -4,39 +4,37 @@
     custom-class="overflow-visible"
     @close="$emit('close')">
     <div 
-      style="min-width:450px" 
+      style="max-width:450px" 
       class="px-2 w-full">
       <div class="font-semibold text-2xl mb-6 text-gray-800">
         Stake <b>ZIL</b>
       </div>
-      <div class="flex flex-col w-full">
-        <div class="flex flex-row items-center justify-between">
-          <div class="tracking-wide text-sm font-semibold mb-2">
-            Amount
-          </div>
-          <div
-            class=" text-sm cursor-pointer"
-            @click="amount=(avlAmount > 0 ? avlAmount : 0)"
-          >
-            <b class="text-teal-600">{{ avlAmount > 0 ? avlAmount : 0 }}</b>  ZIL Availble 
-          </div>
+      <div class="flex flex-row items-center justify-between">
+        <div class="tracking-wide text-sm font-semibold mb-2">
+          Amount
         </div>
-        <div class="flex flex-row">
-          <z-input
-            v-model.number="amount"
-            :hide="false"
-            :valid="validateCryptoAmount"
-            class="mb-0"
-            number
-            placeholder="0 ZIL" />
-          <z-button
-            type="default"
-            style="height:3rem; left:-3px"
-            class="m-0 relative bg-white border-gray-400 rounded-r"
-            @click="amount=(avlAmount > 0 ? avlAmount : 0)">
-            Max
-          </z-button>
+        <div
+          class=" text-sm cursor-pointer"
+          @click="amount=(avlAmount > 0 ? avlAmount : 0)"
+        >
+          <b class="text-teal-600">{{ avlAmount > 0 ? avlAmount : 0 }}</b>  ZIL Availble 
         </div>
+      </div>
+      <div class="flex flex-row">
+        <z-input
+          v-model.number="amount"
+          :hide="false"
+          :valid="validateCryptoAmount"
+          class="mb-0"
+          number
+          placeholder="0 ZIL" />
+        <z-button
+          type="default"
+          style="height:3rem; left:-3px"
+          class="m-0 relative bg-white border-gray-400 rounded-r"
+          @click="amount=(avlAmount > 0 ? avlAmount : 0)">
+          Max
+        </z-button>
       </div>
       <div class="flex flex-row items-center justify-between">
         <div class="tracking-wide text-sm font-semibold mb-2">
@@ -106,12 +104,15 @@
           </div>
         </transition>
       </div>
-      <ZLink
-        to="/staking-on-zillet#what-are-the-benefits-of-delegating"
-        class="my-2 text-right italic text-sm"
-        external>
-        Who should you delegate your ZILs to?
-      </ZLink>
+      <p class="italic text-left flex flex-row flex-wrap text-sm mt-2">
+        * Don't know who to delegate?
+        <ZLink
+          to="/staking-on-zillet#what-are-the-benefits-of-delegating"
+          class="text-left"
+          external>
+          Who should you delegate your ZILs to?
+        </ZLink>
+      </p>
       <div
         class="bg-gray-100 text-gray-700 rounded my-2 p-2 px-4  text-left flex flex-row items-center">
         <i class="eva eva-info-outline text-xl mr-4" />
