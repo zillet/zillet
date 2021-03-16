@@ -18,7 +18,7 @@
             class=" text-sm cursor-pointer"
             @click="fillMax"
           >
-            <b class="text-teal-600">{{ Number(selectedSeedNode.amount*Math.pow(10,-12)).toFixed(4) }}</b> ZIL  Available   
+            <b class="text-teal-600">{{ Number(selectedSeedNode.amount*Math.pow(10,-12)).toFixed(4) }}</b> ZIL available   
           </div>
         </div>
         <div class="flex flex-row">
@@ -41,7 +41,7 @@
 
       <div v-if="myStakes.length > 1">
         <p class=" text-left my-2">
-          It looks like you have delegted ZILs to {{ myStakes.length }} different seed nodes. Please select a seed node where you
+          It looks like you have delegated ZILs to {{ myStakes.length }} different seed nodes. Please select a seed node where you
           want to undelegate your amount. 
         </p>
         <div class="flex flex-row items-center justify-between">
@@ -114,8 +114,8 @@
         class="bg-gray-100 text-gray-700 rounded my-4 p-2 px-4  text-left flex flex-row items-center">
         <i class="eva eva-info-outline text-xl mr-4" />
         <div>
-          After Unstake you have to wait for at least <strong>{{ bnumReq }}</strong> ({{ bnumReq/12000 }} Week) confirmation in 
-          order to make the withdrawal
+          After Unstake you have to wait for at least <strong>{{ bnumReq }}</strong>confirmations ({{ bnumReq/12000 }} week period) in 
+          order to make the withdrawal.
         </div>
       </div>
       <div

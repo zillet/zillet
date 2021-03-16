@@ -14,7 +14,7 @@
       rounded
       class="w-full"
       @click="validateKey()">
-      Load wallet
+      Load Wallet
     </z-button>
   </AccessWalletContainer>
 </template>

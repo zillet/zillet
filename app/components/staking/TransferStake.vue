@@ -29,7 +29,7 @@
             </p>
             <p class="text-gray-800 pr-6 text-sm">
               <b class="text-base">{{ fromNode.amount*Math.pow(10, -12) | currency('', 2) }}</b> 
-              ZIL Staked
+              ZIL staked
             </p>
           </div>
           <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -95,7 +95,7 @@
             </p>
             <p class="text-gray-800 pr-6 text-sm">
               <b class="text-base">{{ toNode.commision | currency('', 2) }} %</b>
-              (Commission rate )
+              (Commission rate)
             </p>
           </div>
           <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -167,12 +167,12 @@
         </div>
       </div>
       <p class="italic text-left flex flex-row flex-wrap text-sm mt-2">
-        * Redelegate to other SSN is instant.
+        * Redelegation to other SSN is instant.
         <ZLink
           to="/staking-on-zillet#what-are-the-benefits-of-delegating"
           class="text-left"
           external>
-          Who should you re-delegate your ZILs to?
+          Who should you redelegate your ZILs to?
         </ZLink>
       </p>
       <div

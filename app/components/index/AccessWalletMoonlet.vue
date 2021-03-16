@@ -21,7 +21,7 @@
     <p
       v-if="notFound"
       align="left">
-      Moonlet extension not found. Please check that extension is installed or
+      Moonlet extension not found. Please check that the extension is installed or
       download the extension from the link below.
       <z-button
         class="w-full my-4"
@@ -37,13 +37,13 @@
     <p
       v-if="permissionNotGranted"
       align="left">
-      You did not grant access on this page for Moonlet Wallet.
-      You have to let Moonlet Wallet to access this page in order to continue.
+      You did not grant Moonlet Wallet access to this page.
+      Moonlet Wallet needs access to this page in order to continue.
       <z-button
         class="w-full my-4"
         rounded 
         @click="connect()">
-        Grant permission
+        Grant Permission
       </z-button>
     </p>
   </AccessWalletContainer>
@@ -119,7 +119,7 @@ export default {
             console.log(this.permissionNotGranted);
           default:
             this.$notify({
-              message: `There was an error while loading moonlet wallet instance.`,
+              message: `There was an error while loading Moonlet Wallet instance.`,
               type: 'danger'
             });
         }

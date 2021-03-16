@@ -33,7 +33,7 @@
         <ZLink
           to="/security/avoid-phishing-and-scams"
           external>
-          Simple tips to avoid Phishing and Scams
+          Simple tips to avoid phishing and scams
         </ZLink>
         and
         <ZLink
@@ -49,7 +49,7 @@
           type="default"
           rounded
           @click="$emit('close')">
-          Okay, I've succesfully saved my key.
+          I Saved My Key
         </z-button>
       </template>
     </DownloadWalletContainer>

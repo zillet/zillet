@@ -48,7 +48,7 @@
         <div
           class="flex items-center hover:text-gray-900"
           @click="$emit('tokenClicked', bal)">
-          <div class="flex  font-bold cursor-pointer">
+          <div class="flex font-bold cursor-pointer">
             {{ roundDown(bal.balance*Math.pow(10, -1*bal.decimals), 4) | currency('', bal.symbol =='gZIL' ? 4:2) }}
           </div>
           <div

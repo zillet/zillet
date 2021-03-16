@@ -12,7 +12,7 @@
       </span>
       <div
         class="mt-4 mt-2 text-sm italic">
-        * Your balance will be updated after transaction got confirmed.
+        * Your balance will be updated after the transaction got confirmed.
       </div>
       <div class="flex flex-row -mx-2">
         <div class="w-1/2 px-2">

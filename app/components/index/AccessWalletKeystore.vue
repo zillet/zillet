@@ -19,7 +19,7 @@
         class="w-full"
         rounded
         @click="unlock()">
-        Unlock wallet
+        Unlock Wallet
       </z-button>
     </div>
   </AccessWalletContainer>
@@ -68,7 +68,7 @@ export default {
           if (!this.checkEncryptedWallet(this.encryptedWallet)) {
             this.isFile = false;
             return this.$notify({
-              message: `Invalid file format, Please Select valid Keystore/wallet (JSON) File.`,
+              message: `Invalid file format, please select valid keystore/wallet (JSON) file.`,
               type: 'danger'
             });
           } else {
@@ -78,7 +78,7 @@ export default {
         reader.readAsText(file);
       } catch (error) {
         return this.$notify({
-          message: `Invalid file format, Please Select valid Keystore/wallet (JSON) File, ${error}`,
+          message: `Invalid file format, please select valid keystore/wallet (JSON) file, ${error}`,
           type: 'danger'
         });
       }
@@ -100,7 +100,7 @@ export default {
         });
       } catch (error) {
         return this.$notify({
-          message: `Failed to decrypt, Please check your password.`,
+          message: `Failed to decrypt, please check your password.`,
           type: 'danger'
         });
         this.loading = false;

@@ -21,7 +21,7 @@
       <ZLink
         to="/troubleshooting/troubleshooting-ledger-issues"
         external>
-        Troubleshooting Ledger Issues
+        Troubleshooting Ledger issues
       </ZLink>
       and
       <ZLink

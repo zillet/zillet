@@ -50,20 +50,20 @@
       <ZLink
         to="/security/avoid-phishing-and-scams"
         external>
-        Simple tips to avoid Phishing and Scams
+        Simple tips to avoid phishing and scams
       </ZLink>
       and
       <ZLink
         to="/getting-started/how-to-access-your-wallet"
         external>
-        How to access your Wallet
+        How to access your wallet
       </ZLink>
     </template>
     <template v-slot:warning>
       <p>
         <code>Zillet.io</code> does not hold your keys for you. We cannot access accounts,
         recover keys, reset passwords, nor reverse transactions. Protect your keys &
-        always check that you are on correct URL.
+        always check that you are on the correct URL.
         <span class="font-semibold">You are responsible for your security</span>.
       </p>
     </template>

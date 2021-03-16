@@ -17,7 +17,7 @@
     <p
       v-if="notFound"
       align="left">
-      Zilpay extension not found. Please check that extension is installed or
+      Zilpay extension not found. Please check that the extension is installed or
       download the extension from the link below.
       <z-button
         class="w-full my-4"
@@ -68,7 +68,7 @@ export default {
           const { defaultAccount } = zilPay.wallet;
           if (!defaultAccount) {
             return this.$notify({
-              message: `Kindly unlock your account ZilPay account first`,
+              message: `Kindly unlock your ZilPay account first`,
               type: 'danger'
             });
           }
@@ -76,7 +76,7 @@ export default {
             if (this.Account.address != account.base16) {
               this.save(account.base16);
               this.$notify({
-                message: `New account loaded succesfully`,
+                message: `New account loaded successfully`,
                 type: 'success'
               });
             }
@@ -112,7 +112,7 @@ export default {
       } else {
         this.notFound = true;
         this.$notify({
-          message: `Zilpay extension is not installed.`,
+          message: `ZilPay extension is not installed.`,
           type: 'danger'
         });
         console.warn('ZilPay not installed');
