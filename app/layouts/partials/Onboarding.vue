@@ -156,7 +156,7 @@ export default {
           text: `Thanks for reading through our introduction! Now you're ready to
           dive in. If you want to know more, please head to our
           <a href="//support.zillet.io" class="text-primary"
-          target="_blank" rel="noreferer nofollow"> Help Center</a>. We are
+          target="_blank" rel="noreferrer nofollow"> Help Center</a>. We are
           here to help you have the most secure and most convenient experience possible!`,
           image: 'congratulations.svg'
         }

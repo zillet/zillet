@@ -31,7 +31,7 @@
         <a
           href="https://moonlet.xyz/"
           target="_blank"
-          rel="noopener norefrer nofollow">Download Extension</a>
+          rel="noopener noreferrer nofollow">Download Extension</a>
       </z-button>
     </p>
     <p

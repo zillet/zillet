@@ -124,12 +124,12 @@
         </h3>
         <div class="text-left">
           <p class="text-lg mb-4">
-            You have non zero balance in your wallet. <br>
+            You have non-zero balance in your wallet. <br>
             Are you sure you want to remove {{ selectedToken.symbol }} from your token list?
           </p>
           <span class="text-sm italic">
-            * Please note that this action will only remove token from 
-            the wallet UI. you'll still have the tokens in your wallet.
+            * Please note that this action will only remove tokens from 
+            the wallet UI. You will still have the tokens in your wallet.
           </span>
         </div>
         <div class="flex items-center justify-between -mx-3 mt-4">
