@@ -39,7 +39,7 @@
         <ZLink
           to="/security/avoid-phishing-and-scams"
           external>
-          Simple tips to avoid Phishing and Scams
+          Simple tips to avoid phishing and scams
         </ZLink>
         and
         <ZLink

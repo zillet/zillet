@@ -153,7 +153,7 @@
 
             rel="noopener noreferrer">
             <i class="eva eva-github mr-1" />
-            Github
+            GitHub
           </a>
         </div>
       </div>
@@ -195,7 +195,7 @@
             placeholder="Do not forget this password" />
           <p
             class="text-gray-700 -mt-1 text-left text-sm italic text-left">
-            Password should be atleast 8 chracter long
+            Password should be at least 8 characters long.
           </p>
         </div>
         <div class="flex items-center justify-between -mx-3">

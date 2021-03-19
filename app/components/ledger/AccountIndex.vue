@@ -4,7 +4,7 @@
     custom-class="p-8"
     @close="$emit('close')">
     <h3 class="font-semibold text-xl mb-8 text-gray-800">
-      Select Acount
+      Select Account
     </h3>
     <z-table
       :data="accounts"

@@ -19,7 +19,7 @@
     <z-textarea
       v-model="mnemonicPhrase"
       :valid="isMnemonicValid(mnemonicPhrase)"
-      :placeholder="selectedType ===2 ? `Enter your 24 character ledger Mnemonic phrase here`: `Enter your Mnemonic phrase here`"
+      :placeholder="selectedType ===2 ? `Enter your 24 character ledger mnemonic phrase here`: `Enter your mnemonic phrase here`"
       class="mnemonic-textarea"
     />
     <div v-if="selectedType==1">
@@ -31,8 +31,8 @@
       <z-alert
         type="warning"
         class="my-2">
-        This is not the password you set in the Moonlet or ZilPay wallet, 
-        In most of the cases you need default method.
+        This is not the password you set in the Moonlet or ZilPay wallet; 
+        in most of the cases you need default method.
       </z-alert>
     </div>
     <div v-if="selectedType==2">
@@ -41,7 +41,7 @@
         placeholder="Index"
         :hide="false"
         number
-        label="Index of ledger wallet (Default = 0)"
+        label="Index of ledger wallet (default = 0)"
       />
     </div>
     <z-button
@@ -49,7 +49,7 @@
       rounded
       class="w-full"
       @click="loadWallet()">
-      Load wallet
+      Load Wallet
     </z-button>
   </AccessWalletContainer>
 </template>

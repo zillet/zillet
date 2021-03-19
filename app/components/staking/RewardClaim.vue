@@ -9,8 +9,8 @@
         Claim <b>ZIL</b> reward
       </div>
       <p class=" text-left my-4">
-        You have delegated your ZIL to  {{ myStakes.length }} delegator. 
-        You need to claim your reward Individually.
+        You have delegated your ZIL to {{ myStakes.length }} delegator{{ myStakes.length == 1 ? '' : 's' }}. 
+        You need to claim your reward individually.
       </p>
       <z-table
         class="w-full"
@@ -32,7 +32,7 @@
             class="font-semibold"
             field="myReward">
             {{ scope.row.myReward*Math.pow(10, -12) | currency('', 4) }} +               
-            {{ scope.row.myReward*Math.pow(10,-15) | currency('', 4) }} 
+            {{ scope.row.myReward*Math.pow(10, -15) | currency('', 4) }} 
           </z-table-column>
           <z-table-column
             label="Action"

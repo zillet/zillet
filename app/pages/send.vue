@@ -40,7 +40,7 @@
             <div
               v-else
               class="text-sm italic">
-              Unfortunately, We are not able to resolve this domain, Kindly verify the domain name. 
+              Unfortunately, we are not able to resolve this domain. Kindly verify the domain name. 
             </div>
           </div>
         </div>
@@ -347,7 +347,7 @@
         </div>
         <p class="italic text-left text-sm mt-4">
           * Please carefully check the transaction details. Once broadcasted to the
-          network transaction <b>can not be revert back</b>
+          network, the transaction <b>cannot be reversed</b>.
         </p>
         <div class="flex flex-row -mx-2">
           <div class="w-1/3 px-2">
@@ -366,7 +366,7 @@
               class="mt-8 w-full"
               :loading="loading"
               @click="hasChecked=true;createTxn()">
-              Send this transaction.
+              Send Transaction
             </z-button>
           </div>
         </div>
@@ -797,7 +797,7 @@ export default {
         } catch (error) {
           this.loading = false;
           return this.$notify({
-            message: `Something went wrong${JSON.stringify(error)}`,
+            message: `Something went wrong ${JSON.stringify(error)}`,
             type: 'danger'
           });
         }
@@ -896,7 +896,7 @@ export default {
       }
       if (!this.normaliseAddress(this.transaction.address)) {
         return this.$notify({
-          message: `Address format is invalid`,
+          message: `Address format is invalid.`,
           type: 'danger'
         });
       }
@@ -916,7 +916,7 @@ export default {
         );
         if (this.transaction.amount > tBal) {
           return this.$notify({
-            message: `Amount can not be greater than balance`,
+            message: `Amount can not be greater than your balance.`,
             type: 'danger'
           });
         }
@@ -937,7 +937,7 @@ export default {
       if (total.gt(balance)) {
         this.loading = false;
         return this.$notify({
-          message: `Amount+Fee can not be greater than your balance`,
+          message: `Amount+Fee can not be greater than your balance.`,
           type: 'danger'
         });
       }
@@ -948,7 +948,7 @@ export default {
         this.loading = false;
 
         return this.$notify({
-          message: `Gas price is not sufficient`,
+          message: `Gas price is not sufficient.`,
           type: 'danger'
         });
       }
@@ -1069,7 +1069,7 @@ export default {
           this.transaction.amount = 0;
           this.usdAmount = 0;
           this.$notify({
-            message: 'Your balance seems low',
+            message: 'Your balance seems low.',
             type: 'danger'
           });
         }

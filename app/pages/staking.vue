@@ -51,7 +51,7 @@
             {{ bnumReq }}
           </div>
           <div class="">
-            Min block confirmation needed
+            Min block confirmations needed
           </div>
         </div>
         <div class="flex flex-row items-center justify-between">
@@ -122,7 +122,7 @@
           </div>
           
           <div class="">
-            Unclaimed Reward.
+            Unclaimed reward
           </div>
           <div class="flex flex-row items-center justify-between">
             <z-button
@@ -668,7 +668,7 @@ export default {
       const nonce = this.Account.nonce + 1;
       console.log(this.Account.balance * Math.pow(10, -12));
       if (this.Account.balance * Math.pow(10, -12) < 30) {
-        throw Error('Account balance is low, Balance should be atleast 30 ZIL');
+        throw Error('Account balance is low, balance should be at least 30 ZIL.');
       }
       let txParams = {
         version: VERSION,
@@ -757,7 +757,7 @@ export default {
       } catch (error) {
         this.loading = false;
         return this.$notify({
-          message: `Something went wrong${JSON.stringify(error)}`,
+          message: `Something went wrong ${JSON.stringify(error)}`,
           type: 'danger'
         });
       }
@@ -783,8 +783,8 @@ export default {
       this.loading = true;
       let actualAmount = units.toQa(amount, units.Units.Zil);
       if (parseInt(actualAmount.toString()) < parseInt(this.minStake)) {
-        this.errorMsg = `Stake amount should be greater then ${this.minStake *
-          Math.pow(10, -12)}`;
+        this.errorMsg = `Stake amount should be greater than ${this.minStake *
+          Math.pow(10, -12)}.`;
         this.loading = false;
         return this.$notify({
           message: this.errorMsg,
@@ -841,7 +841,7 @@ export default {
         if (new BN(amountInQa).gt(new BN(ssn.amount))) {
           this.loading = false;
           this.errorMsg =
-            'Invalid Transfer Amount You only have ' +
+            'Invalid transfer amount; you only have ' +
             amount +
             ' ZIL to transfer.';
           this.$notify({
@@ -852,7 +852,7 @@ export default {
         } else if (leftOverQa > 0 && leftOverQa <= this.minStake) {
           this.loading = false;
           this.errorMsg =
-            'Invalid Transfer Amount please leave at least ' +
+            'Invalid transfer amount; please leave at least ' +
             this.minStake * Math.pow(10, -12) +
             ' ZIL (min. stake amount) or transfer ALL.';
           this.$notify({
@@ -1020,7 +1020,7 @@ export default {
       }
     },
     async transfer(fromNode, toNode, amount) {
-      console.log(`Transfaring staked...`, amount);
+      console.log(`Transfering staked...`, amount);
       this.actionType = 'transfer';
       this.loading = true;
       try {

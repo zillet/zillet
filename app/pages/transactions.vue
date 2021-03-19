@@ -426,7 +426,7 @@ export default {
     onCopy(e) {
       this.$notify({
         icon: 'eva eva-checkmark-circle-outline',
-        message: `Address copied successfully `,
+        message: `Address copied successfully`,
         type: 'success'
       });
     },

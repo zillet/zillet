@@ -51,7 +51,7 @@
           <p
             v-if="walletType==='json'"
             class="text-gray-700 -mt-1 text-left text-sm italic text-left">
-            Password should be at least 8 characters long
+            Password should be at least 8 characters long.
           </p>
           <p
             v-else
@@ -72,7 +72,7 @@
             v-if="walletType==='mnemonic'"
             to="/security/mnemonic-phrase-password"
             external>
-            Should I include password in Mnemonic phrase
+            Should I include password in Mnemonic phrase?
           </ZLink>
           <span v-if="walletType==='mnemonic'">
             and
@@ -80,7 +80,7 @@
           <ZLink
             to="/getting-started/how-to-create-a-wallet"
             external>
-            How to Create a Wallet
+            How to create a Wallet
           </ZLink>
         </template>
         <template v-slot:warning>
