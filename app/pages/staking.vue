@@ -837,15 +837,12 @@ export default {
         });
         throw Error(this.errorMsg);
       }
-      if (action === 'transfer') {
+      if (action === 'transfer' || action === 'unstake') {
         const ssn = this.myStakes.find(el => el.address === ssnAddr);
         const leftOverQa = ssn.amount - amountInQa;
         if (new BN(amountInQa).gt(new BN(ssn.amount))) {
           this.loading = false;
-          this.errorMsg =
-            'Invalid transfer amount; you only have ' +
-            amount +
-            ' ZIL to transfer.';
+          this.errorMsg = `Invalid ${action} amount; you only have ${amount} ZIL to ${action}.`;
           this.$notify({
             message: this.errorMsg,
             type: 'danger'
@@ -853,10 +850,9 @@ export default {
           throw Error(this.errorMsg);
         } else if (leftOverQa > 0 && leftOverQa <= this.minStake) {
           this.loading = false;
-          this.errorMsg =
-            'Invalid transfer amount; please leave at least ' +
-            this.minStake * Math.pow(10, -12) +
-            ' ZIL (min. stake amount) or transfer ALL.';
+          this.errorMsg = `Invalid ${action} amount; please leave at least ${(
+            this.minStake * Math.pow(10, -12)
+          ).toFixed(2)} ZIL (min. stake amount) or ${action} ALL.`;
           this.$notify({
             message: this.errorMsg,
             type: 'danger'
@@ -876,10 +872,16 @@ export default {
         'lastrewardcycle',
         []
       );
-      if (last_withdraw_cycle_deleg[myAddr][ssnAddr] < lastrewardcycle) {
+      // console.log(last_withdraw_cycle_deleg[myAddr][ssnAddr], lastrewardcycle);
+      if (
+        Number(last_withdraw_cycle_deleg[myAddr][ssnAddr]) <
+        Number(lastrewardcycle)
+      ) {
+        const ssn = this.myStakes.find(item => item.address === ssnAddr);
         this.loading = false;
         this.showUnstakeModal = false;
-        this.errorMsg = 'You need to claim your rewards first.';
+        this.errorMsg = `You need to claim your ${ssn &&
+          ssn.name} rewards first.`;
         this.$notify({
           message: this.errorMsg,
           type: 'danger'
@@ -898,7 +900,7 @@ export default {
           biggestBuffDeposit = key;
         }
       }
-      if (!(lastrewardcycle > biggestBuffDeposit)) {
+      if (!(Number(lastrewardcycle) > Number(biggestBuffDeposit))) {
         this.loading = false;
         this.errorMsg = `You have buffered deposits in the selected node. 
           Please wait for the next cycle before withdrawing the staked amount.`;
@@ -914,7 +916,7 @@ export default {
       this.loading = true;
       this.actionType = 'unstake';
       try {
-        await this.validateAmountRemove(amount, ssnAddr);
+        await this.validateAmountRemove(amount, ssnAddr, 'unstake');
       } catch (error) {
         console.warn(error);
         return;

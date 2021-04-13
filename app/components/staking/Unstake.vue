@@ -63,7 +63,7 @@
                 {{ selectedSeedNode.name }}
               </p>
               <p class="text-gray-800 pr-2">
-                <b>{{ selectedSeedNode.amount*Math.pow(10, -12) }}</b> ZIL
+                <b>{{ (selectedSeedNode.amount*Math.pow(10, -12)).toFixed(4) }}</b> ZIL
               </p>
             </div>
             <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -103,7 +103,7 @@
                   {{ n.name }}
                 </p>
                 <p class="text-gray-800 pr-2">
-                  <b>{{ n.amount*Math.pow(10, -12) }}</b> ZIL
+                  <b>{{ (n.amount*Math.pow(10, -12)).toFixed(4) }}</b> ZIL
                 </p>
               </div>
             </div>
@@ -152,6 +152,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import Vue2Filters from 'vue2-filters';
+import { BN, units } from '@zilliqa-js/util';
 
 export default {
   name: 'AddToken',
@@ -195,10 +196,13 @@ export default {
       return total * Math.pow(10, -12);
     },
     validateAmount() {
-      return (
-        parseFloat(this.amount) <=
-        parseInt(this.selectedSeedNode.amount) * Math.pow(10, -12)
-      );
+      try {
+        return !new BN(units.toQa(this.amount, units.Units.Zil)).gt(
+          new BN(this.selectedSeedNode.amount)
+        );
+      } catch (error) {
+        return false;
+      }
     }
   },
   watch: {
