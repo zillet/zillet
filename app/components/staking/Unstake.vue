@@ -223,7 +223,7 @@ export default {
     fillMax() {
       this.amount = Number(
         this.selectedSeedNode.amount * Math.pow(10, -12)
-      ).toFixed(4);
+      ).toFixed(10);
     }
   }
 };

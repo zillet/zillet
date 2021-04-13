@@ -668,7 +668,9 @@ export default {
       const nonce = this.Account.nonce + 1;
       console.log(this.Account.balance * Math.pow(10, -12));
       if (this.Account.balance * Math.pow(10, -12) < 30) {
-        throw Error('Account balance is low, balance should be at least 30 ZIL.');
+        throw Error(
+          'Account balance is low, balance should be at least 30 ZIL.'
+        );
       }
       let txParams = {
         version: VERSION,
@@ -952,6 +954,7 @@ export default {
       this.loading = false;
       this.showUnstakeModal = false;
       this.errorMsg = '';
+      console.log(`Unstaking: ${actualAmount.toString()}`);
     },
     async completeWithdrawal() {
       this.loading = true;
