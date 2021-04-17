@@ -24,7 +24,7 @@
         </z-button>
       </div>
       <div class="w-full">
-        <Loader v-if="(loading || fetching) && !tokenBalances.length" />
+        <Loader v-if="(loading || fetching)" />
         <div
           v-else-if="!loading && !fetching && !tokenBalances.length"
           style="min-height: 16rem"
@@ -95,7 +95,7 @@
                   class="mx-2 p-2 px-4 text-sm rounded"
                   type="default"
                   size="mini"
-                  @click="openAddressOnVb(selectedNode, Account.bech32Address)">
+                  @click="openContractOnVb(selectedNode, scope.row)">
                   <img
                     src="@/assets/icons/viewblock.png"
                     height="20"

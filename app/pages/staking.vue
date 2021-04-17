@@ -431,7 +431,7 @@ export default {
       this.deleg_stake_per_cycle =
         JSON.parse(localStorage.getItem('__deleg_stake_per_cycle')) || {};
     } catch (error) {}
-    this.fetchStats();
+
     await this.init();
     this.fetched = true;
   },
@@ -449,6 +449,7 @@ export default {
       }
     },
     async init() {
+      this.fetchStats();
       if (this.tId) {
         clearInterval(this.tId);
       }
