@@ -16,6 +16,7 @@
           Refresh
         </span>
       </div>
+      
       <div
         class="bg-gray-200  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
         <div class="flex items-center">
@@ -29,6 +30,50 @@
           </div>
         </div>
         <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
+      </div>
+      <div
+        v-if="stats && stats.apy || fetched"
+        class="card border rounded-lg b-1 my-8 mb-4 bg-gray-0 flex  p-4 
+        flex-row  items-center justify-between mobile:flex-col"
+      >
+        <div class="flex-col text-left">
+          <div>
+            <span class="text-xl font-bold">{{ stats.apy }} %</span>
+          </div>
+          <div class="">
+            Average APY
+          </div>
+        </div>
+        <div class="flex-col text-left">
+          <div>
+            <span class="text-xl font-bold"> {{ stats.blocksLeft }}</span>
+            (<span class="text-gray-700">ETA:</span> {{ timeConverter(stats.nextRewardTime) }} )
+          </div>
+          <div class="">
+            Blocks until reward
+          </div>
+        </div>
+        <div class="flex-col text-left">
+          <div>
+            <span
+              v-if="Prices.ZIL && Prices.ZIL.USD"
+              class="text-xl font-bold">{{ convertCurrency(stats.totalStaked) }}  </span>
+            ZIL <span v-if="Prices.ZIL && Prices.ZIL.USD">≈ {{ convertCurrency(stats.totalStaked* Prices.ZIL.USD) }} USD</span>
+            <!-- {{ stats.totalStaked* Prices.ZIL.USD }} -->
+            <!-- (<span class="text-gray-700">ETA:</span> {{ timeConverter(stats.nextRewardTime) }} ) -->
+          </div>
+          <div class="">
+            Total Staked
+          </div>
+        </div>
+        <div class="flex-col text-left">
+          <div>
+            <span class="text-xl font-bold">{{ stats.gZilLeft }} % </span>
+          </div>
+          <div class="">
+            gZIL Left
+          </div>
+        </div>
       </div>
       <div
         v-if="totalPendingWithdrawls > 0"
@@ -279,6 +324,7 @@ export default {
       fetched: false,
       errorMsg: '',
       myStakes: [],
+      stats: {},
       pendingWithdrawals: {},
       bnumReq: 50,
       currentMiniEpoch: 0,
@@ -372,7 +418,6 @@ export default {
   },
   async mounted() {
     this.fetched = false;
-    console.log(localStorage.getItem('__lastrewardcycle'));
     this.lastrewardcycle = localStorage.getItem('__lastrewardcycle') || 0;
     try {
       this.last_withdraw_cycle_deleg =
@@ -386,7 +431,7 @@ export default {
       this.deleg_stake_per_cycle =
         JSON.parse(localStorage.getItem('__deleg_stake_per_cycle')) || {};
     } catch (error) {}
-
+    this.fetchStats();
     await this.init();
     this.fetched = true;
   },
@@ -394,6 +439,15 @@ export default {
     ...mapActions(['sendTransaction']),
     ...mapMutations(['updateBalance', 'saveTxn']),
     getImages,
+    async fetchStats() {
+      try {
+        let stats = await this.$axios.$get(`https://viewblock.zillet.io/stats`);
+        console.log(stats.success);
+        this.stats = stats.success;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async init() {
       if (this.tId) {
         clearInterval(this.tId);
@@ -499,6 +553,7 @@ export default {
       if (this.Account.address && this.$route.name == 'staking') {
         this.tId = setTimeout(() => {
           this.init();
+          this.fetchStats();
         }, 600000);
       }
     },
@@ -1074,6 +1129,49 @@ export default {
       this.showTransferStakeModal = false;
       this.loading = false;
       this.errorMsg = '';
+    },
+    timeConverter(UNIX_timestamp) {
+      let a = new Date(UNIX_timestamp);
+      let months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ];
+      let year = a.getFullYear();
+      let month = months[a.getMonth()];
+      let date = a.getDate();
+      let hours = a.getHours();
+      let minutes = a.getMinutes();
+      let seconds = a.getSeconds();
+      let formattedTime =
+        hours.toString().padStart(2, '0') +
+        ':' +
+        minutes.toString().padStart(2, '0') +
+        ':' +
+        seconds.toString().padStart(2, '0');
+      let time = date + ' ' + month + ' ' + year + ' ' + formattedTime;
+      return time;
+    },
+    convertCurrency(labelValue) {
+      // Nine Zeroes for Billions
+      return Math.abs(Number(labelValue)) >= 1.0e9
+        ? (Math.abs(Number(labelValue)) / 1.0e9).toFixed(4) + ' B'
+        : // Six Zeroes for Millions
+          Math.abs(Number(labelValue)) >= 1.0e6
+          ? (Math.abs(Number(labelValue)) / 1.0e6).toFixed(4) + ' M'
+          : // Three Zeroes for Thousands
+            Math.abs(Number(labelValue)) >= 1.0e3
+            ? (Math.abs(Number(labelValue)) / 1.0e3).toFixed(2) + 'K'
+            : Math.abs(Number(labelValue));
     }
   }
 };

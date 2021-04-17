@@ -73,7 +73,7 @@
     </div>
     <div
       v-if="sortTokenBalances.length > 6"
-      class="text-sm text-gray-800 pt-2">
+      class="text-xs text-gray-700 py-2">
       Scroll for more <i
         class="eva eva-arrowhead-down-outline relative"
         style="top:3px" />

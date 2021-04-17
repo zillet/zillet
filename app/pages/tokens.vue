@@ -23,7 +23,7 @@
           Add Token
         </z-button>
       </div>
-      <div class="flex w-full">
+      <div class="w-full">
         <Loader v-if="(loading || fetching) && !tokenBalances.length" />
         <div
           v-else-if="!loading && !fetching && !tokenBalances.length"
@@ -40,8 +40,6 @@
             <z-table-column
               label="Symbol"
               field="symbol"
-              width="300"
-              sortable
               class="font-semibold ">
               <div 
                 class="flex flex-row token-symbol cursor-pointer pr-6 hover:text-gray-900"
@@ -61,8 +59,6 @@
             </z-table-column>
             <z-table-column
               label="Name"
-              width="300"
-
               field="Name"
               class="font-semibold">
               {{ scope.row.name }}
@@ -70,8 +66,6 @@
             <z-table-column
               label="Balance"
               field="balance"
-              width="300"
-
               class="font-semibold">
               <div class="flex items-center ">
                 <div class="flex  font-bold ">
@@ -86,24 +80,37 @@
             </z-table-column>
             <z-table-column
               label="Actions"
-              width="150"
               field="Actions"
-              class="font-semibold">
-              <z-button
-                rounded
-                size="small"
-                class="py-1"
-                @click="sendToken(scope.row)">
-                Send
-              </z-button>
-              <div
-                v-if="scope.row.local"
-                class="flex items-center hover:text-red-600 cursor-pointer"
-                @click="removeToken(scope.row)">
-                <i class="eva eva-close-circle-outline text-base" />
-                <span class=" text-sm italic underline">
-                  Remove 
-                </span>
+              width="330"
+              class="font-semibold ">
+              <div class="flex">
+                <z-button
+                  rounded
+                  size="small"
+                  class="py-1 ml-0 mr-2"
+                  @click="sendToken(scope.row)">
+                  Send
+                </z-button>
+                <z-button
+                  class="mx-2 p-2 px-4 text-sm rounded"
+                  type="default"
+                  size="mini"
+                  @click="openAddressOnVb(selectedNode, Account.bech32Address)">
+                  <img
+                    src="@/assets/icons/viewblock.png"
+                    height="20"
+                    width="20"
+                  >
+                </z-button>
+                <z-button
+                  v-if="scope.row.local"
+                  class="mx-2 p-2 px-4 text-sm rounded"
+                  type="default"
+                  size="mini"
+                  @click="removeToken(scope.row)">
+                  <i class="eva eva-close-circle-outline text-base mr-2" />
+                  Remove
+                </z-button>
               </div>
             </z-table-column>
           </template>

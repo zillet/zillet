@@ -24,7 +24,7 @@ const createStore = () =>
       encryptedWallets: [],
       prices: {
         ZIL: {
-          USD: 0.02
+          USD: 0.25
         },
         XSGD: { USD: 0.75 }
       },
