@@ -990,6 +990,12 @@ export default {
       }
       const contractMethod = 'WithdrawStakeAmt';
       let actualAmount = units.toQa(amount, units.Units.Zil);
+
+      const ssn = this.myStakes.find(el => el.address === ssnAddr);
+      // in some cases rounding error
+      if (ssn && actualAmount === ssn.amount) {
+        actualAmount = ssn.amount;
+      }
       const contractParams = [
         {
           vname: 'ssnaddr',
