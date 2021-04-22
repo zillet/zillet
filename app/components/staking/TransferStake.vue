@@ -28,7 +28,7 @@
               {{ fromNode.name }}
             </p>
             <p class="text-gray-800 pr-6 text-sm">
-              <b class="text-base">{{ fromNode.amount*Math.pow(10, -12) | currency('', 2) }}</b> 
+              <b class="text-base">{{ fromNode.amount*Math.pow(10, -12) | currency('', 4) }}</b> 
               ZIL staked
             </p>
           </div>
@@ -69,7 +69,7 @@
                 {{ n.name }}
               </p>
               <p class="text-gray-800 pr-2 font-semibold">
-                {{ n.amount*Math.pow(10, -12) | currency('', 2) }} ZIL
+                {{ n.amount*Math.pow(10, -12) | currency('', 4) }} ZIL
               </p>
             </div>
           </div>
@@ -161,7 +161,7 @@
             type="default"
             style="height:3rem; left:-3px"
             class="m-0 relative bg-white border-gray-400 rounded-r"
-            @click="amount=fromNode.amount * Math.pow(10, -12)">
+            @click="fillMax">
             Max
           </z-button>
         </div>
@@ -208,7 +208,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import Vue2Filters from 'vue2-filters';
-import { isNumber } from '@/utils/validation';
+import { BN, units } from '@zilliqa-js/util';
 
 export default {
   name: 'AddToken',
@@ -263,12 +263,13 @@ export default {
       return list;
     },
     validateCryptoAmount() {
-      if (!isNumber(this.amount)) {
+      try {
+        return !new BN(units.toQa(this.amount, units.Units.Zil)).gt(
+          new BN(this.fromNode.amount)
+        );
+      } catch (error) {
         return false;
       }
-      return (
-        parseFloat(this.amount) <= this.fromNode.amount * Math.pow(10, -12)
-      );
     }
   },
   mounted() {
@@ -288,6 +289,11 @@ export default {
     toNodeChange(node) {
       this.toNode = node;
       this.toNodeDropdown = false;
+    },
+    fillMax() {
+      this.amount = Number(this.fromNode.amount * Math.pow(10, -12)).toFixed(
+        10
+      );
     },
     stake() {}
   }

@@ -971,6 +971,8 @@ export default {
       this.errorMsg = '';
       this.loading = true;
       this.actionType = 'unstake';
+      console.log(`Unstaking ...`, amount);
+
       try {
         await this.validateAmountRemove(amount, ssnAddr, 'unstake');
       } catch (error) {
