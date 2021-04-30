@@ -421,7 +421,7 @@ export default {
       transaction: {
         address: '',
         amount: 0,
-        gasLimit: 1,
+        gasLimit: 50,
         gasPrice: config.MINIMUM_GAS_PRICE,
         nonce: ''
       },
