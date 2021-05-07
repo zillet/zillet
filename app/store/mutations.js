@@ -75,7 +75,7 @@ export const saveTxn = (state, data) => {
     networkId: state.selectedNode.id
   };
   //
-  if (data.via === 'zillet') {
+  if (data.via === 'zillet' || data.via === 'zeeves') {
     state.wallet.nonce = data.nonce;
     txn.toAddr = toBech32Address(txn.toAddr);
     txn.data = data.data;

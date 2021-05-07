@@ -809,6 +809,61 @@ export default {
         // Add will some notify about user denied transaction.
       }
     },
+    async txnViaZeeves(tx) {
+      try {
+        const {
+          type,
+          gasPrice,
+          VERSION,
+          nonce,
+          base16address,
+          gasLimit,
+          amount,
+          tokenAmount,
+          contractMethod
+        } = tx;
+        const via = 'zeeves';
+        const txnParams = {
+          version: VERSION,
+          nonce: nonce,
+          gasPrice,
+          gasLimit: Long.fromNumber(gasLimit)
+        };
+        if (type === 'normal') {
+          txnParams.toAddr = base16address;
+          txnParams.amount = new BN(amount);
+          const raw_tx = await Zeeves.transactions.new(txnParams);
+          this.txObserver(raw_tx, via, type);
+          await Zeeves.blockchain.createTransaction(raw_tx);
+        } else {
+          let { contractAddress } = tx;
+          const contract = Zeeves.contracts.at(contractAddress);
+          let contractParams = tokenTransfer(
+            toChecksumAddress(base16address),
+            tokenAmount
+          );
+          txnParams.amount = new BN(0);
+          const sentTx = await contract.callWithoutConfirm(
+            contractMethod,
+            contractParams,
+            txnParams,
+            false
+          );
+          sentTx.TranID = sentTx.id;
+          sentTx.Info = 'Transaction broadcasted';
+          this.txnDone(sentTx);
+          sentTx.via = via;
+          sentTx.type = type;
+          sentTx.rawTx = tx;
+          this.saveTxn(sentTx);
+        }
+      } catch (error) {
+        this.$notify({
+          message: error.message,
+          type: 'danger'
+        });
+      }
+    },
     async txnViaZillet(tx) {
       try {
         const zilliqa = this.$zillet;
@@ -991,6 +1046,8 @@ export default {
         await this.txnViaMoonlet(tx);
       } else if (this.accessType === 1006) {
         await this.txnViaLedger(tx);
+      } else if (this.accessType === 1008) {
+        await this.txnViaZeeves(tx);
       } else {
         await this.txnViaZillet(tx);
       }

@@ -31,6 +31,10 @@
           v-else-if="accessMethodId===1005"
           :uid="1005"
           @exit="accessMethodId=0" />
+        <Zeeves
+          v-else-if="accessMethodId===1008"
+          :uid="1008"
+          @exit="accessMethodId=0" />
         <Ledger
           v-else-if="accessMethodId===1006"
           :uid="1006"
@@ -50,6 +54,7 @@ import Keystore from '@/components/index/AccessWalletKeystore';
 import Mnemonic from '@/components/index/AccessWalletMnemonic';
 import Zilpay from '@/components/index/AccessWalletZilpay';
 import Moonlet from '@/components/index/AccessWalletMoonlet';
+import Zeeves from '@/components/index/AccessWalletZeeves';
 import Ledger from '@/components/index/AccessWalletLedger';
 import Torus from '@/components/index/AccessWalletTorus';
 
@@ -62,6 +67,7 @@ export default {
     Mnemonic,
     Zilpay,
     Moonlet,
+    Zeeves,
     Ledger,
     Torus
   },
