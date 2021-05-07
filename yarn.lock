@@ -15465,3 +15465,8 @@ yorkie@^2.0.0:
     is-ci "^1.0.10"
     normalize-path "^1.0.0"
     strip-indent "^2.0.0"
+
+zeeves-auth-sdk-js@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/zeeves-auth-sdk-js/-/zeeves-auth-sdk-js-2.0.7.tgz#8ec3af82b3622bd187b2e8b8ee464f2f991d33e2"
+  integrity sha512-U5ts66U/Cfc1ftFK9FpIbIElkXBqxXgyq4r3dBeOeUvDsBp/bNYBQm6VZqPdg29JCI6JxrzeOlPLB5jOTht6NQ==

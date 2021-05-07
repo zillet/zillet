@@ -5,7 +5,7 @@
   "author": "man15h <manish9461@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "NUXT_HOST=0.0.0.0 NUXT_PORT=7000 nuxt",
+    "dev": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=7000 nuxt",
     "build": "nuxt build",
     "start": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=80 nuxt start",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
@@ -58,7 +58,8 @@
     "vue-moment": "^4.0.0",
     "vue-notifyjs": "^0.4.3",
     "vue2-filters": "^0.6.0",
-    "vuelidate": "^0.7.4"
+    "vuelidate": "^0.7.4",
+    "zeeves-auth-sdk-js": "^2.0.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.7.0",

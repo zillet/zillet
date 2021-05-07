@@ -78,6 +78,15 @@
         "securityLevel":3
      },
      {
+       "id":1008,
+       "img":"zeeves.svg",
+       "title":"Zeeves",
+       "body":"Access your wallet using Zeeves telegram bot",
+       "allowed":true,
+       "buttonText":"Connect (Beta)",
+       "securityLevel":3
+     },
+     {
         "id":1006,
         "img":"ledger.svg",
         "title":"Ledger",
