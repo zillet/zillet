@@ -22,6 +22,7 @@
       <z-button
         class="w-full my-4"
         rounded
+        :loading="loading"
         type="default"
         size="small">
         <a
@@ -62,6 +63,7 @@ export default {
     ...mapMutations(['importAccount', 'saveAccessType']),
     async connect() {
       if (window && window.zilPay) {
+        this.loading = true;
         try {
           const zilPay = window.zilPay;
           const status = await zilPay.wallet.connect();
@@ -109,6 +111,7 @@ export default {
             type: 'danger'
           });
         }
+        this.loading = false;
       } else {
         this.notFound = true;
         this.$notify({

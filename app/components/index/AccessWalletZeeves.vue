@@ -20,6 +20,7 @@
     </z-alert>
     <z-button
       class="w-full mb-8"
+      :loading="loading"
       rounded
       @click="connect()">
       Connect
@@ -67,6 +68,7 @@ export default {
     async connect() {
       if (window && window.Zeeves) {
         try {
+          this.loading = true;
           const zeeves = window.Zeeves;
           await zeeves.auth();
           const { defaultAccount } = zeeves.wallet;
@@ -93,6 +95,7 @@ export default {
             type: 'danger'
           });
         }
+        this.loading = true;
       } else {
         this.notSupported = true;
         this.$notify({
