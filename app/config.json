@@ -82,7 +82,7 @@
        "img":"zeeves.svg",
        "title":"Zeeves",
        "body":"Access your wallet using Zeeves telegram bot",
-       "allowed":false,
+       "allowed":true,
        "buttonText":"Connect (Beta)",
        "securityLevel":3
      },
