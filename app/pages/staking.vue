@@ -738,6 +738,34 @@ export default {
       };
       return txParams;
     },
+    async zeevesContractTx(contractMethod, contractParams, txParams) {
+      try {
+        const contractAddress = this.contractInstances.proxy.address;
+        const contract = Zeeves.contracts.at(contractAddress);
+        const sentTxn = await contract.call(
+          contractMethod,
+          contractParams,
+          txParams
+        );
+        const txn = {
+          ...txParams,
+          toAddr: contractAddress,
+          TranID: sentTxn.result.TranID,
+          Info: sentTxn.result.Info
+        };
+        this.txnDone(txn);
+        txn.type = 'contract';
+        txn.via = 'zeeves';
+        this.saveTxn(txn);
+        this.loading = false;
+      } catch (err) {
+        console.error(err && err.stack ? err.stack : JSON.stringify(err));
+        return this.$notify({
+          message: err && err.message ? err.message : err,
+          type: 'danger'
+        });
+      }
+    },
     async zilletContractTx(contractMethod, contractParams, txParams) {
       let sentTx = await this.contractInstances.proxy.callWithoutConfirm(
         contractMethod,
@@ -874,6 +902,8 @@ export default {
         await this.zilpayContractTx(contractMethod, contractParams, txParams);
       } else if (this.accessType === 1006) {
         await this.ledgerContractTx(contractMethod, contractParams, txParams);
+      } else if (this.accessType === 1008) {
+        await this.zeevesContractTx(contractMethod, contractParams, txParams);
       } else {
         await this.zilletContractTx(contractMethod, contractParams, txParams);
       }
@@ -1014,6 +1044,8 @@ export default {
         await this.zilpayContractTx(contractMethod, contractParams, txParams);
       } else if (this.accessType === 1006) {
         this.ledgerContractTx(contractMethod, contractParams, txParams);
+      } else if (this.accessType === 1008) {
+        this.zeevesContractTx(contractMethod, contractParams, txParams);
       } else {
         this.zilletContractTx(contractMethod, contractParams, txParams);
       }
@@ -1041,6 +1073,8 @@ export default {
         await this.zilpayContractTx(contractMethod, contractParams, txParams);
       } else if (this.accessType === 1006) {
         await this.ledgerContractTx(contractMethod, contractParams, txParams);
+      } else if (this.accessType === 1008) {
+        await this.zeevesContractTx(contractMethod, contractParams, txParams);
       } else {
         await this.zilletContractTx(contractMethod, contractParams, txParams);
       }
@@ -1077,6 +1111,8 @@ export default {
           await this.zilpayContractTx(contractMethod, contractParams, txParams);
         } else if (this.accessType === 1006) {
           await this.ledgerContractTx(contractMethod, contractParams, txParams);
+        } else if (this.accessType === 1008) {
+          await this.zeevesContractTx(contractMethod, contractParams, txParams);
         } else {
           await this.zilletContractTx(contractMethod, contractParams, txParams);
         }
@@ -1132,6 +1168,8 @@ export default {
         await this.zilpayContractTx(contractMethod, contractParams, txParams);
       } else if (this.accessType === 1006) {
         await this.ledgerContractTx(contractMethod, contractParams, txParams);
+      } else if (this.accessType === 1008) {
+        await this.zeevesContractTx(contractMethod, contractParams, txParams);
       } else {
         await this.zilletContractTx(contractMethod, contractParams, txParams);
       }
