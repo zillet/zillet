@@ -843,13 +843,12 @@ export default {
             tokenAmount
           );
           txnParams.amount = new BN(0);
-          const sentTx = await contract.callWithoutConfirm(
+          const sentTx = await contract.call(
             contractMethod,
             contractParams,
             txnParams,
             false
           );
-          sentTx.TranID = sentTx.id;
           sentTx.Info = 'Transaction broadcasted';
           this.txnDone(sentTx);
           sentTx.via = via;
