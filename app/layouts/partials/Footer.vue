@@ -17,6 +17,16 @@
           Twitter
         </a>
         <a
+          href="https://t.me/zillet_wallet"
+          target="_blank"
+          rel="noopener noreferrer">
+          <img
+            src="@/assets/icons/telegram.svg"
+            class="h-4 w-4 mr-2 "
+            style="margin-top:2px">
+          Telegram
+        </a>
+        <a
           href="mailto:support@zillet.io"
           target="_blank"
           rel="noopener noreferrer">
@@ -55,7 +65,7 @@
         style="max-width:300px" 
         class="mx-4 flex flex-col items-center justify-center">
         <h3 class="font-semibold text-xl mb-4 text-gray-800">
-          🎉 &nbsp; &nbsp; &nbsp;New version of Zillet   &nbsp; &nbsp; &nbsp;🎉
+          🎉 &nbsp; &nbsp; &nbsp;Join Telegram community   &nbsp; &nbsp; &nbsp;🎉
         </h3>
         <div class="text-left">
           A new version of Zillet is available with the following changes and updates.
@@ -148,7 +158,7 @@ export default {
   },
   methods: {
     dontShowVersionNotify() {
-      localStorage.setItem('_new_version_notify', true);
+      localStorage.setItem('_telegram_notify', true);
       this.newVersionNotify = false;
     },
     saveConsent() {

@@ -18,6 +18,18 @@
         account to import it. Please, register there before you proceed.
       </span>
     </z-alert>
+    <div class="flex flex-wrap">
+      <div>
+        Helpful Article 👉
+      </div>
+      <div class="flex flex-row">
+        <ZLink
+          to="/getting-started/how-to-use-zeeves-with-zillet"
+          external>
+          How to use Zeeves (Telegram account) with Zillet
+        </ZLink>
+      </div>
+    </div>
     <z-button
       class="w-full mb-8"
       :loading="loading"
