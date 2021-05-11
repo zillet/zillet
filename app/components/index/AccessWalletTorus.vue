@@ -59,7 +59,6 @@ export default {
           typeOfLogin: 'google',
           verifier: 'google-zillet',
           clientId:
-            process.env.GOOGLE_CLIENT_ID ||
             '718832386865-i96lcpfvpacl0a0gfa6nc0ap5bjqei8i.apps.googleusercontent.com'
         });
         this.loading = false;
@@ -74,6 +73,7 @@ export default {
           type: 'success'
         });
       } catch (error) {
+        console.log(error);
         this.loading = false;
         return this.$notify({
           message: String(error.message),
