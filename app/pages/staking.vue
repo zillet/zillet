@@ -32,7 +32,7 @@
         <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
       </div>
 
-      <div
+      <!-- <div
         class="bg-red-100  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
         <div class="flex items-center text-red-700">
           <i class="eva eva-alert-triangle-outline text-xl mr-4" />
@@ -44,8 +44,7 @@
               target="_blank">read more here </a>
           </div>
         </div>
-        <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
-      </div>
+      </div> -->
       <div
         v-if="stats && stats.apy || fetched"
         class="card border rounded-lg b-1 my-8 mb-4 bg-gray-0 flex  p-4 
@@ -118,8 +117,9 @@
           <z-button
             class="rounded py-2 shadow-md ml-2 w-full "
             size="medium"
-            :disabled="loading || avlWithdrawals < 1 || true"
+            :disabled="loading || avlWithdrawals < 1 "
             :loading="loading && actionType =='completeWithdrawal'"
+            @click="completeWithdrawal()"
           >
             Withdraw
           </z-button>
@@ -188,7 +188,7 @@
             <z-button
               class="rounded py-2 shadow-md ml-2 w-full mb-0"
               size="medium"
-              :disabled="loading || true"
+              :disabled="loading"
               :loading="loading && actionType =='claimReward'"
               @click="claimReward()">
               Claim Reward
@@ -224,7 +224,7 @@
                 class="rounded py-2 mr-2 w-32 mb-0"
                 type="default"
                 size="medium"
-                :disabled="loading || true"
+                :disabled="loading"
                 :loading="loading && actionType =='unstake'"
                 @click="showUnstakeModal=true">
                 Unstake
@@ -233,7 +233,7 @@
                 class="rounded py-2 mr-2 mb-0 border-primary"
                 type="default"
                 size="medium"
-                :disabled="loading || true"
+                :disabled="loading"
                 :loading="loading && actionType =='transfer'"
                 @click="showTransferStakeModal=true">
                 Transfer Stake
@@ -241,7 +241,7 @@
               <z-button
                 class="rounded py-2 shadow-md ml-2 w-40 mb-0 border-primary"
                 size="medium"
-                :disabled="loading || true"
+                :disabled="loading "
                 :loading="loading && actionType =='stake'"
                 @click="showStakeModal=true">
                 Stake

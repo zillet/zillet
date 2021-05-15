@@ -107,13 +107,13 @@
   ],
   "STAKING":{
      "testnet":{
-        "proxy":"zil1qht7zg0zqk5yhuw694s2ez3ysjqqllanrc6kvr",
-        "ssnlist":"zil1qhpdmmpwg3y3vppkzvxtf7dcfh5l0mjm7hemjh",
+        "proxy":"zil1x5dr0c5yrfzu0uk7rrhyt7tguyryzcnn8q75pc",
+        "ssnlist":"zil15tjx2l0gzzxaxucwk50stgw5smthhckl8qcqmf",
         "gzil":"zil1zmatu4uka68ghtt4vk5h2tdfrwkrp6pcq0y2rm"
      },
      "mainnet":{
-        "proxy":"zil1g029nmzsf36r99vupp4s43lhs40fsscx3jjpuy",
-        "ssnlist":"zil1k7qwsz2m3w595u29je0dvv4nka62c5wwrp8r8p",
+        "proxy":"zil1v25at4s3eh9w34uqqhe3vdvfsvcwq6un3fupc2",
+        "ssnlist":"zil15lr86jwg937urdeayvtypvhy6pnp6d7p8n5z09",
         "gzil":"zil14pzuzq6v6pmmmrfjhczywguu0e97djepxt8g3e"
      }
   }
