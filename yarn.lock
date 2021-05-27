@@ -3629,7 +3629,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-balloon-css@^0.5.0, balloon-css@~0.5.0:
+balloon-css@^0.5.0:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/balloon-css/-/balloon-css-0.5.2.tgz#9e2163565a136c9d4aa20e8400772ce3b738d3ff"
   integrity sha512-zheJpzwyNrG4t39vusA67v3BYg1HTVXOF8cErPEHzWK88PEOFwgo6Ea9VHOgOWNMgeuOtFVtB73NE2NWl9uDyQ==
@@ -14529,13 +14529,6 @@ uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-v-pure-tooltip@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/v-pure-tooltip/-/v-pure-tooltip-1.0.1.tgz#a9aece225403aedacd6df6113a78f58959419ae1"
-  integrity sha512-ZTr7Kh5R8afa0pECG64zxKH+RoGwjlZmRTPlZubsipEoGLZ9LwTKP9oRIVTRq4ktKShu00iIQBZmnXx35otHWQ==
-  dependencies:
-    balloon-css "~0.5.0"
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"

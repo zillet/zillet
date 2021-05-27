@@ -51,7 +51,6 @@
     "nuxt-purgecss": "^0.2.1",
     "qrcode": "^1.3.2",
     "tailwindcss": "^1.0.0-beta.4",
-    "v-pure-tooltip": "^1.0.1",
     "vue-clipboard2": "^0.3.0",
     "vue-cryptoicon": "^0.1.5",
     "vue-jazzicon": "^0.1.3",
