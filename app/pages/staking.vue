@@ -33,15 +33,11 @@
       </div>
 
       <div
-        class="bg-red-100  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
-        <div class="flex items-center text-red-700">
+        class="bg-green-100  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
+        <div class="flex items-center text-green-700">
           <i class="eva eva-alert-triangle-outline text-xl mr-4" />
           <div>
-            All staking activites are disabled for a week due to network issue. 
-            <a
-              class="text-red-700 font-bold underline"
-              href="https://twitter.com/zilliqa/status/1395660963366555648/photo/1"
-              target="_blank">read more here </a>
+            Zilliqa seed node staking has been unpaused. All staking activities have been resumed. 
           </div>
         </div>
         <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
@@ -118,8 +114,9 @@
           <z-button
             class="rounded py-2 shadow-md ml-2 w-full "
             size="medium"
-            :disabled="loading || avlWithdrawals < 1 || true"
+            :disabled="loading || avlWithdrawals < 1"
             :loading="loading && actionType =='completeWithdrawal'"
+            @click="completeWithdrawal"
           >
             Withdraw
           </z-button>
@@ -188,7 +185,7 @@
             <z-button
               class="rounded py-2 shadow-md ml-2 w-full mb-0"
               size="medium"
-              :disabled="loading || true"
+              :disabled="loading"
               :loading="loading && actionType =='claimReward'"
               @click="claimReward()">
               Claim Reward
@@ -224,7 +221,7 @@
                 class="rounded py-2 mr-2 w-32 mb-0"
                 type="default"
                 size="medium"
-                :disabled="loading || true"
+                :disabled="loading "
                 :loading="loading && actionType =='unstake'"
                 @click="showUnstakeModal=true">
                 Unstake
@@ -233,7 +230,7 @@
                 class="rounded py-2 mr-2 mb-0 border-primary"
                 type="default"
                 size="medium"
-                :disabled="loading || true"
+                :disabled="loading"
                 :loading="loading && actionType =='transfer'"
                 @click="showTransferStakeModal=true">
                 Transfer Stake
@@ -241,7 +238,7 @@
               <z-button
                 class="rounded py-2 shadow-md ml-2 w-40 mb-0 border-primary"
                 size="medium"
-                :disabled="loading || true"
+                :disabled="loading"
                 :loading="loading && actionType =='stake'"
                 @click="showStakeModal=true">
                 Stake
