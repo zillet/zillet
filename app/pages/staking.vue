@@ -32,16 +32,19 @@
         <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
       </div>
 
-      <div
+      <!-- <div
         class="bg-green-100  rounded my-4 p-2 px-4  text-left flex flex-row items-center justify-between">
         <div class="flex items-center text-green-700">
-          <i class="eva eva-alert-triangle-outline text-xl mr-4" />
+          <i class="eva eva-checkmark-circle-2-outline text-xl mr-4" />
           <div>
-            Zilliqa seed node staking has been unpaused. All staking activities have been resumed. 
+            We've migrated to the upgraded staking contract, This means actions on Zillet have been unpaused. 
+            <a
+              class="text-green-700 font-bold underline"
+              href="https://blog.zilliqa.com/upcoming-staking-contract-upgrades-to-enhance-user-experience-with-new-functionalities-c7548aab4823"
+              target="_blank">read more here </a>
           </div>
         </div>
-        <!-- <i class="eva eva-close-outline cursor-pointer" /> -->
-      </div>
+      </div> -->
       <div
         v-if="stats && stats.apy || fetched"
         class="card border rounded-lg b-1 my-8 mb-4 bg-gray-0 flex  p-4 
@@ -114,9 +117,9 @@
           <z-button
             class="rounded py-2 shadow-md ml-2 w-full "
             size="medium"
-            :disabled="loading || avlWithdrawals < 1"
+            :disabled="loading || avlWithdrawals < 1 "
             :loading="loading && actionType =='completeWithdrawal'"
-            @click="completeWithdrawal"
+            @click="completeWithdrawal()"
           >
             Withdraw
           </z-button>
@@ -221,7 +224,7 @@
                 class="rounded py-2 mr-2 w-32 mb-0"
                 type="default"
                 size="medium"
-                :disabled="loading "
+                :disabled="loading"
                 :loading="loading && actionType =='unstake'"
                 @click="showUnstakeModal=true">
                 Unstake
@@ -238,7 +241,7 @@
               <z-button
                 class="rounded py-2 shadow-md ml-2 w-40 mb-0 border-primary"
                 size="medium"
-                :disabled="loading"
+                :disabled="loading "
                 :loading="loading && actionType =='stake'"
                 @click="showStakeModal=true">
                 Stake
@@ -308,9 +311,7 @@ import Stake from '@/components/staking/Stake.vue';
 import Unstake from '@/components/staking/Unstake.vue';
 import RewardClaim from '@/components/staking/RewardClaim.vue';
 import TransferStake from '@/components/staking/TransferStake.vue';
-
 import Broadcasted from '@/components/send/Broadcasted';
-
 const STAKING = config.STAKING;
 export default {
   name: 'Staking',
@@ -385,7 +386,6 @@ export default {
     avlWithdrawals() {
       let total = 0;
       const pWith = this.pendingWithdrawals;
-
       for (const key in pWith) {
         if (this.currentMiniEpoch - parseInt(key) > this.bnumReq) {
           total = Number(total) + Number(pWith[key]);
@@ -396,7 +396,6 @@ export default {
     confNeeded() {
       let min = 0;
       const pWith = this.pendingWithdrawals;
-
       Object.entries(pWith).forEach(([key, value], index) => {
         if (index == 0) {
           min = this.currentMiniEpoch - parseInt(key);
@@ -430,20 +429,19 @@ export default {
   },
   async mounted() {
     this.fetched = false;
-    this.lastrewardcycle = localStorage.getItem('__lastrewardcycle') || 0;
-    try {
-      this.last_withdraw_cycle_deleg =
-        JSON.parse(localStorage.getItem('__last_withdraw_cycle_deleg')) || {};
-      this.direct_deposit_deleg =
-        JSON.parse(localStorage.getItem('__direct_deposit_deleg')) || {};
-      this.stake_ssn_per_cycle =
-        JSON.parse(localStorage.getItem('__stake_ssn_per_cycle')) || {};
-      this.buff_deposit_deleg =
-        JSON.parse(localStorage.getItem('__buff_deposit_deleg')) || {};
-      this.deleg_stake_per_cycle =
-        JSON.parse(localStorage.getItem('__deleg_stake_per_cycle')) || {};
-    } catch (error) {}
-
+    // this.lastrewardcycle = localStorage.getItem('__lastrewardcycle') || 0;
+    // try {
+    //   this.last_withdraw_cycle_deleg =
+    //     JSON.parse(localStorage.getItem('__last_withdraw_cycle_deleg')) || {};
+    //   this.direct_deposit_deleg =
+    //     JSON.parse(localStorage.getItem('__direct_deposit_deleg')) || {};
+    //   this.stake_ssn_per_cycle =
+    //     JSON.parse(localStorage.getItem('__stake_ssn_per_cycle')) || {};
+    //   this.buff_deposit_deleg =
+    //     JSON.parse(localStorage.getItem('__buff_deposit_deleg')) || {};
+    //   this.deleg_stake_per_cycle =
+    //     JSON.parse(localStorage.getItem('__deleg_stake_per_cycle')) || {};
+    // } catch (error) {}
     await this.init();
     this.fetched = true;
   },
@@ -454,7 +452,6 @@ export default {
     async fetchStats() {
       try {
         let stats = await this.$axios.$get(`https://viewblock.zillet.io/stats`);
-        console.log(stats.success);
         this.stats = stats.success;
       } catch (error) {
         console.log(error);
@@ -490,7 +487,6 @@ export default {
           STAKING.testnet.gzil
         );
       }
-
       // Pending withdrawals
       this.contractInstances.ssnlist
         .getSubState('withdrawal_pending', [address])
@@ -577,13 +573,8 @@ export default {
         'lastrewardcycle',
         []
       );
-      let currentTime = new Date().getTime();
-      let lastClaimedAt = localStorage.getItem('__rewards_claimed_at') || 0;
-      var seconds = parseInt((currentTime - lastClaimedAt) / 1000);
-      console.log(seconds);
       if (
-        (Number(this.lastrewardcycle) < Number(lastrewardcycle) ||
-          (seconds > 120 && seconds < 2400)) &&
+        Number(this.lastrewardcycle) < Number(lastrewardcycle) &&
         this.fetchedRewardCal === false
       ) {
         this.fetchedRewardCal = true;
@@ -595,10 +586,6 @@ export default {
             [delegator]
           );
           this.last_withdraw_cycle_deleg = last_withdraw_cycle_deleg;
-          localStorage.setItem(
-            '__last_withdraw_cycle_deleg',
-            JSON.stringify(last_withdraw_cycle_deleg)
-          );
         } catch (error) {
           console.error(error);
         }
@@ -610,10 +597,6 @@ export default {
             [delegator]
           );
           this.direct_deposit_deleg = direct_deposit_deleg;
-          localStorage.setItem(
-            '__direct_deposit_deleg',
-            JSON.stringify(direct_deposit_deleg)
-          );
         } catch (error) {
           console.error(error);
         }
@@ -625,10 +608,6 @@ export default {
             [delegator]
           );
           this.buff_deposit_deleg = buff_deposit_deleg;
-          localStorage.setItem(
-            '__buff_deposit_deleg',
-            JSON.stringify(buff_deposit_deleg)
-          );
         } catch (error) {
           console.error(error);
         }
@@ -640,10 +619,6 @@ export default {
             []
           );
           this.stake_ssn_per_cycle = stake_ssn_per_cycle;
-          localStorage.setItem(
-            '__stake_ssn_per_cycle',
-            JSON.stringify(stake_ssn_per_cycle)
-          );
         } catch (error) {
           console.error(error);
         }
@@ -655,10 +630,6 @@ export default {
             [delegator]
           );
           this.deleg_stake_per_cycle = deleg_stake_per_cycle;
-          localStorage.setItem(
-            '__deleg_stake_per_cycle',
-            JSON.stringify(deleg_stake_per_cycle)
-          );
         } catch (error) {
           console.error(error);
         }
@@ -670,7 +641,6 @@ export default {
           this.stake_ssn_per_cycle != null &&
           this.deleg_stake_per_cycle != null
         ) {
-          localStorage.setItem('__lastrewardcycle', lastrewardcycle);
         }
         try {
           const reward = await get_rewards(
@@ -986,27 +956,31 @@ export default {
         });
         throw Error(this.errorMsg);
       }
-      const {
-        buff_deposit_deleg
-      } = await this.contractInstances.ssnlist.getSubState(
-        'buff_deposit_deleg',
-        [myAddr]
-      );
-      let biggestBuffDeposit = 0;
-      for (const key in buff_deposit_deleg[myAddr][ssnAddr]) {
-        if (key > biggestBuffDeposit) {
-          biggestBuffDeposit = key;
+      try {
+        const {
+          buff_deposit_deleg
+        } = await this.contractInstances.ssnlist.getSubState(
+          'buff_deposit_deleg',
+          [myAddr]
+        );
+        let biggestBuffDeposit = 0;
+        for (const key in buff_deposit_deleg[myAddr][ssnAddr]) {
+          if (key > biggestBuffDeposit) {
+            biggestBuffDeposit = key;
+          }
         }
-      }
-      if (!(Number(lastrewardcycle) > Number(biggestBuffDeposit))) {
-        this.loading = false;
-        this.errorMsg = `You have buffered deposits in the selected node. 
+        if (!(Number(lastrewardcycle) > Number(biggestBuffDeposit))) {
+          this.loading = false;
+          this.errorMsg = `You have buffered deposits in the selected node. 
           Please wait for the next cycle before withdrawing the staked amount.`;
-        this.$notify({
-          message: this.errorMsg,
-          type: 'danger'
-        });
-        throw Error(this.errorMsg);
+          this.$notify({
+            message: this.errorMsg,
+            type: 'danger'
+          });
+          throw Error(this.errorMsg);
+        }
+      } catch (error) {
+        console.error(error);
       }
     },
     async unstake(amount, ssnAddr) {
@@ -1014,7 +988,6 @@ export default {
       this.loading = true;
       this.actionType = 'unstake';
       console.log(`Unstaking ...`, amount);
-
       try {
         await this.validateAmountRemove(amount, ssnAddr, 'unstake');
       } catch (error) {
@@ -1034,7 +1007,6 @@ export default {
       }
       const contractMethod = 'WithdrawStakeAmt';
       let actualAmount = units.toQa(amount, units.Units.Zil);
-
       const ssn = this.myStakes.find(el => el.address === ssnAddr);
       // in some cases rounding error
       if (ssn && actualAmount === ssn.amount) {
@@ -1129,7 +1101,6 @@ export default {
           await this.zilletContractTx(contractMethod, contractParams, txParams);
         }
         this.showRewardClaimModal = false;
-        localStorage.setItem('__rewards_claimed_at', new Date().getTime());
         this.loading = false;
         this.errorMsg = '';
       } else {
