@@ -1,19 +1,21 @@
-const TransportU2F = require('@ledgerhq/hw-transport-u2f').default;
-const TransportWebAuthn = require('@ledgerhq/hw-transport-webauthn').default;
-const txnEncoder = require('@zilliqa-js/account/dist/util')
-  .encodeTransactionProto;
-const { BN, Long } = require('@zilliqa-js/util');
+import TransportU2F from '@ledgerhq/hw-transport-u2f';
+import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
+import { sha256 } from 'js-sha256';
+import { encodeTransactionProto } from '@zilliqa-js/account/dist/util';
+import { BN, Long } from '@zilliqa-js/util';
 
 const CLA = 0xe0;
 const INS = {
   getVersion: 0x01,
   getPublickKey: 0x02,
   getPublicAddress: 0x02,
-  signTxn: 0x04
+  signTxn: 0x04,
+  signHash: 0x08
 };
 
 const PubKeyByteLen = 33;
 const SigByteLen = 64;
+const HashByteLen = 32;
 const Bech32AddrLen = 'zil'.length + 1 + 32 + 6;
 
 /**
@@ -25,18 +27,23 @@ const Bech32AddrLen = 'zil'.length + 1 + 32 + 6;
  */
 export default class Zilliqa {
   static async create() {
-    const isWebAuthn = await TransportWebAuthn.isSupported();
+    const isUSB = await TransportWebUSB.isSupported();
 
-    if (isWebAuthn) {
-      return await TransportWebAuthn.create();
+    try {
+      if (isUSB) {
+        const transport = await TransportWebUSB.create();
+
+        return transport;
+      }
+    } catch {
+      //
     }
 
-    return await TransportU2F.create();
+    return TransportU2F.create();
   }
 
   constructor(transport, scrambleKey = 'w0w') {
     this.transport = transport;
-    transport.setExchangeTimeout(180000);
     transport.decorateAppAPIMethods(
       this,
       ['getVersion', 'getPublicKey', 'getPublicAddress', 'signHash', 'signTxn'],
@@ -64,7 +71,7 @@ export default class Zilliqa {
     const P1 = 0x00;
     const P2 = 0x00;
 
-    let payload = Buffer.alloc(4);
+    const payload = Buffer.alloc(4);
     payload.writeInt32LE(index);
 
     return this.transport
@@ -80,7 +87,7 @@ export default class Zilliqa {
     const P1 = 0x00;
     const P2 = 0x01;
 
-    let payload = Buffer.alloc(4);
+    const payload = Buffer.alloc(4);
     payload.writeInt32LE(index);
 
     return this.transport
@@ -100,7 +107,7 @@ export default class Zilliqa {
     const P1 = 0x00;
     const P2 = 0x00;
 
-    let indexBytes = Buffer.alloc(4);
+    const indexBytes = Buffer.alloc(4);
     indexBytes.writeInt32LE(keyIndex);
 
     // Convert to Zilliqa types
@@ -116,10 +123,10 @@ export default class Zilliqa {
       txnParams.gasLimit = Long.fromNumber(txnParams.gasLimit);
     }
 
-    var txnBytes = txnEncoder(txnParams);
+    let txnBytes = encodeTransactionProto(txnParams);
 
     const STREAM_LEN = 128; // Stream in batches of STREAM_LEN bytes each.
-    var txn1Bytes;
+    let txn1Bytes;
     if (txnBytes.length > STREAM_LEN) {
       txn1Bytes = txnBytes.slice(0, STREAM_LEN);
       txnBytes = txnBytes.slice(STREAM_LEN, undefined);
@@ -128,9 +135,9 @@ export default class Zilliqa {
       txnBytes = Buffer.alloc(0);
     }
 
-    var txn1SizeBytes = Buffer.alloc(4);
+    const txn1SizeBytes = Buffer.alloc(4);
     txn1SizeBytes.writeInt32LE(txn1Bytes.length);
-    var hostBytesLeftBytes = Buffer.alloc(4);
+    const hostBytesLeftBytes = Buffer.alloc(4);
     hostBytesLeftBytes.writeInt32LE(txnBytes.length);
     // See signTxn.c:handleSignTxn() for sequence details of payload.
     // 1. 4 bytes for indexBytes.
@@ -144,7 +151,7 @@ export default class Zilliqa {
       txn1Bytes
     ]);
 
-    let transport = this.transport;
+    const transport = this.transport;
     return transport
       .send(CLA, INS.signTxn, P1, P2, payload)
       .then(function cb(response) {
@@ -155,7 +162,7 @@ export default class Zilliqa {
         //  2. 4-bytes of txnNSizeBytes (number of bytes being sent now).
         //  3. txnNBytes of actual data.
         if (txnBytes.length > 0) {
-          var txnNBytes;
+          let txnNBytes;
           if (txnBytes.length > STREAM_LEN) {
             txnNBytes = txnBytes.slice(0, STREAM_LEN);
             txnBytes = txnBytes.slice(STREAM_LEN, undefined);
@@ -164,7 +171,7 @@ export default class Zilliqa {
             txnBytes = Buffer.alloc(0);
           }
 
-          var txnNSizeBytes = Buffer.alloc(4);
+          const txnNSizeBytes = Buffer.alloc(4);
           txnNSizeBytes.writeInt32LE(txnNBytes.length);
           hostBytesLeftBytes.writeInt32LE(txnBytes.length);
           const payload = Buffer.concat([
@@ -176,6 +183,28 @@ export default class Zilliqa {
         }
         return response;
       })
+      .then(result => {
+        return result.toString('hex').slice(0, SigByteLen * 2);
+      });
+  }
+
+  signHash(keyIndex, message) {
+    const P1 = 0x00;
+    const P2 = 0x00;
+    const hashStr = sha256(message);
+    let indexBytes = Buffer.alloc(4);
+    indexBytes.writeInt32LE(keyIndex);
+    const hashBytes = Buffer.from(hashStr, 'hex');
+    let hashLen = hashBytes.length;
+    if (hashLen <= 0) {
+      throw Error(`Hash length ${hashLen} is invalid`);
+    }
+    if (hashLen > HashByteLen) {
+      hashBytes.slice(0, HashByteLen);
+    }
+    const payload = Buffer.concat([indexBytes, hashBytes]);
+    return this.transport
+      .send(CLA, INS.signHash, P1, P2, payload)
       .then(result => {
         return result.toString('hex').slice(0, SigByteLen * 2);
       });
