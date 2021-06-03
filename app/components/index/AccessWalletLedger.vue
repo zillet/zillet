@@ -10,6 +10,12 @@
       Make sure your Ledger is <span class="font-semibold">unlocked</span>, you've selected the <span class="font-semibold">Zilliqa</span> app
       on the device, and browser support is <span class="font-semibold">enabled</span>.
     </p>
+    <z-alert
+      v-if="loading"
+      type="info"
+      class="my-6">
+      Please check and confirm from your Ledger device
+    </z-alert>
     <z-button
       class="w-full mb-8"
       rounded
