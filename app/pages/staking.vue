@@ -716,7 +716,7 @@ export default {
         pubKey: this.Account.publicKey,
         amount: new BN(0),
         gasPrice: new BN(minGasPrice.result),
-        gasLimit: Long.fromNumber(10000)
+        gasLimit: Long.fromNumber(30000)
       };
       return txParams;
     },
