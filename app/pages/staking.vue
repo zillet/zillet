@@ -705,9 +705,9 @@ export default {
       const minGasPrice = await this.$zillet.blockchain.getMinimumGasPrice();
       const nonce = this.Account.nonce + 1;
       console.log(this.Account.balance * Math.pow(10, -12));
-      if (this.Account.balance * Math.pow(10, -12) < 30) {
+      if (this.Account.balance * Math.pow(10, -12) < 100) {
         throw Error(
-          'Account balance is low, balance should be at least 30 ZIL.'
+          'Account balance is low, balance should be at least 100 ZIL.'
         );
       }
       let txParams = {
@@ -716,7 +716,7 @@ export default {
         pubKey: this.Account.publicKey,
         amount: new BN(0),
         gasPrice: new BN(minGasPrice.result),
-        gasLimit: Long.fromNumber(30000)
+        gasLimit: Long.fromNumber(15000)
       };
       return txParams;
     },

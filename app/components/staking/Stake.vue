@@ -204,7 +204,7 @@ export default {
     },
     avlAmount() {
       return this.roundDown(
-        this.Balance.zil && Number(this.Balance.zil).toFixed(4) - 50,
+        this.Balance.zil && Number(this.Balance.zil).toFixed(4) - 100,
         4
       );
     },
@@ -212,7 +212,7 @@ export default {
       if (!isNumber(this.amount)) {
         return false;
       }
-      return parseFloat(this.amount) < this.Balance.zil - 50;
+      return parseFloat(this.amount) < this.Balance.zil - 100;
     }
   },
   watch: {
