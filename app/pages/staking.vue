@@ -587,7 +587,7 @@ export default {
           );
           this.last_withdraw_cycle_deleg = last_withdraw_cycle_deleg;
         } catch (error) {
-          console.error(error);
+          console.warn(error);
         }
         try {
           const {
@@ -598,7 +598,7 @@ export default {
           );
           this.direct_deposit_deleg = direct_deposit_deleg;
         } catch (error) {
-          console.error(error);
+          console.warn(error);
         }
         try {
           const {
@@ -609,7 +609,7 @@ export default {
           );
           this.buff_deposit_deleg = buff_deposit_deleg;
         } catch (error) {
-          console.error(error);
+          console.warn(error);
         }
         try {
           const {
@@ -620,7 +620,7 @@ export default {
           );
           this.stake_ssn_per_cycle = stake_ssn_per_cycle;
         } catch (error) {
-          console.error(error);
+          console.warn(error);
         }
         try {
           const {
@@ -631,7 +631,7 @@ export default {
           );
           this.deleg_stake_per_cycle = deleg_stake_per_cycle;
         } catch (error) {
-          console.error(error);
+          console.warn(error);
         }
         this.lastrewardcycle = lastrewardcycle;
         if (
@@ -980,7 +980,7 @@ export default {
           throw Error(this.errorMsg);
         }
       } catch (error) {
-        console.error(error);
+        console.warn(error);
       }
     },
     async unstake(amount, ssnAddr) {
@@ -991,7 +991,7 @@ export default {
       try {
         await this.validateAmountRemove(amount, ssnAddr, 'unstake');
       } catch (error) {
-        console.warn(error);
+        console.error(error);
         return;
       }
       let txParams = {};
@@ -1114,7 +1114,7 @@ export default {
       try {
         await this.validateAmountRemove(amount, fromNode.address, 'transfer');
       } catch (error) {
-        console.warn(error);
+        console.error(error);
         return;
       }
       let txParams = {};

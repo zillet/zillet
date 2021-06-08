@@ -121,6 +121,13 @@
         </div>
       </div>
       <div
+        class="bg-gray-100 text-gray-700 rounded my-2 p-2 px-4  text-left flex flex-row items-center">
+        <i class="eva eva-info-outline text-xl mr-4" />
+        <div>
+          Please levave at least <b>100 ZIL</b>(for fee) in your wallet in order to claim reward.
+        </div>
+      </div>
+      <div
         v-if="errorMsg"
         class="bg-red-100 text-red-700 rounded my-4  px-4 p-2  text-left flex flex-row items-center">
         <i
