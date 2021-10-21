@@ -82,7 +82,7 @@
         </div>
         <div class="flex-col text-left">
           <div>
-            <span class="text-xl font-bold">{{ stats.gZilLeft }} % </span>
+            <span class="text-xl font-bold">0 % </span>
           </div>
           <div class="">
             gZIL Left
