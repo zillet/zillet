@@ -168,13 +168,6 @@
               <span class="text-base font-normal text-gray-700">
                 ZIL
               </span>
-              <span class="text-xl font-semibold mx-1">
-                +
-              </span>
-              {{ totalReward*Math.pow(10,-15) | currency('', 4) }} 
-              <span class="text-base font-normal text-gray-700">
-                gZIL
-              </span>
             </span>
             <span v-else>
               <Loader class="my-2" />
