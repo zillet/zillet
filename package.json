@@ -42,7 +42,7 @@
     "bip39": "^3.0.1",
     "core-js": "^2.6.5",
     "cross-env": "^5.2.0",
-    "dapp-wallet-util": "git://github.com/cryptolandtech/dapp-wallet-util.git",
+    "dapp-wallet-util": "https://github.com/cryptolandtech/dapp-wallet-util.git",
     "dotenv": "^7.0.0",
     "eva-icons": "^1.1.1",
     "hdkey": "^1.1.1",
