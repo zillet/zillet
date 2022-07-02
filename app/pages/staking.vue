@@ -183,7 +183,7 @@
               size="medium"
               :disabled="loading"
               :loading="loading && actionType =='claimReward'"
-              @click="claimReward()">
+              @click="claimReward({})">
               Claim Reward
             </z-button>
           </div>
@@ -305,6 +305,7 @@ import Unstake from '@/components/staking/Unstake.vue';
 import RewardClaim from '@/components/staking/RewardClaim.vue';
 import TransferStake from '@/components/staking/TransferStake.vue';
 import Broadcasted from '@/components/send/Broadcasted';
+
 const STAKING = config.STAKING;
 export default {
   name: 'Staking',
@@ -692,7 +693,7 @@ export default {
       }
       this.updateBalance(balance.result);
     },
-    async createTxn() {
+    async createTxn(overrides) {
       const VERSION = this.selectedNode.version;
       await this.updateWallet();
       const minGasPrice = await this.$zillet.blockchain.getMinimumGasPrice();
@@ -709,7 +710,8 @@ export default {
         pubKey: this.Account.publicKey,
         amount: new BN(0),
         gasPrice: new BN(minGasPrice.result),
-        gasLimit: Long.fromNumber(30000)
+        gasLimit: Long.fromNumber(30000),
+        ...overrides
       };
       return txParams;
     },
@@ -1058,16 +1060,16 @@ export default {
       this.loading = false;
       this.errorMsg = '';
     },
-    async claimReward(ssn) {
+    async claimReward({ address, overrides }) {
       console.log(`Claiming reward...`);
       this.actionType = 'claimReward';
-      if (this.myStakes.length === 1 || ssn) {
+      if (this.myStakes.length === 1 || address) {
         const ssnAddr =
-          this.myStakes.length === 1 ? this.myStakes[0].address : ssn;
+          this.myStakes.length === 1 ? this.myStakes[0].address : address;
         this.loading = true;
         let txParams;
         try {
-          txParams = await this.createTxn();
+          txParams = await this.createTxn(overrides);
         } catch (error) {
           this.loading = false;
           this.showRewardClaimModal = false;
