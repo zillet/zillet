@@ -41,11 +41,10 @@
             {{ scope.row.amount*Math.pow(10, -12) | currency('', 2) }}
           </z-table-column>
           <z-table-column
-            label="Rewards (ZIL + gZIL)"
+            label="Rewards (ZIL)"
             class="font-semibold"
             field="myReward">
-            {{ scope.row.myReward*Math.pow(10, -12) | currency('', 4) }} +               
-            {{ scope.row.myReward*Math.pow(10, -15) | currency('', 4) }} 
+            {{ scope.row.myReward*Math.pow(10, -12) | currency('', 4) }} 
           </z-table-column>
         </template>
       </z-table>
@@ -53,7 +52,7 @@
         class="bg-gray-200 text-gray-900 rounded my-4 p-2 px-4  text-left flex flex-row items-center">
         <i class="eva eva-info-outline text-xl mr-4" />
         <div>
-          Your transaction might be failing because of the low "Gas Limit". Please increase adjust it.
+          Increase the "Gas Limit" if your transaction is failing.
         </div>
       </div>
       <div class="flex items-center justify-between">
