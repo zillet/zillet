@@ -195,7 +195,7 @@ export default {
   methods: {
     isNumber,
     claim() {
-      if (this.selectedRow.address && this.selectedIndex) {
+      if (this.selectedRow.address && this.selectedIndex >= 0) {
         this.$emit('claim', {
           address: this.selectedRow.address,
           overrides: {
