@@ -1063,7 +1063,7 @@ export default {
     async claimReward({ address, overrides }) {
       console.log(`Claiming reward...`);
       this.actionType = 'claimReward';
-      if (this.myStakes.length === 1 || address) {
+      if ( address) {
         const ssnAddr =
           this.myStakes.length === 1 ? this.myStakes[0].address : address;
         this.loading = true;
