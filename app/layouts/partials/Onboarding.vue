@@ -1,6 +1,6 @@
 <template>
   <z-modal
-    :visible="visible"
+    :visible="false"
     :autoclose="false"
     class="onboarding"
     custom-class="max-w-4xl"
@@ -130,7 +130,7 @@ export default {
               </p>
               <p>
                 You must double-check the URL and Bookmark the website.
-                It should say <code>https://zillet.io</code> in your URL bar.
+                It should say <code>https://app.zillet.io</code> in your URL bar.
               </p>
             </div>
           </div>`,
@@ -191,10 +191,10 @@ export default {
     }
   },
   beforeMount() {
-    const hasOnboarded = localStorage.getItem('has_onboarded');
-    if (hasOnboarded != 'true') {
-      this.visible = true;
-    }
+    // const hasOnboarded = localStorage.getItem('has_onboarded');
+    // if (hasOnboarded != 'true') {
+    //   this.visible = true;
+    // }
   },
   methods: {
     nextStep() {

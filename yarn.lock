@@ -5364,9 +5364,9 @@ d@1, d@^1.0.1:
     es5-ext "^0.10.50"
     type "^1.0.1"
 
-"dapp-wallet-util@git://github.com/cryptolandtech/dapp-wallet-util.git":
+"dapp-wallet-util@https://github.com/cryptolandtech/dapp-wallet-util.git":
   version "0.1.0"
-  resolved "git://github.com/cryptolandtech/dapp-wallet-util.git#bf805ae45de9469be943901b0c9f22ba29a0c83d"
+  resolved "https://github.com/cryptolandtech/dapp-wallet-util.git#bf805ae45de9469be943901b0c9f22ba29a0c83d"
 
 dashdash@^1.12.0:
   version "1.14.1"

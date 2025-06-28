@@ -11,15 +11,15 @@
       <div class="flex-auto" />
       <div class="flex-none flex flex-col items-end justify-around">
         <NodeDropdown />
-        <nuxt-link
+        <!-- <nuxt-link
           v-if="$route.name!='create' && !LoggedIn"
           :to="{name: 'create'}"
           class="navigation__link">
           <i class="eva eva-plus-outline font-bold text-base" />
           &nbsp;Create Wallet
-        </nuxt-link>
+        </nuxt-link> -->
         <nuxt-link
-          v-else-if="!LoggedIn"
+          v-if="!LoggedIn"
           :to="{name: 'index'}"
           class="navigation__link">
           <i class="eva eva-layers-outline font-bold text-base" />

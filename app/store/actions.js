@@ -11,10 +11,10 @@ function setData(method, params) {
 
 export async function nuxtClientInit({ commit, dispatch }, app) {
   try {
-    const node = JSON.parse(localStorage.getItem('_selected_node'));
-    if (node && node.url) {
-      commit('SELECT_NODE', node);
-    }
+    // const node = JSON.parse(localStorage.getItem('_selected_node'));
+    // if (node && node.url) {
+    //   commit('SELECT_NODE', node);
+    // }
     await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'ZIL' });
     await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'SGD' });
     await dispatch('getZrc2List');

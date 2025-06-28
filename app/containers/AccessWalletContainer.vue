@@ -14,7 +14,7 @@
         v-if="!hideTop"
         class="mb-8">
         If you must, please double-check the URL. It should say
-        <code>https://zillet.io</code> in your URL bar.
+        <code>https://app.zillet.io</code> in your URL bar.
       </p>
       <slot />
       <div

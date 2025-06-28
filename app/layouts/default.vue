@@ -1,25 +1,25 @@
 <template>
   <div class="container">
     <Notifications />
-    <!-- <div
+    <div
       v-if="showNoti"
-      style="font-size:0.9rem"
-      class="bg-teal-600 rounded w-full p-2 text-white
-      flex items-center justify-between mt-4">
+      class="bg-gray-200 rounded w-full p-2 text-red-500
+      flex items-start justify-start mt-4 font-bold">
       <div class="px-6">
-        Addresses are now defaulted to the new Zilliqa bech32 standard, your funds are not affected in any way.
+        This version of Zillet will be deprecated soon, a new version focused
+        exclusively on ZQ2 (EVM network) support is now live on 
+          <a href="https://app.zillet.io" class="text-primary" target="_blank">
+          app.zillet.io           
+        </a>. Click here for the full 
         <a
-          href="https://blog.zilliqa.com/zilliqa-migrates-to-new-address-format-bf1fa6d7e41d"
+          href="https://support.zillet.io/troubleshooting/migrating-balance-and-stakes-from-v1"
           target="_blank"
-          class="underline italic"
+        class="text-primary"
           rel="nofollow">
-          Read full announcement here
+          Migration Guide
         </a>
       </div>
-      <i
-        class="eva eva-close-circle-outline text-xl pr-2 cursor-pointer"
-        @click="hideNoti" />
-    </div> -->
+    </div>
     <Navigation />
     <Nuxt />
     <Footer />
