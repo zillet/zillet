@@ -4,10 +4,9 @@
     <div
       v-if="showNoti"
       class="bg-gray-200 rounded w-full p-2 text-red-500
-      flex items-start justify-start mt-4 font-bold">
+      flex items-start justify-start mt-4 font-semibold">
       <div class="px-6">
-        This version of Zillet will be deprecated soon, a new version focused
-        exclusively on ZQ2 (EVM network) support is now live on 
+         A new version focused exclusively on ZQ2 (EVM network) support is now live on 
           <a href="https://app.zillet.io" class="text-primary" target="_blank">
           app.zillet.io           
         </a>. Click here for the full 
