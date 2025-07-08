@@ -41,131 +41,108 @@
           v-else
           class="w-full"
           :data="transactions"
-          :loading="loading">
+          :loading="loading"
+        >
           <template slot-scope="scope">
-            <z-table-column
-              width="20"
-              field="hash">
-              <div 
-                class="flex flex-row justify-between  p-1 text-sm rounded-full"
+            <!-- Status Icon Column -->
+            <z-table-column width="20" field="hash">
+              <div
+                class="flex flex-row justify-between p-1 text-sm rounded-full"
                 :class="{
-                  'bg-gray-700 text-white': scope.row.status =='pending',
-                  'bg-red-200':scope.row.receiptSuccess===false, 
-                  'bg-yellow-200':scope.row.direction=='out' && scope.row.receiptSuccess && !scope.row.isContract,
-                  'bg-gray-200':(scope.row.isContract && scope.row.receiptSuccess) || scope.row.direction=='self',
-                  'bg-green-200':scope.row.direction=='in' && !scope.row.isContract
-                }">
-                <i
-                  v-if="scope.row.receiptSuccess===false"
-                  class="eva eva-alert-triangle-outline" />
-                <i
-                  v-else-if="scope.row.status =='pending'"
-                  class="eva eva-loader-outline rotating" />
-                <i
-                  v-else-if="scope.row.isContract && scope.row.tag !='Transfer' && scope.row.tag !='proxyTransfer'" 
-                  class="eva eva-code-outline" />
-                <i
-                  v-else-if="scope.row.direction=='out' && !scope.row.status"
-                  class="eva eva-arrow-upward-outline" />
-                <i
-                  v-else-if="scope.row.direction=='in'" 
-                  class="eva eva-arrow-downward-outline" />
-                <i
-                  v-else-if="scope.row.direction=='self'" 
-                  class="eva eva-radio-button-on-outline" />
+                  'bg-gray-700 text-white': scope.row.status === 'pending',
+                  'bg-red-200': scope.row.receiptSuccess === false,
+                  'bg-yellow-200': scope.row.direction === 'out' && scope.row.receiptSuccess && !scope.row.isContract,
+                  'bg-gray-200': (scope.row.isContract && scope.row.receiptSuccess) || scope.row.direction === 'self',
+                  'bg-green-200': scope.row.direction === 'in' && !scope.row.isContract
+                }"
+              >
+                <i v-if="scope.row.receiptSuccess === false" class="eva eva-alert-triangle-outline" />
+                <i v-else-if="scope.row.status === 'pending'" class="eva eva-loader-outline rotating" />
+                <i v-else-if="scope.row.isContract && scope.row.tag !== 'Transfer' && scope.row.tag !== 'proxyTransfer'" class="eva eva-code-outline" />
+                <i v-else-if="scope.row.direction === 'out' && !scope.row.status" class="eva eva-arrow-upward-outline" />
+                <i v-else-if="scope.row.direction === 'in'" class="eva eva-arrow-downward-outline" />
+                <i v-else-if="scope.row.direction === 'self'" class="eva eva-radio-button-on-outline" />
               </div>
             </z-table-column>
-            <z-table-column
-              label="Transaction ID"
-              field="hash">
-              <div 
-                class="flex flex-row justify-between">
+
+            <!-- Transaction ID Column -->
+            <z-table-column label="Transaction ID" field="hash">
+              <div class="flex flex-row justify-between">
                 <a
                   :href="openTxOnVb(selectedNode, scope.row.hash)"
                   class="text-teal-700 text-sm font-semibold"
-                  target="_blank">{{ formatTxHash(scope.row.hash) }}</a>
+                  target="_blank"
+                >
+                  {{ formatTxHash(scope.row.hash) }}
+                </a>
               </div>
             </z-table-column>
-            <z-table-column
-              field="value"
-              label="Transfer Amount">
-              <div
-                v-if="scope.row.receiptSuccess !==false"
-                class="flex items-center justify-between">
+
+            <!-- Transfer Amount Column -->
+            <z-table-column field="value" label="Transfer Amount">
+              <div v-if="scope.row.receiptSuccess !== false" class="flex items-center justify-between">
                 <div class="flex items-center justify-start">
                   <img
                     :src="getImages(scope.row.symbol)"
                     :onerror="`this.onerror=null;this.src='${getImages('generic')}'`"
                     height="20"
+                    width="20"
                     class="mr-2"
-                    width="20">
+                  />
                   <span
-                    :class="{'text-green-600': scope.row.direction=='in'}"
-                    class="zil ">
-                    <span v-if="scope.row.direction=='in'">+</span>
-                    <span v-else-if="scope.row.direction=='out'">-</span>
-                    <span v-else-if="scope.row.direction=='self'">--</span>
-                    <!-- TODO: Use zilliqa unit function -->
+                    :class="{ 'text-green-600': scope.row.direction === 'in' }"
+                    class="zil"
+                  >
+                    <span v-if="scope.row.direction === 'in'">+</span>
+                    <span v-else-if="scope.row.direction === 'out'">-</span>
+                    <span v-else-if="scope.row.direction === 'self'">--</span>
                     <span class="font-semibold">
-                      {{ 
-                        scope.row.direction=='self'? '...' :
-                        (scope.row.value* Math.pow(10, -1*((scope.row.token && scope.row.token.decimals) || 12)))
-                          | currency('', 2) 
+                      {{
+                        scope.row.direction === 'self' ? '...' :
+                        (scope.row.value * Math.pow(10, -1 * ((scope.row.token && scope.row.token.decimals) || 12)))
+                          | currency('', 2)
                       }}
                     </span>
-                   
                   </span>
                   <div class="text-xs text-gray-700">
-                    &nbsp; <span
-                             v-if="scope.row.symbol !='generic'"
-                             class="font-semibold">{{ scope.row.symbol }}</span>
-                    <span
-                      v-if="scope.row.direction!='self' && scope.row.symbol == 'ZIL'"
-                      class="usd">
-                      <!-- TODO: Use zilliqa unit function -->
-                      &nbsp;  &nbsp; {{ amountInUsd(scope.row.value)| currency('$', 2) }}
+                    &nbsp;
+                    <span v-if="scope.row.symbol !== 'generic'" class="font-semibold">{{ scope.row.symbol }}</span>
+                    <span v-if="scope.row.direction !== 'self' && scope.row.symbol === 'ZIL'" class="usd">
+                      &nbsp;&nbsp;{{ amountInUsd(scope.row.value) | currency('$', 2) }}
                     </span>
                   </div>
-                  <!-- <span v-if="scope.row.tag == 'WithdrawStakeRewards'">
-                    {{ 
-                      scope.row.direction=='self'? '--' :
-                      (scope.row.value* Math.pow(10, -1*15))
-                        | currency('', 4) 
-                    }}  gZIL
-                  </span> -->
                 </div>
                 <div class="text-sm text-right">
                   {{ scope.row.type }}
                 </div>
               </div>
-            </z-table-column> 
-            <z-table-column
-              field="to"
-              label="From/To">
+            </z-table-column>
+
+            <!-- From/To Column -->
+            <z-table-column field="to" label="From/To">
               <div
-                v-clipboard:copy="`${scope.row.direction=='in' ? toBech32(scope.row.from):toBech32(scope.row.to)}`"
+                v-clipboard:copy="`${scope.row.direction === 'in' ? toBech32(scope.row.from) : toBech32(scope.row.to)}`"
                 v-clipboard:success="onCopy"
                 v-clipboard:error="onError"
-                class="flex flex-row items-center justify-start
-                cursor-pointer text-sm font-semibold
-                 transaction__address bg-gray-200 hover:bg-gray-300 rounded px-2">
+                class="flex flex-row items-center justify-start cursor-pointer text-sm font-semibold transaction__address bg-gray-200 hover:bg-gray-300 rounded px-2"
+              >
                 <jazzicon
-                  :diameter="18" 
-                  :address="scope.row.direction=='in' ? toBase16(scope.row.from):toBase16(scope.row.to)"
-                  class="mt-1 mr-2" />
-                <div v-if="(scope.row.direction=='in' ? scope.row.from:scope.row.to) in zilDomains">
-                  {{ zilDomains[(scope.row.direction=='in' ? scope.row.from:scope.row.to)] }}
+                  :diameter="18"
+                  :address="scope.row.direction === 'in' ? toBase16(scope.row.from) : toBase16(scope.row.to)"
+                  class="mt-1 mr-2"
+                />
+                <div v-if="(scope.row.direction === 'in' ? scope.row.from : scope.row.to) in zilDomains">
+                  {{ zilDomains[scope.row.direction === 'in' ? scope.row.from : scope.row.to] }}
                 </div>
                 <div v-else>
-                  {{ scope.row.direction=='in' ? toAddress(scope.row.from):toAddress(scope.row.to) }} 
+                  {{ scope.row.direction === 'in' ? toAddress(scope.row.from) : toAddress(scope.row.to) }}
                 </div>
               </div>
             </z-table-column>
-            <z-table-column
-              field="timestamp"
-              class="text-sm"
-              label="Timestamp">
-              {{ scope.row.timestamp | moment(" MMM Do, h:mm a") }}
+
+            <!-- Block Number Column (instead of Timestamp) -->
+            <z-table-column field="blockNumber" class="text-sm" label="Block Number">
+              {{ scope.row.blockNumber }}
             </z-table-column>
           </template>
         </z-table>
@@ -259,11 +236,7 @@ export default {
   },
   beforeMount() {
     try {
-      this.localTxs = JSON.parse(localStorage.getItem('_local_txn'));
-      if (this.localTxs == null) {
-        this.localTxs = [];
-      } else {
-      }
+      this.localTxs = [];
     } catch (error) {}
     this.fetchTransactions();
   },
@@ -280,45 +253,115 @@ export default {
       this.txs = {
         docs: []
       };
-      let network;
-      if (this.selectedNode.id == 1) {
-        network = 'mainnet';
-      } else if (this.selectedNode.id == 333) {
-        network = 'testnet';
-      } else {
-        console.error('Can not fetch transaction from unknown network');
-        return null;
-      }
-      let tx = await this.$axios.$get(
-        `https://viewblock.zillet.io/txs/${this.Account.address}/txs`,
-        {
-          params: {
-            page: page,
-            network: network
-          }
-        }
-      );
-      console.log(tx);
-      for (let index = 0; index < tx.docs.length; index++) {
-        const element = tx.docs[index];
-        tx.docs[index] = this.formatTransactions(element, true);
-      }
-      // Saving not confirmed local transactions
-      localStorage.setItem('_local_txn', JSON.stringify(this.localTxs));
+      const rpcUrl = this.selectedNode.url;
       const address = this.Account.address;
-      const t = this;
-      this.localTxs = this.localTxs.filter(function(obj) {
-        return (
-          (obj.from == address || obj.to == address) &&
-          obj.networkId == t.selectedNode.id
-        );
-      });
-      for (let index = 0; index < this.localTxs.length; index++) {
-        const element = this.localTxs[index];
-        this.localTxs[index] = this.formatTransactions(element);
+      const start = 0;
+      const limit = 25;
+
+      const payload = {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'ots_searchTransactionsBefore',
+        params: [address, start, limit]
+      };
+
+      try {
+        const { data } = await this.$axios.post(rpcUrl, payload, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (data.error) throw new Error(data.error.message);
+
+        const newTxs = data.result.txs.map(tx => {
+          const toDecimal = h => parseInt(h ?? '0x0', 16);
+          const el = {
+            hash: tx.hash,
+            from: tx.from,
+            to: tx.to,
+            value: toDecimal(tx.value) * Math.pow(10, -6),
+            gasPrice: BigInt(tx.gasPrice).toString(),
+            gasLimit: toDecimal(tx.gas),
+            nonce: toDecimal(tx.nonce),
+            blockNumber: toDecimal(tx.blockNumber),
+            direction:
+              tx.from.toLowerCase() === tx.to.toLowerCase()
+                ? 'self'
+                : tx.from.toLowerCase() === address.toLowerCase()
+                  ? 'out'
+                  : 'in',
+            timestamp: Date.now(), // You can replace this with actual block timestamp if available
+            receiptSuccess: tx.status !== '0x0',
+            symbol: 'ZIL',
+            method: 'Transfer',
+            toAddr: tx.to,
+            events: tx.events || [],
+            data: tx.data || '{}' // tx.data is the raw JSON string of the contract call
+          };
+
+          // Apply formatting logic
+          try {
+            const data = JSON.parse(el.data);
+            el.tag = data._tag;
+            el.symbol = 'ZIL';
+            if (data._tag === 'WithdrawStakeRewards') {
+              el.type = 'Rewards Claimed';
+              el.value = el.events?.[0]?.params?.rewards || el.value;
+              el.direction = 'in';
+            } else if (data._tag === 'DelegateStake') {
+              el.type = 'Stake';
+            } else if (data._tag === 'CompleteWithdrawal') {
+              el.type = 'Withdraw Unstake';
+              el.value = el.events?.[0]?.params?.amount || el.value;
+              el.direction = 'in';
+            } else if (data._tag === 'WithdrawStakeAmt') {
+              el.type = 'Unstake';
+            } else if (data._tag === 'ReDelegateStake') {
+              el.type = 'Transfer Stake';
+            } else if (
+              data._tag === 'Transfer' ||
+              data._tag === 'proxyTransfer'
+            ) {
+              el.type = 'Token Transfer';
+
+              const contractKey =
+                this.selectedNode.id === 1 ? 'address' : 'testnetAddress';
+              const zrc = this.zrc2.find(element => {
+                return (
+                  el.toAddr === element[contractKey] ||
+                  el.to === element[contractKey]
+                );
+              });
+
+              // // Extract and format ZRC-2 transfer
+              // el.value = Number(data.params?.[1]?.value || 0);
+              // el.to = toBech32Address(data.params?.[0]?.value || el.to);
+
+              if (zrc && zrc.decimals) {
+                el.token = zrc;
+                el.symbol = zrc.symbol;
+              } else {
+                el.symbol = 'generic';
+              }
+            }
+
+            if (data && data._tag) {
+              el.isContract = true;
+            } else {
+              throw Error('No _tag');
+            }
+          } catch (error) {
+            el.tag = '';
+            el.symbol = 'ZIL';
+            el.type = 'Transfer';
+            // el.value = Number(el.value);
+          }
+
+          return el;
+        });
+        this.txs.docs = newTxs;
+      } catch (err) {
+        console.error('RPC fetch failed:', err);
       }
-      this.txs.docs = [...this.localTxs, ...tx.docs];
-      this.updateLocalTxn();
+
       this.loading = false;
       // if (this.Account.address && this.$route.name == 'transactions') {
       //   this.tId = setTimeout(() => {

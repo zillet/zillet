@@ -8,7 +8,7 @@
     <div class="flex flex-col px-8">
       <z-icon type="success" />
       <span class="text-base leading-normal font-semibold">
-        {{ `0x${tranxId}` }}
+        {{ `${tranxId}` }}
       </span>
       <div
         class="mt-4 mt-2 text-sm italic">
@@ -26,7 +26,7 @@
         </div>
         <div class="w-1/2 px-2">
           <a
-            :href="openTxOnVb(selectedNode, `0x${tranxId}`)"
+            :href="openTxOnVb(selectedNode, `${tranxId}`)"
             target="_blank"
             rounded
             class="w-full flex-1">

@@ -891,6 +891,7 @@ export default {
     async validateAmountRemove(amount, ssnAddr, action) {
       const myAddr = this.Account.address.toLowerCase();
       const amountInQa = units.toQa(amount, units.Units.Zil);
+      let error = false;
       if (!(amount > 0)) {
         this.loading = false;
         this.errorMsg = 'Amount should be greater than 0.';
@@ -967,16 +968,18 @@ export default {
         if (!(Number(lastrewardcycle) > Number(biggestBuffDeposit))) {
           this.loading = false;
           this.errorMsg = `You have buffered deposits in the selected node. 
-          Please wait for the next cycle before withdrawing the staked amount.`;
+          Please wait for the next cycle (up to 24hrs) before withdrawing the staked amount.`;
           this.$notify({
             message: this.errorMsg,
             type: 'danger'
           });
+          error = true;
           throw Error(this.errorMsg);
         }
       } catch (error) {
         console.warn(error);
       }
+      return error;
     },
     async unstake(amount, ssnAddr) {
       this.errorMsg = '';
@@ -984,7 +987,12 @@ export default {
       this.actionType = 'unstake';
       console.log(`Unstaking ...`, amount);
       try {
-        await this.validateAmountRemove(amount, ssnAddr, 'unstake');
+        const error = await this.validateAmountRemove(
+          amount,
+          ssnAddr,
+          'unstake'
+        );
+        if (error) return;
       } catch (error) {
         console.error(error);
         return;
