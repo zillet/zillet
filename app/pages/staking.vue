@@ -222,11 +222,11 @@
                 @click="showUnstakeModal=true">
                 Unstake
               </z-button>
-              <z-button
+              <!-- <z-button
                 class="rounded py-2 mr-2 mb-0 border-primary"
                 type="default"
                 size="medium"
-                :disabled="loading"
+                :disabled="true"
                 :loading="loading && actionType =='transfer'"
                 @click="showTransferStakeModal=true">
                 Transfer Stake
@@ -234,11 +234,11 @@
               <z-button
                 class="rounded py-2 shadow-md ml-2 w-40 mb-0 border-primary"
                 size="medium"
-                :disabled="loading "
+                :disabled="true"
                 :loading="loading && actionType =='stake'"
                 @click="showStakeModal=true">
                 Stake
-              </z-button>
+              </z-button> -->
             </div>
           </div>
         </div>
