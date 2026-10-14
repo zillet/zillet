@@ -1140,13 +1140,10 @@ export default {
           this.fromToken.balance * Math.pow(10, -1 * this.fromToken.decimals);
         this.transaction.amount = roundDown(balance, 4);
       }
-      try {
-        this.usdAmount = (
-          this.transaction.amount * this.Prices[this.fromToken.symbol].USD
-        ).toFixed(2);
-      } catch (error) {
-        this.usdAmount = 0;
-      }
+      const price =
+        this.Prices[this.fromToken.symbol] &&
+        this.Prices[this.fromToken.symbol].USD;
+      this.usdAmount = price ? (this.transaction.amount * price).toFixed(2) : 0;
     },
     cryptoAmountFocus(test) {
       this.isCryptoAmountFocus = true;
