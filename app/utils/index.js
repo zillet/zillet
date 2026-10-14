@@ -2,7 +2,8 @@ import { toBech32Address, fromBech32Address } from '@zilliqa-js/crypto';
 const { default: Resolution } = require('@unstoppabledomains/resolution');
 function getImages(name) {
   try {
-    return `https://zrc.zillet.io/icons/${name.toLowerCase()}.png`;
+    // zrc.zillet.io is gone; serve icons from zillet/zrc2-tokens, pinned.
+    return `https://cdn.jsdelivr.net/gh/zillet/zrc2-tokens@2ead548e5559d7998e83fb8b254b31179e6049c2/icons/${name.toLowerCase()}.png`;
   } catch (error) {
     console.log(error);
   }
@@ -115,6 +116,19 @@ async function domainResolve(domain, currency = 'ZIL') {
     throw Error(error);
   }
 }
+// Since the ZQ2 migration the network only accepts legacy transactions sent
+// to the migration escrow contract (RPC error -26).
+function txErrorMessage(error) {
+  const message = (error && (error.message || error)) || '';
+  if (/escrow contract/i.test(message)) {
+    return (
+      'Zilliqa has disabled legacy (zil1) transactions on mainnet, so this ' +
+      'transaction was rejected. Move your funds to an EVM address with the ' +
+      'official migration tool: https://blog.zilliqa.com/migrate-zil-from-a-legacy-account-to-zilliqa-evm/'
+    );
+  }
+  return message || 'Transaction was rejected by the network.';
+}
 function validateZilDomain(domain) {
   return /[a-z0-9]+-?[a-z0-9]+\.(zil)(\.[a-z]+)?/i.test(domain);
 }
@@ -130,5 +144,6 @@ export {
   openContractOnVb,
   getContractAddress,
   domainResolve,
-  validateZilDomain
+  validateZilDomain,
+  txErrorMessage
 };

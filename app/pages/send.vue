@@ -386,7 +386,8 @@ import {
   getContractAddress,
   openAddressOnVb,
   domainResolve,
-  validateZilDomain
+  validateZilDomain,
+  txErrorMessage
 } from '@/utils';
 
 import {
@@ -602,6 +603,7 @@ export default {
         return true;
       }
       if (isValidChecksumAddress(address)) {
+        this.transaction.base16address = address;
         return true;
       }
       return false;
@@ -675,7 +677,7 @@ export default {
         this.saveTxn(sentTx);
       } catch (error) {
         this.$notify({
-          message: error,
+          message: txErrorMessage(error),
           type: 'danger'
         });
       }
@@ -797,13 +799,13 @@ export default {
         } catch (error) {
           this.loading = false;
           return this.$notify({
-            message: `Something went wrong ${JSON.stringify(error)}`,
+            message: txErrorMessage(error),
             type: 'danger'
           });
         }
       } catch (err) {
         this.$notify({
-          message: err.message,
+          message: txErrorMessage(err),
           type: 'danger'
         });
         // Add will some notify about user denied transaction.
@@ -858,7 +860,7 @@ export default {
         }
       } catch (error) {
         this.$notify({
-          message: error.message,
+          message: txErrorMessage(error),
           type: 'danger'
         });
       }
@@ -910,6 +912,10 @@ export default {
             },
             false
           );
+          if (sentTx.isRejected()) {
+            throw contract.error ||
+              Error('Transaction was rejected by the network.');
+          }
           sentTx.TranID = sentTx.id;
           sentTx.Info = 'Transaction broadcasted';
           this.txnDone(sentTx);
@@ -920,7 +926,7 @@ export default {
         }
       } catch (error) {
         this.$notify({
-          message: error.message,
+          message: txErrorMessage(error),
           type: 'danger'
         });
       }

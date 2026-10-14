@@ -14,7 +14,8 @@ export const Online = () => window.navigator.onLine;
 export const Prices = state => state.prices;
 export const Balance = (state, getters) => {
   let inZil = units.fromQa(new BN(state.wallet.balance), units.Units.Zil);
-  let inUsd = inZil * getters.Prices['ZIL'].USD;
+  const price = getters.Prices['ZIL'].USD;
+  let inUsd = price ? inZil * price : null;
   return {
     zil: inZil,
     usd: inUsd,

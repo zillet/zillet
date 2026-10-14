@@ -23,10 +23,8 @@ const createStore = () =>
       errorMsg: '',
       encryptedWallets: [],
       prices: {
-        ZIL: {
-          USD: 0.25
-        },
-        XSGD: { USD: 0.75 }
+        ZIL: {},
+        XSGD: {}
       },
       viewblockAccount: {
         txs: []
