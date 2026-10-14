@@ -2,6 +2,27 @@
   <div class="container">
     <Notifications />
     <div
+      class="bg-red-100 rounded w-full p-2 text-red-700
+      flex items-start justify-start mt-4 font-semibold">
+      <div class="px-6">
+        Zilliqa has disabled legacy (zil1) transactions on mainnet. Sending ZIL
+        or tokens and staking actions from this wallet will be rejected by the
+        network. Move your funds to an EVM address with the official
+        <a
+          href="https://github.com/Zilliqa/zkp_recovery_app/releases"
+          target="_blank"
+          class="text-primary"
+          rel="nofollow">
+          migration tool
+        </a>
+        (<a
+          href="https://blog.zilliqa.com/migrate-zil-from-a-legacy-account-to-zilliqa-evm/"
+          target="_blank"
+          class="text-primary"
+          rel="nofollow">guide</a>).
+      </div>
+    </div>
+    <div
       v-if="showNoti"
       class="bg-gray-200 rounded w-full p-2 text-red-500
       flex items-start justify-start mt-4 font-semibold">

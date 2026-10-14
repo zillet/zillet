@@ -60,7 +60,9 @@
             <span class="zil">
               {{ Balance.zil && Number(Balance.zil).toFixed(4) }} ZIL
             </span>
-            <span class="usd">
+            <span
+              v-if="Balance.usd !== null"
+              class="usd">
               &nbsp; &asymp; &nbsp; {{ Balance.usd | currency('$', 3) }}
             </span>
             <span

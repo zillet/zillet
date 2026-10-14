@@ -15,8 +15,8 @@ export async function nuxtClientInit({ commit, dispatch }, app) {
     // if (node && node.url) {
     //   commit('SELECT_NODE', node);
     // }
-    await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'ZIL' });
-    await dispatch('getPrice', { ...app.env.cryptocompare, symbol: 'SGD' });
+    // A failed price fetch must not block the token list below.
+    await dispatch('getPrice', app.env.priceApi).catch(() => {});
     await dispatch('getZrc2List');
     commit('updateLocalTxn');
   } catch (error) {}
@@ -72,18 +72,25 @@ export function getZrc2List({ commit }) {
       });
   });
 }
-export function getPrice({ commit }, { url, token, symbol }) {
+export function getPrice({ commit }, url) {
+  const ids = { zilliqa: 'ZIL', xsgd: 'XSGD' };
   return new Promise((resolve, reject) => {
     this.$axios
       .$get(url, {
         params: {
-          fsym: symbol,
-          tsyms: 'BTC,ETH,USD,EUR,INR,',
-          api_key: token
+          ids: Object.keys(ids).join(','),
+          vs_currencies: 'btc,eth,usd,eur,inr'
         }
       })
       .then(resData => {
-        commit('FETCHED_PRICE', { symbol: symbol, data: resData });
+        Object.keys(ids).forEach(id => {
+          if (!resData[id]) return;
+          const data = {};
+          Object.keys(resData[id]).forEach(currency => {
+            data[currency.toUpperCase()] = resData[id][currency];
+          });
+          commit('FETCHED_PRICE', { symbol: ids[id], data });
+        });
         resolve(resData);
       })
       .catch(err => {

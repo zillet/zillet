@@ -30,10 +30,7 @@ module.exports = {
     ]
   },
   env: {
-    cryptocompare: {
-      url: 'https://min-api.cryptocompare.com/data/price',
-      token: process.env.CRYPTOCOMPARE_TOKEN
-    },
+    priceApi: 'https://api.coingecko.com/api/v3/simple/price',
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     TORUS_SW_URL: process.env.TORUS_SW_URL
   },
@@ -111,12 +108,6 @@ module.exports = {
   },
   proxy: {
     '/zilliqa': 'https://api.viewblock.io/',
-    '/zrc2': {
-      target: 'https://zrc.zillet.io/',
-      pathRewrite: {
-        '^/zrc2/': '/'
-      }
-    },
     '/txs': {
       target: 'https://viewblock.zillet.io/',
       pathRewrite: {
